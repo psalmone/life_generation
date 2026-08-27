@@ -40,6 +40,23 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 require_once SYSTEM_DIR . 'kernel/Registry.php';
 require_once SYSTEM_DIR . 'kernel/Routine.php';
 
+// Polyfills for PHP 7.x compatibility
+if (!function_exists('str_contains')) {
+    function str_contains($haystack, $needle) {
+        return $needle !== '' && mb_strpos($haystack, $needle) !== false;
+    }
+}
+if (!function_exists('str_starts_with')) {
+    function str_starts_with($haystack, $needle) {
+        return (string)$needle !== '' && strncmp($haystack, $needle, strlen($needle)) === 0;
+    }
+}
+if (!function_exists('str_ends_with')) {
+    function str_ends_with($haystack, $needle) {
+        return $needle !== '' && substr($haystack, -strlen($needle)) === (string)$needle;
+    }
+}
+
 /**
  * Check and load .env file if any
  */

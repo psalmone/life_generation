@@ -222,7 +222,9 @@ function lava_instance()
 {
   	return Controller::instance();
 }
-$performance->stop('lavalust');
+if (defined('LAVA_CLI') && LAVA_CLI) {
+    return;
+}
 
 if (php_sapi_name() === 'cli') {
     $raw_url = $argv[1] ?? '';

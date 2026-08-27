@@ -178,6 +178,8 @@ class Session {
         $prefix = $this->config['cookie_prefix'] ?? '';
         $this->config['cookie_name'] = $prefix 
             ? $prefix . ($this->config['sess_cookie_name'] ?? 'lavalust_session')
+            : ($this->config['sess_cookie_name'] ?? 'lavalust_session');
+
         // Session configuration (only when session is not already active and headers not sent)
         if (session_status() !== PHP_SESSION_ACTIVE && !headers_sent()) {
             ini_set('session.name', $this->config['cookie_name']);
@@ -224,8 +226,12 @@ class Session {
 
         // Start session if not started
         $existing_session = !empty($_COOKIE[$this->config['cookie_name']]);
-        if (session_status() !== PHP_SESSION_ACTIVE) {
+        if (session_status() !== PHP_SESSION_ACTIVE && !headers_sent() && PHP_SAPI !== 'cli') {
             session_start();
+        }
+
+        if (!isset($_SESSION) || !is_array($_SESSION)) {
+            $_SESSION = [];
         }
 
         if (!$existing_session && empty($_SESSION)) {

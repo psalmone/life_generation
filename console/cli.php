@@ -53,6 +53,20 @@ register_command('make:middleware', 'handle_make_middleware', 'Creates a middlew
     'name' => 'Middleware name (e.g., Auth or Admin/Role)'
 ]);
 
+register_command('migrate', 'handle_migrate', 'Run all pending database migrations', []);
+register_command('migrate:rollback', 'handle_migrate_rollback', 'Rollback the last applied database migration', []);
+register_command('migrate:refresh', 'handle_migrate_refresh', 'Rollback and re-run all migrations', []);
+register_command('migrate:status', 'handle_migrate_status', 'Display migration status', []);
+register_command('make:migration', 'handle_make_migration', 'Creates a new migration file', [
+    'name' => 'Migration name (e.g., create_products_table)'
+]);
+register_command('db:seed', 'handle_db_seed', 'Run database seeders', [
+    '[name]' => 'Specific seeder class name (default: runs all or DatabaseSeeder)'
+]);
+register_command('make:seeder', 'handle_make_seeder', 'Creates a new seeder file', [
+    'name' => 'Seeder name (e.g., UserSeeder)'
+]);
+
 register_command('cache:clear', 'handle_cache_clear', 'Clear all files in runtime/cache', []);
 
 register_command('make:command', 'handle_make_command', 'Creates a custom CLI command', [
@@ -246,6 +260,163 @@ function handle_make_language($name) {
  */
 function handle_make_config($name) {
     generate_config_file($name);
+}
+
+function get_migration_instance() {
+    define('PREVENT_DIRECT_ACCESS', TRUE);
+    define('ROOT_DIR', dirname(__DIR__, 1) . DIRECTORY_SEPARATOR);
+    define('SYSTEM_DIR', ROOT_DIR . 'scheme' . DIRECTORY_SEPARATOR);
+    require_once SYSTEM_DIR . 'kernel/LavaLust.php';
+    $lava = lava_instance();
+    $lava->call->library('migration');
+    return $lava->migration;
+}
+
+function handle_migrate() {
+    $migration = get_migration_instance();
+    $migration->migrate();
+}
+
+function handle_migrate_rollback() {
+    $migration = get_migration_instance();
+    $migration->rollback();
+}
+
+function handle_migrate_refresh() {
+    $migration = get_migration_instance();
+    $migration->refresh();
+}
+
+function handle_migrate_status() {
+    $migration = get_migration_instance();
+    $migration->status();
+}
+
+function handle_make_migration($name) {
+    if (!$name) {
+        echo danger("Migration name is required. Example: php lava make:migration create_products_table");
+        exit(1);
+    }
+    $migration = get_migration_instance();
+    $migration->create_migration($name);
+}
+
+define('SEEDS_DIR', APP_DIR . 'seeds' . DIRECTORY_SEPARATOR);
+
+function handle_db_seed($name = null) {
+    get_migration_instance(); // Bootstrap framework instance
+    $lava = lava_instance();
+    $lava->call->database();
+
+    if (!is_dir(SEEDS_DIR)) {
+        echo danger("Seeds directory not found at: " . SEEDS_DIR) . PHP_EOL;
+        exit(1);
+    }
+
+    if ($name) {
+        $file = SEEDS_DIR . ucfirst($name) . '.php';
+        if (!file_exists($file)) {
+            $file = SEEDS_DIR . $name . '.php';
+        }
+
+        if (!file_exists($file)) {
+            echo danger("Seeder file not found: {$name}.php") . PHP_EOL;
+            exit(1);
+        }
+
+        require_once $file;
+        $class_name = pathinfo($file, PATHINFO_FILENAME);
+        if (class_exists($class_name)) {
+            $seeder = new $class_name();
+            if (method_exists($seeder, 'run')) {
+                echo "\033[1;34mSeeding:\033[0m {$class_name}..." . PHP_EOL;
+                $seeder->run();
+                echo success("✓ Seeded: {$class_name}") . PHP_EOL;
+            }
+        }
+    } else {
+        // Run DatabaseSeeder or all seeders in seeds directory
+        $main_seeder = SEEDS_DIR . 'DatabaseSeeder.php';
+        if (file_exists($main_seeder)) {
+            require_once $main_seeder;
+            if (class_exists('DatabaseSeeder')) {
+                $seeder = new DatabaseSeeder();
+                echo "\033[1;34mRunning DatabaseSeeder...\033[0m" . PHP_EOL;
+                $seeder->run();
+                echo success("✓ DatabaseSeeder completed successfully.") . PHP_EOL;
+                return;
+            }
+        }
+
+        // Otherwise run all seed files
+        $files = glob(SEEDS_DIR . '*.php');
+        if (empty($files)) {
+            echo "\033[0;33mNo seeder files found in app/seeds/.\033[0m" . PHP_EOL;
+            return;
+        }
+
+        foreach ($files as $file) {
+            require_once $file;
+            $class_name = pathinfo($file, PATHINFO_FILENAME);
+            if (class_exists($class_name)) {
+                $seeder = new $class_name();
+                if (method_exists($seeder, 'run')) {
+                    echo "\033[1;34mSeeding:\033[0m {$class_name}..." . PHP_EOL;
+                    $seeder->run();
+                    echo success("✓ Seeded: {$class_name}") . PHP_EOL;
+                }
+            }
+        }
+        echo success("All seeders executed.") . PHP_EOL;
+    }
+}
+
+function handle_make_seeder($name) {
+    if (!$name) {
+        echo danger("Seeder name is required. Example: php lava make:seeder UserSeeder");
+        exit(1);
+    }
+
+    $class_name = ucfirst($name);
+    $file_path  = SEEDS_DIR . "{$class_name}.php";
+
+    if (!is_dir(SEEDS_DIR)) mkdir(SEEDS_DIR, 0777, true);
+
+    $content = <<<PHP
+<?php
+defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
+
+class {$class_name} {
+
+    private \$_lava;
+
+    public function __construct()
+    {
+        \$this->_lava = lava_instance();
+        \$this->_lava->call->database();
+    }
+
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        // Example:
+        // \$this->_lava->db->table('users')->insert([
+        //     'username'   => 'admin',
+        //     'email'      => 'admin@example.com',
+        //     'password'   => password_hash('password123', PASSWORD_DEFAULT),
+        //     'role'       => 'admin',
+        //     'is_active'  => 1,
+        //     'created_at' => date('Y-m-d H:i:s')
+        // ]);
+    }
+}
+PHP;
+
+    write_file($file_path, $content, 'Seeder', $class_name);
 }
 
 /**

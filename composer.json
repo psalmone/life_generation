@@ -1,0 +1,15 @@
+{
+    "name": "toshiba/lifegeneration",
+    "autoload": {
+        "psr-4": {
+            "Toshiba\\Lifegeneration\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Dan",
+            "email": "daniellevitto271@gmail.com"
+        }
+    ],
+    "require": {}
+}

@@ -7,6 +7,7 @@ define('APP_DIR', dirname(__DIR__, 1) . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_
 define('PUBLIC_DIR', dirname(__DIR__, 1) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR);
 define('RUNTIME_DIR', dirname(__DIR__, 1) . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR);
 define('COMMANDS_DIR', APP_DIR . 'commands' . DIRECTORY_SEPARATOR);
+define('SEEDS_DIR', APP_DIR . 'seeds' . DIRECTORY_SEPARATOR);
 
 // Command Registry
 $commands = [];
@@ -54,9 +55,16 @@ register_command('make:middleware', 'handle_make_middleware', 'Creates a middlew
     'name' => 'Middleware name (e.g., Auth or Admin/Role)'
 ]);
 
-register_command('migrate', 'handle_migrate', 'Run all pending database migrations', []);
+register_command('migrate', 'handle_migrate', 'Run all pending database migrations', [
+    '[--seed]' => 'Run database seeders after migrating'
+]);
 register_command('migrate:rollback', 'handle_migrate_rollback', 'Rollback the last applied database migration', []);
-register_command('migrate:refresh', 'handle_migrate_refresh', 'Rollback and re-run all migrations', []);
+register_command('migrate:refresh', 'handle_migrate_refresh', 'Rollback and re-run all migrations', [
+    '[--seed]' => 'Run database seeders after refreshing'
+]);
+register_command('migrate:fresh', 'handle_migrate_fresh', 'Drop all tables and re-run all migrations', [
+    '[--seed]' => 'Run database seeders after fresh migration'
+]);
 register_command('migrate:status', 'handle_migrate_status', 'Display migration status', []);
 register_command('make:migration', 'handle_make_migration', 'Creates a new migration file', [
     'name' => 'Migration name (e.g., create_products_table)'
@@ -273,9 +281,13 @@ function get_migration_instance() {
     return $lava->migration;
 }
 
-function handle_migrate() {
+function handle_migrate($input = null, array $flags = []) {
     $migration = get_migration_instance();
     $migration->migrate();
+
+    if (!empty($flags['seed'])) {
+        handle_db_seed();
+    }
 }
 
 function handle_migrate_rollback() {
@@ -283,9 +295,38 @@ function handle_migrate_rollback() {
     $migration->rollback();
 }
 
-function handle_migrate_refresh() {
+function handle_migrate_refresh($input = null, array $flags = []) {
     $migration = get_migration_instance();
     $migration->refresh();
+
+    if (!empty($flags['seed'])) {
+        handle_db_seed();
+    }
+}
+
+function handle_migrate_fresh($input = null, array $flags = []) {
+    $migration = get_migration_instance();
+    $lava = lava_instance();
+    $lava->call->database();
+    $lava->call->dbforge();
+
+    echo "\033[1;33mDropping existing tables...\033[0m" . PHP_EOL;
+
+    // Drop users, refresh_tokens, sessions, migrations, etc.
+    $tables = ['users', 'refresh_tokens', 'sessions', 'migrations'];
+    foreach ($tables as $table) {
+        if ($lava->dbforge->table_exists($table)) {
+            $lava->dbforge->drop_table($table);
+            echo "  ✓ Dropped table: {$table}" . PHP_EOL;
+        }
+    }
+
+    echo "\033[1;34mRunning migrations...\033[0m" . PHP_EOL;
+    $migration->migrate();
+
+    if (!empty($flags['seed'])) {
+        handle_db_seed();
+    }
 }
 
 function handle_migrate_status() {
@@ -301,8 +342,6 @@ function handle_make_migration($name) {
     $migration = get_migration_instance();
     $migration->create_migration($name);
 }
-
-define('SEEDS_DIR', APP_DIR . 'seeds' . DIRECTORY_SEPARATOR);
 
 function handle_db_seed($name = null) {
     get_migration_instance(); // Bootstrap framework instance

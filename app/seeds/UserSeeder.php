@@ -23,7 +23,7 @@ class UserSeeder {
 
         if (!$admin) {
             $this->_lava->db->table('users')->insert([
-                'username'   => 'admin',
+                'username'   => 'CM',
                 'email'      => 'admin@example.com',
                 'password'   => password_hash('password123', PASSWORD_DEFAULT),
                 'role'       => 'admin',
@@ -38,7 +38,7 @@ class UserSeeder {
 
         if (!$user) {
             $this->_lava->db->table('users')->insert([
-                'username'   => 'johndoe',
+                'username'   => 'Dan',
                 'email'      => 'user@example.com',
                 'password'   => password_hash('password123', PASSWORD_DEFAULT),
                 'role'       => 'user',

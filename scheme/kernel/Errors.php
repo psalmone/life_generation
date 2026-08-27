@@ -69,6 +69,13 @@ class Errors
 	 */
 	public function show_error($heading, $message, $template, $code = 500)
 	{
+		if (PHP_SAPI === 'cli' || defined('LAVA_CLI')) {
+			echo "\n\033[1;41m Error ($code): $heading \033[0m\n";
+			echo is_array($message) ? implode("\n", $message) : $message;
+			echo "\n\n";
+			exit(1);
+		}
+
 		$template_path = config_item('error_view_path');
 		if (empty($template_path))
 		{
@@ -88,6 +95,13 @@ class Errors
 	 */
 	public function show_exception($exception)
 	{
+		if (PHP_SAPI === 'cli' || defined('LAVA_CLI')) {
+			echo "\n\033[1;41m Exception: " . $exception->getMessage() . " \033[0m\n";
+			echo "\033[1;33mFile:\033[0m " . $exception->getFile() . " on line " . $exception->getLine() . "\n";
+			echo "\033[1;34mTrace:\033[0m\n" . $exception->getTraceAsString() . "\n\n";
+			exit(1);
+		}
+
 		$template_path = config_item('error_view_path');
 		if (empty($template_path))
 		{
@@ -115,6 +129,12 @@ class Errors
 	 */
 	public function show_php_error($severity, $message, $filepath, $line)
 	{
+		if (PHP_SAPI === 'cli' || defined('LAVA_CLI')) {
+			echo "\n\033[1;41m $severity: $message \033[0m\n";
+			echo "\033[1;33mLocation:\033[0m $filepath (line $line)\n\n";
+			exit(1);
+		}
+
 		$template_path = config_item('error_view_path');
 		if (empty($template_path))
 		{
@@ -136,6 +156,18 @@ class Errors
 	 */
 	public function show_database_error($message, $sql = '', $bindings = [], $exception = null, $template = 'error_db')
 	{
+		if (PHP_SAPI === 'cli' || defined('LAVA_CLI')) {
+			echo "\n\033[1;41m Database Error: $message \033[0m\n";
+			if (!empty($sql)) {
+				echo "\033[1;33mQuery:\033[0m $sql\n";
+			}
+			if ($exception) {
+				echo "\033[1;34mDetails:\033[0m " . $exception->getMessage() . "\n";
+			}
+			echo "\n";
+			exit(1);
+		}
+
 		http_response_code(500);
 		
 		if (config_item('environment') !== 'development') {

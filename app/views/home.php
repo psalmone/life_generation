@@ -859,7 +859,7 @@
             </div>
             <div class="stat-item">
                 <h3>Weekly</h3>
-                <p>Cell & Worship Gatherings</p>
+                <p>D-Group &amp; Worship Gatherings</p>
             </div>
             <div class="stat-item">
                 <h3>100%</h3>
@@ -910,7 +910,7 @@
                     </svg>
                 </div>
                 <h3>Discipleship & Word</h3>
-                <p>Deepening scriptural roots through structured biblical teaching, cell group mentorship, and spiritual foundation courses.</p>
+                <p>Deepening scriptural roots through structured biblical teaching, D-Group mentorship, and spiritual foundation courses.</p>
             </div>
 
             <div class="pillar-card">
@@ -955,7 +955,7 @@
                 <div class="schedule-item">
                     <div>
                         <div class="schedule-item-title">Midweek Prayer & Bible Study</div>
-                        <div class="schedule-item-sub">Online Community & Local Cell Groups</div>
+                        <div class="schedule-item-sub">Online Community &amp; Local D-Groups</div>
                     </div>
                     <div class="schedule-item-time">7:00 PM &bull; Wed</div>
                 </div>
@@ -974,7 +974,7 @@
         <div class="testi-grid">
             <div class="testi-card">
                 <p class="testi-quote">
-                    "Finding Life Generation gave me a true family in Christ. The cell group mentors walked with me through difficult times, and my spiritual life has never been stronger."
+                    "Finding Life Generation gave me a true family in Christ. The D-Group mentors walked with me through difficult times, and my spiritual life has never been stronger."
                 </p>
                 <div class="testi-user">
                     <div class="testi-avatar">DV</div>

@@ -52,8 +52,37 @@ $router->get('/register', 'Auth::register');
 $router->post('/register', 'Auth::register_submit');
 $router->get('/dashboard', 'Auth::dashboard');
 $router->post('/dashboard/update-profile', 'Auth::update_profile');
+$router->post('/dashboard/upload-avatar', 'Auth::upload_avatar');
+$router->post('/dashboard/remove-avatar', 'Auth::remove_avatar');
 $router->post('/admin/toggle-member-status', 'Auth::toggle_member_status');
 $router->get('/logout', 'Auth::logout');
 
 // Migration trigger route
 $router->get('/migrate', 'Migrate::index');
+
+// D-Group routes
+$router->post('/dgroups/join', 'Auth::join_dgroup');
+$router->post('/dgroups/leave', 'Auth::leave_dgroup');
+
+// Prayer Wall routes
+$router->get('/prayer-wall', 'Prayer_wall::index');
+$router->post('/prayer-wall/submit', 'Prayer_wall::submit');
+$router->post('/prayer-wall/mark-answered', 'Prayer_wall::mark_answered');
+$router->post('/prayer-wall/delete', 'Prayer_wall::delete');
+
+// Ministry Volunteer routes
+$router->post('/ministry/apply', 'Auth::apply_ministry');
+$router->post('/ministry/cancel', 'Auth::cancel_ministry');
+$router->post('/admin/ministry/update-application', 'Auth::update_ministry_application');
+
+// Event & Attendance routes
+$router->post('/events/rsvp', 'Auth::rsvp_event');
+$router->post('/events/cancel-rsvp', 'Auth::cancel_rsvp_event');
+$router->post('/admin/events/create', 'Auth::create_event');
+$router->post('/admin/events/update', 'Auth::update_event');
+$router->post('/admin/events/delete', 'Auth::delete_event');
+$router->post('/admin/events/check-in', 'Auth::check_in_attendee');
+
+// Member Management & Export routes
+$router->post('/admin/update-member-role', 'Auth::update_member_role');
+$router->get('/admin/export-members', 'Auth::export_members_csv');

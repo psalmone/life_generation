@@ -73,12 +73,11 @@ class User_model extends Model {
      */
     public function email_exists($email, $exclude_id = null)
     {
-        $builder = $this->db->table($this->table)->where('email', $email);
-        if ($exclude_id) {
-            $builder->where('id !=', $exclude_id);
-        }
-        $res = $builder->get();
-        return !empty($res);
+        $res = $this->db->table($this->table)->where('email', $email)->get();
+        if (empty($res)) return false;
+        // If the matched row belongs to the excluded user, no conflict
+        if ($exclude_id && (int)($res['id'] ?? 0) === (int)$exclude_id) return false;
+        return true;
     }
 
     /**
@@ -90,12 +89,10 @@ class User_model extends Model {
      */
     public function username_exists($username, $exclude_id = null)
     {
-        $builder = $this->db->table($this->table)->where('username', $username);
-        if ($exclude_id) {
-            $builder->where('id !=', $exclude_id);
-        }
-        $res = $builder->get();
-        return !empty($res);
+        $res = $this->db->table($this->table)->where('username', $username)->get();
+        if (empty($res)) return false;
+        if ($exclude_id && (int)($res['id'] ?? 0) === (int)$exclude_id) return false;
+        return true;
     }
 
     /**

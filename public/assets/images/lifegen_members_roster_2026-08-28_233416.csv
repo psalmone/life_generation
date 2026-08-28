@@ -1,0 +1,4 @@
+﻿"Member ID","Full Name",Username,"Email Address",Age,Address,Role,"Ministry Team","Discipleship Group",Status,"Joined Date"
+LG-2026-AA1D0,"christian matthew ibarra",—,cm@gmail.com,21,"masipit, calapan city",USER,None,None,Active,"2026-08-28 00:19"
+LG-2026-ADMIN,"Nikki Bryan Buñag",admin,admin@example.com,24,"Ibaba, Calapan City Oriental Mindoro",ADMIN,"Worship Team","LifeGen Young Professionals",Active,"2026-08-28 00:06"
+LG-2026-DEMO1,"Danielle Psalm Vitto Rodel",danielle,user@example.com,20,"Lalud HIghway, Calapan City Oriental MIndoro",USER,"Worship Team","Youth Ignite",Active,"2026-08-28 00:06"

@@ -431,48 +431,9 @@
 
                 </div>
 
-                <!-- ── Section 2: Membership Tier ── -->
+                <!-- ── Section 2: Account Security ── -->
                 <div class="form-section-label">
                     <div class="section-badge">2</div>
-                    <span class="section-title">Membership Tier</span>
-                    <div class="section-divider"></div>
-                </div>
-
-                <?php $current_tier = $old['membership_tier'] ?? 'Standard Member'; ?>
-                <div class="tier-picker" role="group" aria-label="Select membership tier">
-                    <div class="tier-option">
-                        <input type="radio" name="membership_tier" id="tier_standard" value="Standard Member" <?= $current_tier === 'Standard Member' ? 'checked' : '' ?>>
-                        <label for="tier_standard" class="tier-label">
-                            <span class="tier-badge-icon">🥉</span>
-                            <span>Standard</span>
-                        </label>
-                    </div>
-                    <div class="tier-option">
-                        <input type="radio" name="membership_tier" id="tier_silver" value="Silver Member" <?= $current_tier === 'Silver Member' ? 'checked' : '' ?>>
-                        <label for="tier_silver" class="tier-label">
-                            <span class="tier-badge-icon">🥈</span>
-                            <span>Silver</span>
-                        </label>
-                    </div>
-                    <div class="tier-option">
-                        <input type="radio" name="membership_tier" id="tier_gold" value="Gold Member" <?= $current_tier === 'Gold Member' ? 'checked' : '' ?>>
-                        <label for="tier_gold" class="tier-label">
-                            <span class="tier-badge-icon">🥇</span>
-                            <span>Gold</span>
-                        </label>
-                    </div>
-                    <div class="tier-option">
-                        <input type="radio" name="membership_tier" id="tier_vip" value="VIP Member" <?= $current_tier === 'VIP Member' ? 'checked' : '' ?>>
-                        <label for="tier_vip" class="tier-label">
-                            <span class="tier-badge-icon">💎</span>
-                            <span>VIP</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- ── Section 3: Account Security ── -->
-                <div class="form-section-label">
-                    <div class="section-badge">3</div>
                     <span class="section-title">Account Security</span>
                     <div class="section-divider"></div>
                 </div>

@@ -8,6 +8,9 @@ class Auth extends Controller {
         parent::__construct();
         $this->call->model('User_model');
         $this->call->model('Member_model');
+        $this->call->model('Dgroup_model');
+        $this->call->model('Ministry_model');
+        $this->call->model('Event_model');
     }
 
     // =========================================================================
@@ -127,7 +130,6 @@ class Auth extends Controller {
                         'member_row_id'   => $member['id'] ?? null,
                         'member_id'       => $member['member_id'] ?? '',
                         'full_name'       => $member['full_name'] ?? $user['username'],
-                        'membership_tier' => $member['membership_tier'] ?? 'Standard Member',
                     ]);
 
                     $greetingName = !empty($member['full_name']) ? $member['full_name'] : $user['username'];
@@ -175,10 +177,9 @@ class Auth extends Controller {
      *
      * Creates TWO rows:
      *  1. users  — login credentials + role
-     *  2. members — profile (name, age, address, email, membership_tier)
+     *  2. members — profile (name, age, address, email)
      *
      * Required fields: full_name, email, age, address, password, password_confirm
-     * Optional fields: membership_tier (defaults to Standard Member)
      * Username is auto-generated from the email prefix if not supplied.
      */
     public function register_submit()
@@ -188,7 +189,6 @@ class Auth extends Controller {
             $email           = trim($this->io->post('email') ?? '');
             $address         = trim($this->io->post('address') ?? '');
             $age_raw         = trim($this->io->post('age') ?? '');
-            $membership_tier = trim($this->io->post('membership_tier') ?? 'Standard Member');
             $password        = $this->io->post('password') ?? '';
             $password_confirm= $this->io->post('password_confirm') ?? '';
 
@@ -200,11 +200,10 @@ class Auth extends Controller {
             }
 
             $old_data = [
-                'full_name'       => $full_name,
-                'email'           => $email,
-                'address'         => $address,
-                'age'             => $age_raw,
-                'membership_tier' => $membership_tier,
+                'full_name' => $full_name,
+                'email'     => $email,
+                'address'   => $address,
+                'age'       => $age_raw,
             ];
 
             // ---- Validation ----
@@ -255,11 +254,6 @@ class Auth extends Controller {
                 $username = $username . rand(10, 9999);
             }
 
-            // Sanitize membership tier
-            $valid_tiers = ['Standard Member', 'Silver Member', 'Gold Member', 'VIP Member'];
-            if (!in_array($membership_tier, $valid_tiers)) {
-                $membership_tier = 'Standard Member';
-            }
 
             // ---- Create user account (credentials only) ----
             $user_created = $this->User_model->create_user([
@@ -287,7 +281,6 @@ class Auth extends Controller {
                 'age'            => (int)$age,
                 'address'        => $address,
                 'email'          => $email,
-                'membership_tier'=> $membership_tier,
                 'is_active'      => 1,
             ]);
 
@@ -345,7 +338,6 @@ class Auth extends Controller {
                 'age'            => null,
                 'address'        => null,
                 'email'          => $user['email'],
-                'membership_tier'=> 'Standard Member',
                 'is_active'      => 1,
             ]);
             $member = $this->Member_model->get_by_user_id($userId);
@@ -366,15 +358,56 @@ class Auth extends Controller {
             }
         }
 
+        // Load D-Group data
+        $current_dgroup = null;
+        $all_dgroups    = [];
+        if (!empty($member['dgroup_id'])) {
+            $current_dgroup = $this->Dgroup_model->get_by_id($member['dgroup_id']);
+            if ($current_dgroup) {
+                $current_dgroup['member_count'] = $this->Dgroup_model->count_members($current_dgroup['id']);
+            }
+        } else {
+            $all_dgroups = $this->Dgroup_model->get_all_with_counts();
+        }
+
+        // Load Ministry data for the current user
+        $current_ministry = null;
+        if (!empty($member['ministry_id'])) {
+            $current_ministry = $this->Ministry_model->get_by_id($member['ministry_id']);
+        }
+        $ministries        = $this->Ministry_model->get_active_with_status($userId);
+        $user_apps         = $this->Ministry_model->get_user_applications($userId);
+        $all_ministry_apps = [];
+        if (isset($user['role']) && $user['role'] === 'admin') {
+            $all_ministry_apps = $this->Ministry_model->get_all_applications();
+        }
+
+        // Load Events & Attendance data
+        $upcoming_events = $this->Event_model->get_upcoming_events();
+        $user_rsvps      = $this->Event_model->get_user_rsvps($userId);
+        $all_events_admin= [];
+        if (isset($user['role']) && $user['role'] === 'admin') {
+            $all_events_admin = $this->Event_model->get_all_events_admin();
+        }
+
         $data = [
-            'title'          => 'Membership Dashboard - Life Generation',
-            'user'           => $user,
-            'member'         => $member,
-            'all_members'    => $all_members,
-            'total_members'  => $total_members,
-            'active_members' => $active_members,
-            'success'        => $this->session->flashdata('success') ?? null,
-            'error'          => $this->session->flashdata('error') ?? null,
+            'title'             => 'Membership Dashboard - Life Generation',
+            'user'              => $user,
+            'member'            => $member,
+            'all_members'       => $all_members,
+            'total_members'     => $total_members,
+            'active_members'    => $active_members,
+            'current_dgroup'    => $current_dgroup,
+            'all_dgroups'       => $all_dgroups,
+            'current_ministry'  => $current_ministry,
+            'ministries'        => $ministries,
+            'user_apps'         => $user_apps,
+            'all_ministry_apps' => $all_ministry_apps,
+            'upcoming_events'   => $upcoming_events,
+            'user_rsvps'        => $user_rsvps,
+            'all_events_admin'  => $all_events_admin,
+            'success'           => $this->session->flashdata('success') ?? null,
+            'error'             => $this->session->flashdata('error') ?? null,
         ];
 
         $this->call->view('auth/dashboard', $data);
@@ -462,6 +495,116 @@ class Auth extends Controller {
         redirect('dashboard');
     }
 
+    /**
+     * Handle Avatar Photo Upload via Drag & Drop or File Select
+     */
+    public function upload_avatar()
+    {
+        if (!$this->session->has_userdata('user_id')) {
+            redirect('login');
+            return;
+        }
+
+        if ($this->io->method() === 'post') {
+            $userId = $this->session->userdata('user_id');
+
+            if (!isset($_FILES['avatar']) || $_FILES['avatar']['error'] !== UPLOAD_ERR_OK) {
+                $errorCode = $_FILES['avatar']['error'] ?? 'No file';
+                $this->session->set_flashdata('error', 'Please select a valid image file to upload (Error: ' . $errorCode . ').');
+                redirect('dashboard');
+                return;
+            }
+
+            $file    = $_FILES['avatar'];
+            $maxSize = 5 * 1024 * 1024; // 5MB
+            $exts    = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+
+            // File size validation
+            if ($file['size'] > $maxSize) {
+                $this->session->set_flashdata('error', 'Image size must not exceed 5MB.');
+                redirect('dashboard');
+                return;
+            }
+
+            // Extension validation
+            $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            if (!in_array($ext, $exts)) {
+                $this->session->set_flashdata('error', 'Invalid file extension (.' . htmlspecialchars($ext) . '). Only PNG, JPG, JPEG, WEBP, and GIF are supported.');
+                redirect('dashboard');
+                return;
+            }
+
+            // Image verification using getimagesize
+            $imageInfo = @getimagesize($file['tmp_name']);
+            if (!$imageInfo) {
+                $this->session->set_flashdata('error', 'The uploaded file is not a recognized or valid image.');
+                redirect('dashboard');
+                return;
+            }
+
+            // Destination directory
+            $uploadDir = ROOT_DIR . 'public' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'avatars' . DIRECTORY_SEPARATOR;
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+
+            // Unique filename
+            $newFileName = 'avatar_' . $userId . '_' . time() . '_' . bin2hex(random_bytes(3)) . '.' . $ext;
+            $destination = $uploadDir . $newFileName;
+
+            // Fetch current avatar to delete old file if it exists
+            $member = $this->Member_model->get_by_user_id($userId);
+            if (!empty($member['avatar'])) {
+                $oldPath = ROOT_DIR . 'public' . DIRECTORY_SEPARATOR . ltrim(str_replace('/', DIRECTORY_SEPARATOR, $member['avatar']), DIRECTORY_SEPARATOR);
+                if (file_exists($oldPath) && is_file($oldPath)) {
+                    @unlink($oldPath);
+                }
+            }
+
+            if (move_uploaded_file($file['tmp_name'], $destination)) {
+                $avatarRelativeUrl = 'uploads/avatars/' . $newFileName;
+                $this->Member_model->update_member($userId, [
+                    'avatar' => $avatarRelativeUrl,
+                ]);
+
+                $this->session->set_flashdata('success', 'Profile photo updated successfully!');
+            } else {
+                $this->session->set_flashdata('error', 'Failed to save image. Please check server permissions.');
+            }
+        }
+
+        redirect('dashboard');
+    }
+
+    /**
+     * Remove / Reset Member Profile Photo to Default
+     */
+    public function remove_avatar()
+    {
+        if (!$this->session->has_userdata('user_id')) {
+            redirect('login');
+            return;
+        }
+
+        if ($this->io->method() === 'post') {
+            $userId = $this->session->userdata('user_id');
+            $member = $this->Member_model->get_by_user_id($userId);
+
+            if ($member && !empty($member['avatar'])) {
+                $oldPath = ROOT_DIR . 'public' . DIRECTORY_SEPARATOR . ltrim(str_replace('/', DIRECTORY_SEPARATOR, $member['avatar']), DIRECTORY_SEPARATOR);
+                if (file_exists($oldPath) && is_file($oldPath)) {
+                    @unlink($oldPath);
+                }
+                $this->Member_model->update_member($userId, [
+                    'avatar' => null,
+                ]);
+                $this->session->set_flashdata('success', 'Profile photo removed successfully. Default initial restored.');
+            }
+        }
+
+        redirect('dashboard');
+    }
+
     // =========================================================================
     //  ADMIN: TOGGLE MEMBER STATUS
     // =========================================================================
@@ -501,6 +644,548 @@ class Auth extends Controller {
                 $this->session->set_flashdata('success', "{$name} has been {$status_label}.");
             } else {
                 $this->session->set_flashdata('error', 'Member not found.');
+            }
+        }
+
+        redirect('dashboard');
+    }
+
+    /**
+     * Admin action: Promote or Demote member role (user, moderator, admin).
+     */
+    public function update_member_role()
+    {
+        if (!$this->session->has_userdata('user_id')) {
+            redirect('login');
+            return;
+        }
+
+        if ($this->session->userdata('role') !== 'admin') {
+            $this->session->set_flashdata('error', 'Unauthorized.');
+            redirect('dashboard');
+            return;
+        }
+
+        if ($this->io->method() === 'post') {
+            $target_user_id = (int)($this->io->post('user_id') ?? 0);
+            $new_role       = trim($this->io->post('role') ?? '');
+            $allowed_roles  = ['user', 'moderator', 'admin'];
+
+            if (!in_array($new_role, $allowed_roles)) {
+                $this->session->set_flashdata('error', 'Invalid role selected.');
+                redirect('dashboard');
+                return;
+            }
+
+            // Prevent admin from demoting themselves
+            if ($target_user_id === (int)$this->session->userdata('user_id') && $new_role !== 'admin') {
+                $this->session->set_flashdata('error', 'You cannot demote your own administrator account.');
+                redirect('dashboard');
+                return;
+            }
+
+            $user = $this->User_model->get_by_id($target_user_id);
+            if ($user) {
+                $this->User_model->update_user($target_user_id, ['role' => $new_role]);
+                $this->session->set_flashdata('success', 'User <strong>' . htmlspecialchars($user['username']) . '</strong> role updated to <strong>' . strtoupper($new_role) . '</strong>.');
+            } else {
+                $this->session->set_flashdata('error', 'User not found.');
+            }
+        }
+
+        redirect('dashboard');
+    }
+
+    /**
+     * Admin action: Export Member Directory to CSV / Excel spreadsheet.
+     */
+    public function export_members_csv()
+    {
+        if (!$this->session->has_userdata('user_id')) {
+            redirect('login');
+            return;
+        }
+
+        if ($this->session->userdata('role') !== 'admin') {
+            $this->session->set_flashdata('error', 'Unauthorized.');
+            redirect('dashboard');
+            return;
+        }
+
+        $all_members = $this->Member_model->get_all_members();
+
+        $filename = 'lifegen_members_roster_' . date('Y-m-d_His') . '.csv';
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+
+        $output = fopen('php://output', 'w');
+
+        // UTF-8 BOM for Excel compatibility
+        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
+
+        // Header Row
+        fputcsv($output, [
+            'Member ID',
+            'Full Name',
+            'Username',
+            'Email Address',
+            'Age',
+            'Address',
+            'Role',
+            'Ministry Team',
+            'Discipleship Group',
+            'Status',
+            'Joined Date'
+        ]);
+
+        // Data Rows
+        foreach ($all_members as $m) {
+            fputcsv($output, [
+                $m['member_id'] ?? '—',
+                $m['full_name'] ?? '—',
+                $m['username'] ?? '—',
+                $m['email'] ?? '—',
+                !empty($m['age']) ? $m['age'] : '—',
+                $m['address'] ?? '—',
+                strtoupper($m['role'] ?? 'user'),
+                $m['ministry_name'] ?? 'None',
+                $m['dgroup_name'] ?? 'None',
+                !empty($m['is_active']) ? 'Active' : 'Inactive',
+                !empty($m['joined_at']) ? date('Y-m-d H:i', strtotime($m['joined_at'])) : '—',
+            ]);
+        }
+
+        fclose($output);
+        exit;
+    }
+
+    // =========================================================================
+    //  MINISTRY VOLUNTEER SIGN-UP
+    // =========================================================================
+
+    /**
+     * Apply to a ministry.
+     */
+    public function apply_ministry()
+    {
+        if (!$this->session->has_userdata('user_id')) {
+            redirect('login');
+            return;
+        }
+
+        if ($this->io->method() === 'post') {
+            $userId      = $this->session->userdata('user_id');
+            $ministry_id = (int)($this->io->post('ministry_id') ?? 0);
+            $message_val = $this->io->post('message');
+            $message     = $message_val !== null ? trim($message_val) : '';
+
+            if ($ministry_id < 1) {
+                $this->session->set_flashdata('error', 'Invalid ministry selection.');
+                redirect('dashboard');
+                return;
+            }
+
+            $ministry = $this->Ministry_model->get_by_id($ministry_id);
+            if (!$ministry || empty($ministry['is_active'])) {
+                $this->session->set_flashdata('error', 'Ministry not found or inactive.');
+                redirect('dashboard');
+                return;
+            }
+
+            if ($this->Ministry_model->has_applied($userId, $ministry_id)) {
+                $this->session->set_flashdata('error', 'You have already applied to this ministry.');
+                redirect('dashboard');
+                return;
+            }
+
+            $member     = $this->Member_model->get_by_user_id($userId);
+            $memberName = $member['full_name'] ?? $this->session->userdata('username') ?? 'Member';
+
+            $this->Ministry_model->apply([
+                'user_id'     => $userId,
+                'ministry_id' => $ministry_id,
+                'member_name' => $memberName,
+                'message'     => $message,
+            ]);
+
+            $this->session->set_flashdata('success', 'Your application to <strong>' . htmlspecialchars($ministry['name']) . '</strong> has been submitted!');
+        }
+
+        redirect('dashboard');
+    }
+
+    /**
+     * Cancel a pending ministry application.
+     */
+    public function cancel_ministry()
+    {
+        if (!$this->session->has_userdata('user_id')) {
+            redirect('login');
+            return;
+        }
+
+        if ($this->io->method() === 'post') {
+            $userId      = $this->session->userdata('user_id');
+            $ministry_id = (int)($this->io->post('ministry_id') ?? 0);
+
+            if ($ministry_id > 0) {
+                $this->Ministry_model->cancel_application($userId, $ministry_id);
+                $this->session->set_flashdata('success', 'Your application has been withdrawn.');
+            }
+        }
+
+        redirect('dashboard');
+    }
+
+    /**
+     * Admin: approve or reject a ministry application.
+     */
+    public function update_ministry_application()
+    {
+        if (!$this->session->has_userdata('user_id')) {
+            redirect('login');
+            return;
+        }
+
+        $role = $this->session->userdata('role');
+        if ($role !== 'admin') {
+            $this->session->set_flashdata('error', 'Unauthorized.');
+            redirect('dashboard');
+            return;
+        }
+
+        if ($this->io->method() === 'post') {
+            $app_id = (int)($this->io->post('app_id') ?? 0);
+            $status = $this->io->post('status');
+
+            if ($app_id > 0 && in_array($status, ['approved', 'rejected', 'pending'])) {
+                $this->Ministry_model->update_application_status($app_id, $status);
+                $this->session->set_flashdata('success', 'Application status updated to <strong>' . ucfirst($status) . '</strong>.');
+            }
+        }
+
+        redirect('dashboard');
+    }
+
+    // =========================================================================
+    //  D-GROUP ENROLLMENT
+    // =========================================================================
+
+    /**
+     * Join a D-Group.
+     */
+    public function join_dgroup()
+    {
+        if (!$this->session->has_userdata('user_id')) {
+            redirect('login');
+            return;
+        }
+
+        if ($this->io->method() === 'post') {
+            $dgroup_id = (int)($this->io->post('dgroup_id') ?? 0);
+
+            if ($dgroup_id < 1) {
+                $this->session->set_flashdata('error', 'Invalid D-Group selection.');
+                redirect('dashboard');
+                return;
+            }
+
+            $group = $this->Dgroup_model->get_by_id($dgroup_id);
+            if (!$group) {
+                $this->session->set_flashdata('error', 'D-Group not found.');
+                redirect('dashboard');
+                return;
+            }
+
+            $userId = $this->session->userdata('user_id');
+            $this->Dgroup_model->join($userId, $dgroup_id);
+            $this->session->set_flashdata('success', 'You have joined <strong>' . htmlspecialchars($group['name']) . '</strong>. Welcome to your D-Group!');
+        }
+
+        redirect('dashboard');
+    }
+
+    /**
+     * Leave current D-Group.
+     */
+    public function leave_dgroup()
+    {
+        if (!$this->session->has_userdata('user_id')) {
+            redirect('login');
+            return;
+        }
+
+        if ($this->io->method() === 'post') {
+            $userId = $this->session->userdata('user_id');
+            $this->Dgroup_model->leave($userId);
+            $this->session->set_flashdata('success', 'You have left your D-Group. You can join a new one anytime.');
+        }
+
+        redirect('dashboard');
+    }
+
+    // =========================================================================
+    //  EVENT MANAGEMENT & ATTENDANCE TRACKING
+    // =========================================================================
+
+    /**
+     * Member: RSVP for an upcoming event.
+     */
+    public function rsvp_event()
+    {
+        if (!$this->session->has_userdata('user_id')) {
+            redirect('login');
+            return;
+        }
+
+        if ($this->io->method() === 'post') {
+            $userId   = $this->session->userdata('user_id');
+            $event_id = (int)($this->io->post('event_id') ?? 0);
+            $event    = $this->Event_model->get_by_id($event_id);
+
+            if (!$event || empty($event['is_active'])) {
+                $this->session->set_flashdata('error', 'Event not found or inactive.');
+                redirect('dashboard');
+                return;
+            }
+
+            $member = $this->Member_model->get_by_user_id($userId);
+            $member_id_str = $member['member_id'] ?? 'LG-MEMBER';
+            $member_name   = $member['full_name'] ?? $this->session->userdata('username') ?? 'Member';
+
+            $this->Event_model->rsvp($event_id, $userId, $member_id_str, $member_name, 'attending');
+            $this->session->set_flashdata('success', 'RSVP confirmed for <strong>' . htmlspecialchars($event['title']) . '</strong>! See you there.');
+        }
+
+        redirect('dashboard');
+    }
+
+    /**
+     * Member: Cancel RSVP.
+     */
+    public function cancel_rsvp_event()
+    {
+        if (!$this->session->has_userdata('user_id')) {
+            redirect('login');
+            return;
+        }
+
+        if ($this->io->method() === 'post') {
+            $userId   = $this->session->userdata('user_id');
+            $event_id = (int)($this->io->post('event_id') ?? 0);
+            $this->Event_model->cancel_rsvp($event_id, $userId);
+            $this->session->set_flashdata('success', 'Your RSVP has been cancelled.');
+        }
+
+        redirect('dashboard');
+    }
+
+    /**
+     * Admin: Create a new event.
+     */
+    public function create_event()
+    {
+        if (!$this->session->has_userdata('user_id')) {
+            redirect('login');
+            return;
+        }
+
+        if ($this->session->userdata('role') !== 'admin') {
+            $this->session->set_flashdata('error', 'Unauthorized.');
+            redirect('dashboard');
+            return;
+        }
+
+        if ($this->io->method() === 'post') {
+            $title        = trim($this->io->post('title') ?? '');
+            $location     = trim($this->io->post('location') ?? '');
+            $event_date   = trim($this->io->post('event_date') ?? '');
+            $event_time   = trim($this->io->post('event_time') ?? '');
+            $description  = trim($this->io->post('description') ?? '');
+            $capacity     = !empty($this->io->post('capacity')) ? (int)$this->io->post('capacity') : null;
+            $banner_image = null;
+
+            if (empty($title) || empty($location) || empty($event_date) || empty($event_time)) {
+                $this->session->set_flashdata('error', 'Title, location, date, and time are required.');
+                redirect('dashboard');
+                return;
+            }
+
+            // Handle optional event banner / invitation image upload
+            if (isset($_FILES['banner_image']) && $_FILES['banner_image']['error'] === UPLOAD_ERR_OK) {
+                $file = $_FILES['banner_image'];
+                $ext  = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                $exts = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+
+                if (in_array($ext, $exts) && @getimagesize($file['tmp_name'])) {
+                    $uploadDir = ROOT_DIR . 'public' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'events' . DIRECTORY_SEPARATOR;
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0755, true);
+                    }
+                    $fileName = 'event_' . time() . '_' . bin2hex(random_bytes(3)) . '.' . $ext;
+                    if (move_uploaded_file($file['tmp_name'], $uploadDir . $fileName)) {
+                        $banner_image = 'uploads/events/' . $fileName;
+                    }
+                }
+            }
+
+            $this->Event_model->create_event([
+                'title'        => $title,
+                'description'  => $description,
+                'banner_image' => $banner_image,
+                'location'     => $location,
+                'event_date'   => $event_date,
+                'event_time'   => $event_time,
+                'capacity'     => $capacity,
+            ]);
+
+            $this->session->set_flashdata('success', 'New event <strong>' . htmlspecialchars($title) . '</strong> created with visual invitation banner!');
+        }
+
+        redirect('dashboard');
+    }
+
+    /**
+     * Admin: Update an existing event.
+     */
+    public function update_event()
+    {
+        if (!$this->session->has_userdata('user_id')) {
+            redirect('login');
+            return;
+        }
+
+        if ($this->session->userdata('role') !== 'admin') {
+            $this->session->set_flashdata('error', 'Unauthorized.');
+            redirect('dashboard');
+            return;
+        }
+
+        if ($this->io->method() === 'post') {
+            $event_id    = (int)($this->io->post('event_id') ?? 0);
+            $title       = trim($this->io->post('title') ?? '');
+            $location    = trim($this->io->post('location') ?? '');
+            $event_date  = trim($this->io->post('event_date') ?? '');
+            $event_time  = trim($this->io->post('event_time') ?? '');
+            $description = trim($this->io->post('description') ?? '');
+            $capacity    = !empty($this->io->post('capacity')) ? (int)$this->io->post('capacity') : null;
+
+            $event = $this->Event_model->get_by_id($event_id);
+            if (!$event) {
+                $this->session->set_flashdata('error', 'Event not found.');
+                redirect('dashboard');
+                return;
+            }
+
+            $update_data = [
+                'title'       => $title,
+                'location'    => $location,
+                'event_date'  => $event_date,
+                'event_time'  => $event_time,
+                'capacity'    => $capacity,
+                'description' => $description,
+            ];
+
+            // Handle optional new flyer image replacement
+            if (isset($_FILES['banner_image']) && $_FILES['banner_image']['error'] === UPLOAD_ERR_OK) {
+                $file = $_FILES['banner_image'];
+                $ext  = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                $exts = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+
+                if (in_array($ext, $exts) && @getimagesize($file['tmp_name'])) {
+                    $uploadDir = ROOT_DIR . 'public' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'events' . DIRECTORY_SEPARATOR;
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0755, true);
+                    }
+                    $fileName = 'event_' . time() . '_' . bin2hex(random_bytes(3)) . '.' . $ext;
+                    if (move_uploaded_file($file['tmp_name'], $uploadDir . $fileName)) {
+                        // Delete old flyer file if exists
+                        if (!empty($event['banner_image'])) {
+                            $oldPath = ROOT_DIR . 'public' . DIRECTORY_SEPARATOR . ltrim(str_replace('/', DIRECTORY_SEPARATOR, $event['banner_image']), DIRECTORY_SEPARATOR);
+                            if (file_exists($oldPath) && is_file($oldPath)) {
+                                @unlink($oldPath);
+                            }
+                        }
+                        $update_data['banner_image'] = 'uploads/events/' . $fileName;
+                    }
+                }
+            }
+
+            $this->Event_model->update_event($event_id, $update_data);
+            $this->session->set_flashdata('success', 'Event <strong>' . htmlspecialchars($title) . '</strong> updated successfully!');
+        }
+
+        redirect('dashboard');
+    }
+
+    /**
+     * Admin: Delete an event.
+     */
+    public function delete_event()
+    {
+        if (!$this->session->has_userdata('user_id')) {
+            redirect('login');
+            return;
+        }
+
+        if ($this->session->userdata('role') !== 'admin') {
+            $this->session->set_flashdata('error', 'Unauthorized.');
+            redirect('dashboard');
+            return;
+        }
+
+        if ($this->io->method() === 'post') {
+            $event_id = (int)($this->io->post('event_id') ?? 0);
+            if ($event_id > 0) {
+                $ev = $this->Event_model->get_by_id($event_id);
+                if ($ev && !empty($ev['banner_image'])) {
+                    $oldPath = ROOT_DIR . 'public' . DIRECTORY_SEPARATOR . ltrim(str_replace('/', DIRECTORY_SEPARATOR, $ev['banner_image']), DIRECTORY_SEPARATOR);
+                    if (file_exists($oldPath) && is_file($oldPath)) {
+                        @unlink($oldPath);
+                    }
+                }
+                $this->Event_model->delete_event($event_id);
+                $this->session->set_flashdata('success', 'Event removed successfully.');
+            }
+        }
+
+        redirect('dashboard');
+    }
+
+    /**
+     * Admin: Check-in an attendee by Member ID (QR Scan or Manual ID entry).
+     */
+    public function check_in_attendee()
+    {
+        if (!$this->session->has_userdata('user_id')) {
+            redirect('login');
+            return;
+        }
+
+        if ($this->session->userdata('role') !== 'admin') {
+            $this->session->set_flashdata('error', 'Unauthorized.');
+            redirect('dashboard');
+            return;
+        }
+
+        if ($this->io->method() === 'post') {
+            $event_id      = (int)($this->io->post('event_id') ?? 0);
+            $member_id_str = trim($this->io->post('member_id') ?? '');
+
+            if ($event_id < 1 || empty($member_id_str)) {
+                $this->session->set_flashdata('error', 'Event and Member ID are required for check-in.');
+                redirect('dashboard');
+                return;
+            }
+
+            $res = $this->Event_model->check_in_by_member_id($event_id, $member_id_str);
+            if ($res['success']) {
+                $this->session->set_flashdata('success', $res['message']);
+            } else {
+                $this->session->set_flashdata('error', $res['message']);
             }
         }
 

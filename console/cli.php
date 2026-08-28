@@ -96,7 +96,7 @@ $flags      = [];
 $positional = [];
 
 for ($i = 2; $i < $argc; $i++) {
-    if (str_starts_with($argv[$i], '--')) {
+    if (strpos($argv[$i], '--') === 0) {
         // --key=value  or  --key (boolean)
         $pair = explode('=', ltrim($argv[$i], '-'), 2);
         $flags[$pair[0]] = $pair[1] ?? true;
@@ -653,7 +653,7 @@ function handle_env_check() {
     $lines = file($env_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
     foreach ($lines as $line) {
-        if (str_starts_with(trim($line), '#')) continue;
+        if (strpos(trim($line), '#') === 0) continue;
 
         [$key, $value] = array_pad(explode('=', $line, 2), 2, '');
         $key   = trim($key);

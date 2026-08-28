@@ -7,12 +7,14 @@ class Member_model extends Model {
     protected $primary_key = 'id';
     protected $fillable = [
         'user_id',
+        'dgroup_id',
+        'ministry_id',
         'member_id',
         'full_name',
+        'avatar',
         'age',
         'address',
         'email',
-        'membership_tier',
         'is_active',
         'joined_at',
         'updated_at',
@@ -51,10 +53,6 @@ class Member_model extends Model {
     {
         if (empty($data['member_id'])) {
             $data['member_id'] = $this->generate_member_id();
-        }
-
-        if (!isset($data['membership_tier'])) {
-            $data['membership_tier'] = 'Standard Member';
         }
 
         if (!isset($data['is_active'])) {
@@ -124,8 +122,7 @@ class Member_model extends Model {
     }
 
     /**
-     * Get all members, joined with their user role and login details
-     * Returns combined rows: member fields + user role/username/is_active(user level)
+     * Get all members, joined with their user role and login details, plus ministry and dgroup info
      *
      * @return array
      */
@@ -135,20 +132,26 @@ class Member_model extends Model {
             SELECT
                 m.id              AS member_row_id,
                 m.user_id,
+                m.dgroup_id,
+                m.ministry_id,
                 m.member_id,
                 m.full_name,
+                m.avatar,
                 m.age,
                 m.address,
                 m.email,
-                m.membership_tier,
                 m.is_active,
                 m.joined_at,
                 m.updated_at,
                 u.username,
                 u.role,
-                u.is_active       AS user_is_active
+                u.is_active       AS user_is_active,
+                dg.name           AS dgroup_name,
+                min.name          AS ministry_name
             FROM members m
             LEFT JOIN users u ON u.id = m.user_id
+            LEFT JOIN dgroups dg ON dg.id = m.dgroup_id
+            LEFT JOIN ministries min ON min.id = m.ministry_id
             ORDER BY m.joined_at DESC
         ";
 
@@ -187,12 +190,10 @@ class Member_model extends Model {
      */
     public function email_exists($email, $exclude_user_id = null)
     {
-        $builder = $this->db->table($this->table)->where('email', $email);
-        if ($exclude_user_id) {
-            $builder->where('user_id !=', $exclude_user_id);
-        }
-        $res = $builder->get();
-        return !empty($res);
+        $res = $this->db->table($this->table)->where('email', $email)->get();
+        if (empty($res)) return false;
+        if ($exclude_user_id && (int)($res['user_id'] ?? 0) === (int)$exclude_user_id) return false;
+        return true;
     }
 
     /**
@@ -208,20 +209,26 @@ class Member_model extends Model {
             SELECT
                 m.id              AS member_row_id,
                 m.user_id,
+                m.dgroup_id,
+                m.ministry_id,
                 m.member_id,
                 m.full_name,
+                m.avatar,
                 m.age,
                 m.address,
                 m.email           AS member_email,
-                m.membership_tier,
                 m.is_active       AS member_is_active,
                 m.joined_at,
                 u.username,
                 u.email           AS login_email,
                 u.role,
-                u.is_active       AS user_is_active
+                u.is_active       AS user_is_active,
+                dg.name           AS dgroup_name,
+                min.name          AS ministry_name
             FROM users u
             LEFT JOIN members m ON m.user_id = u.id
+            LEFT JOIN dgroups dg ON dg.id = m.dgroup_id
+            LEFT JOIN ministries min ON min.id = m.ministry_id
             WHERE u.id = ?
             LIMIT 1
         ";

@@ -3,28 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= isset($title) ? htmlspecialchars($title) : 'Sign In' ?></title>
+    <title><?= isset($title) ? htmlspecialchars($title) : 'Sign In - Life Generation' ?></title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #090d16;
-            --card-bg: rgba(18, 24, 38, 0.75);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --input-bg: rgba(15, 23, 42, 0.65);
-            --input-border: rgba(255, 255, 255, 0.12);
-            --primary: #6366f1;
-            --primary-hover: #4f46e5;
-            --primary-glow: rgba(99, 102, 241, 0.35);
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
+            --bg-body: #f8fafc;
+            --card-bg: #ffffff;
+            --card-border: #e2e8f0;
+            --input-bg: #f8fafc;
+            --input-border: #cbd5e1;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-glow: rgba(37, 99, 235, 0.2);
+            --amber-gold: #d97706;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
             --text-muted: #64748b;
-            --success: #10b981;
-            --success-glow: rgba(16, 185, 129, 0.25);
-            --error: #ef4444;
-            --error-glow: rgba(239, 68, 68, 0.25);
+            --success: #16a34a;
+            --error: #dc2626;
+            --shadow-card: 0 20px 40px -10px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.04);
         }
 
         * {
@@ -35,7 +35,7 @@
         }
 
         body {
-            background-color: var(--bg-dark);
+            background-color: var(--bg-body);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -51,7 +51,7 @@
             position: fixed;
             width: 500px;
             height: 500px;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, rgba(99, 102, 241, 0) 70%);
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.08) 0%, transparent 70%);
             top: -100px;
             left: -100px;
             z-index: 0;
@@ -63,7 +63,7 @@
             position: fixed;
             width: 450px;
             height: 450px;
-            background: radial-gradient(circle, rgba(168, 85, 247, 0.2) 0%, rgba(168, 85, 247, 0) 70%);
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.08) 0%, transparent 70%);
             bottom: -100px;
             right: -100px;
             z-index: 0;
@@ -78,15 +78,28 @@
             z-index: 1;
         }
 
+        .back-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: color 0.2s ease;
+        }
+
+        .back-home:hover {
+            color: var(--primary);
+        }
+
         .card {
             background: var(--card-bg);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
             border: 1px solid var(--card-border);
             border-radius: 24px;
             padding: 40px 36px;
-            box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.7),
-                        0 0 0 1px rgba(255, 255, 255, 0.05);
+            box-shadow: var(--shadow-card);
             transition: transform 0.3s ease;
         }
 
@@ -98,26 +111,26 @@
         .logo-badge {
             width: 56px;
             height: 56px;
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #f59e0b 100%);
             border-radius: 16px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 20px;
             box-shadow: 0 8px 20px -4px var(--primary-glow);
+            color: #ffffff;
         }
 
         .logo-badge svg {
             width: 28px;
             height: 28px;
-            color: #ffffff;
         }
 
         .title {
             font-size: 1.75rem;
-            font-weight: 700;
+            font-weight: 800;
             letter-spacing: -0.025em;
-            color: #ffffff;
+            color: #0f172a;
             margin-bottom: 8px;
         }
 
@@ -145,15 +158,15 @@
         }
 
         .alert-error {
-            background: rgba(239, 68, 68, 0.12);
-            border: 1px solid rgba(239, 68, 68, 0.25);
-            color: #fca5a5;
+            background: #fef2f2;
+            border: 1px solid #fee2e2;
+            color: #991b1b;
         }
 
         .alert-success {
-            background: rgba(16, 185, 129, 0.12);
-            border: 1px solid rgba(16, 185, 129, 0.25);
-            color: #6ee7b7;
+            background: #f0fdf4;
+            border: 1px solid #dcfce7;
+            color: #166534;
         }
 
         /* Form Controls */
@@ -164,8 +177,8 @@
 
         .form-label {
             display: block;
-            font-size: 0.85rem;
-            font-weight: 600;
+            font-size: 0.82rem;
+            font-weight: 700;
             color: var(--text-secondary);
             margin-bottom: 8px;
             text-transform: uppercase;
@@ -194,7 +207,7 @@
             background: var(--input-bg);
             border: 1px solid var(--input-border);
             border-radius: 12px;
-            padding: 14px 44px 14px 44px;
+            padding: 13px 44px 13px 44px;
             font-size: 0.95rem;
             color: var(--text-primary);
             outline: none;
@@ -206,13 +219,13 @@
         }
 
         .form-input::placeholder {
-            color: var(--text-muted);
+            color: #94a3b8;
         }
 
         .form-input:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 3px var(--primary-glow);
-            background: rgba(15, 23, 42, 0.85);
+            background: #ffffff;
         }
 
         .form-group:focus-within .input-icon-left {
@@ -237,14 +250,13 @@
 
         .toggle-password-btn:hover {
             color: var(--text-primary);
-            background: rgba(255, 255, 255, 0.08);
+            background: #e2e8f0;
         }
 
         .toggle-password-btn:active {
             transform: scale(0.92);
         }
 
-        /* Password Strength / Verification visual helper */
         .password-feedback {
             font-size: 0.78rem;
             margin-top: 6px;
@@ -252,23 +264,18 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            transition: color 0.2s ease;
-        }
-
-        .password-feedback.active {
-            color: var(--success);
         }
 
         /* Submit Button */
         .btn-submit {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            background: var(--primary);
             border: none;
             border-radius: 12px;
             color: #ffffff;
             font-size: 1rem;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.25s ease;
             display: flex;
@@ -280,7 +287,7 @@
         }
 
         .btn-submit:hover {
-            opacity: 0.95;
+            background: var(--primary-hover);
             transform: translateY(-1px);
             box-shadow: 0 8px 25px -4px var(--primary-glow);
         }
@@ -298,14 +305,14 @@
         }
 
         .link {
-            color: #818cf8;
+            color: var(--primary);
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 700;
             transition: color 0.2s;
         }
 
         .link:hover {
-            color: #a5b4fc;
+            color: var(--primary-hover);
             text-decoration: underline;
         }
 
@@ -323,15 +330,23 @@
     <div class="ambient-glow-2"></div>
 
     <div class="container">
+        <a href="<?= site_url('') ?>" class="back-home">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Back to Community Home
+        </a>
+
         <div class="card">
             <div class="header">
                 <div class="logo-badge">
-                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    <!-- Cross Symbol -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2v20M7 8h10"/>
                     </svg>
                 </div>
-                <h1 class="title">Welcome Back</h1>
-                <p class="subtitle">Enter your credentials to access your account</p>
+                <h1 class="title">Member Sign In</h1>
+                <p class="subtitle">Enter your details to access the fellowship portal</p>
             </div>
 
             <?php if (!empty($error)): ?>
@@ -354,9 +369,9 @@
 
             <form action="<?= site_url('login') ?>" method="POST" autocomplete="off" id="loginForm">
                 
-                <!-- Username / Email -->
+                <!-- Username / Email / Member ID -->
                 <div class="form-group">
-                    <label class="form-label" for="identifier">Username or Email</label>
+                    <label class="form-label" for="identifier">Member ID, Username, or Email</label>
                     <div class="input-wrapper">
                         <span class="input-icon-left">
                             <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -368,7 +383,7 @@
                             name="identifier" 
                             id="identifier" 
                             class="form-input" 
-                            placeholder="e.g. johndoe or john@example.com"
+                            placeholder="e.g. LG-2026-XXXX, user@example.com"
                             value="<?= isset($username_val) ? htmlspecialchars($username_val) : '' ?>"
                             required 
                             autofocus
@@ -395,19 +410,17 @@
                         >
                         <!-- Password Visibility Toggle Button -->
                         <button type="button" class="toggle-password-btn" id="togglePasswordBtn" title="Toggle password visibility" aria-label="Toggle password visibility">
-                            <!-- Eye Open Icon (Visible when password is shown) -->
                             <svg id="eyeOpenIcon" style="display: none;" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                             </svg>
-                            <!-- Eye Slash Icon (Visible when password is hidden) -->
                             <svg id="eyeClosedIcon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/>
                             </svg>
                         </button>
                     </div>
                     <div class="password-feedback" id="pwFeedback">
-                        <span>Masked securely while typing. Click the eye icon to preview.</span>
+                        <span>Masked securely while typing.</span>
                     </div>
                 </div>
 
@@ -420,17 +433,12 @@
             </form>
 
             <div class="card-footer">
-                Don't have an account? <a href="<?= site_url('register') ?>" class="link">Create an account</a>
-            </div>
-
-            <div class="migration-hint">
-                <span>Database migration ready at <a href="<?= site_url('migrate') ?>" class="link" style="color: #64748b;">/migrate</a></span>
+                New to the fellowship? <a href="<?= site_url('register') ?>" class="link">Join as a Member</a>
             </div>
         </div>
     </div>
 
     <script>
-        // Password Visibility Toggle Logic
         const passwordInput = document.getElementById('password');
         const togglePasswordBtn = document.getElementById('togglePasswordBtn');
         const eyeOpenIcon = document.getElementById('eyeOpenIcon');
@@ -441,30 +449,27 @@
             const isPassword = passwordInput.getAttribute('type') === 'password';
             
             if (isPassword) {
-                // Show password
                 passwordInput.setAttribute('type', 'text');
                 eyeOpenIcon.style.display = 'block';
                 eyeClosedIcon.style.display = 'none';
                 togglePasswordBtn.style.color = 'var(--primary)';
-                pwFeedback.innerHTML = '<span style="color: var(--primary);">Password is now visible</span>';
+                pwFeedback.innerHTML = '<span style="color: var(--primary); font-weight:600;">Password is visible</span>';
             } else {
-                // Hide password
                 passwordInput.setAttribute('type', 'password');
                 eyeOpenIcon.style.display = 'none';
                 eyeClosedIcon.style.display = 'block';
                 togglePasswordBtn.style.color = 'var(--text-muted)';
-                pwFeedback.innerHTML = '<span>Masked securely while typing. Click the eye icon to preview.</span>';
+                pwFeedback.innerHTML = '<span>Masked securely while typing.</span>';
             }
         });
 
-        // Interactive visual feedback when typing password
         passwordInput.addEventListener('input', function() {
             if (this.value.length > 0) {
                 if (passwordInput.getAttribute('type') === 'password') {
-                    pwFeedback.innerHTML = '<span><strong style="color: #a5b4fc;">' + this.value.length + '</strong> characters entered (Hidden)</span>';
+                    pwFeedback.innerHTML = '<span><strong>' + this.value.length + '</strong> characters entered</span>';
                 }
             } else {
-                pwFeedback.innerHTML = '<span>Masked securely while typing. Click the eye icon to preview.</span>';
+                pwFeedback.innerHTML = '<span>Masked securely while typing.</span>';
             }
         });
     </script>

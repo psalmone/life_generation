@@ -5,7 +5,20 @@ class User_model extends Model {
 
     protected $table = 'users';
     protected $primary_key = 'id';
-    protected $fillable = ['username', 'email', 'password', 'role', 'is_active'];
+
+    /**
+     * Only the users table credentials / auth fields are fillable here.
+     * Member profile fields (name, age, address, etc.) live in the members table.
+     */
+    protected $fillable = [
+        'username',
+        'email',
+        'password',
+        'role',
+        'is_active',
+        'created_at',
+        'updated_at',
+    ];
 
     public function __construct()
     {
@@ -13,58 +26,87 @@ class User_model extends Model {
     }
 
     /**
-     * Find user by email or username
+     * Find a user row by email, username, or member_id (via JOIN to members).
+     * Returns the raw users row — no member profile fields.
      *
      * @param string $identifier
      * @return array|null
      */
     public function find_by_identifier($identifier)
     {
-        return $this->db->table($this->table)
-            ->group_start()
-                ->where('email', $identifier)
-                ->or_where('username', $identifier)
-            ->group_end()
+        // Try email first
+        $user = $this->db->table($this->table)
+            ->where('email', $identifier)
             ->get();
+
+        if (!empty($user)) {
+            return $user;
+        }
+
+        // Try username
+        $user = $this->db->table($this->table)
+            ->where('username', $identifier)
+            ->get();
+
+        if (!empty($user)) {
+            return $user;
+        }
+
+        // Fallback: look up by member_id via members table
+        $member = $this->db->table('members')
+            ->where('member_id', $identifier)
+            ->get();
+
+        if (!empty($member) && !empty($member['user_id'])) {
+            return $this->get_by_id($member['user_id']);
+        }
+
+        return null;
     }
 
     /**
-     * Check if email exists
+     * Check if an email already exists in users (for uniqueness validation).
      *
-     * @param string $email
+     * @param string   $email
+     * @param int|null $exclude_id  Exclude this user id (for update checks)
      * @return bool
      */
-    public function email_exists($email)
+    public function email_exists($email, $exclude_id = null)
     {
-        $res = $this->db->table($this->table)
-            ->where('email', $email)
-            ->get();
+        $builder = $this->db->table($this->table)->where('email', $email);
+        if ($exclude_id) {
+            $builder->where('id !=', $exclude_id);
+        }
+        $res = $builder->get();
         return !empty($res);
     }
 
     /**
-     * Check if username exists
+     * Check if a username already exists in users.
      *
-     * @param string $username
+     * @param string   $username
+     * @param int|null $exclude_id
      * @return bool
      */
-    public function username_exists($username)
+    public function username_exists($username, $exclude_id = null)
     {
-        $res = $this->db->table($this->table)
-            ->where('username', $username)
-            ->get();
+        $builder = $this->db->table($this->table)->where('username', $username);
+        if ($exclude_id) {
+            $builder->where('id !=', $exclude_id);
+        }
+        $res = $builder->get();
         return !empty($res);
     }
 
     /**
-     * Create a new user with hashed password
+     * Create a new user account (credentials only).
+     * Member profile should be created separately via Member_model::create_member().
      *
-     * @param array $data
-     * @return int|bool
+     * @param array $data  Must include: username, email, password. Optionally: role, is_active.
+     * @return int|bool    Inserted user ID or false
      */
-    public function register_user($data)
+    public function create_user($data)
     {
-        // Hash the password securely using standard bcrypt / PASSWORD_DEFAULT
         if (isset($data['password'])) {
             $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
         }
@@ -77,19 +119,48 @@ class User_model extends Model {
             $data['is_active'] = 1;
         }
 
+        if (!isset($data['created_at'])) {
+            $data['created_at'] = date('Y-m-d H:i:s');
+        }
+
         return $this->db->table($this->table)->insert($data);
     }
 
     /**
-     * Get user by ID
+     * Get a user row by primary key ID.
      *
      * @param int $id
      * @return array|null
      */
-    public function get_user_by_id($id)
+    public function get_by_id($id)
     {
         return $this->db->table($this->table)
             ->where('id', $id)
             ->get();
+    }
+
+    /**
+     * Update user account fields (e.g. email sync, role, is_active).
+     *
+     * @param int   $id
+     * @param array $data
+     * @return bool
+     */
+    public function update_user($id, $data)
+    {
+        $data['updated_at'] = date('Y-m-d H:i:s');
+        return $this->db->table($this->table)
+            ->where('id', $id)
+            ->update($data);
+    }
+
+    /**
+     * Get the last inserted user ID from the users table.
+     *
+     * @return int|null
+     */
+    public function last_insert_id()
+    {
+        return $this->db->last_id();
     }
 }

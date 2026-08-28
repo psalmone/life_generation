@@ -44,12 +44,15 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 */
 /** @var object $router **/
 
-$router->get('/', 'Auth::login');
+$router->get('/', 'Auth::home');
+$router->get('/home', 'Auth::home');
 $router->get('/login', 'Auth::login');
 $router->post('/login', 'Auth::login_submit');
 $router->get('/register', 'Auth::register');
 $router->post('/register', 'Auth::register_submit');
 $router->get('/dashboard', 'Auth::dashboard');
+$router->post('/dashboard/update-profile', 'Auth::update_profile');
+$router->post('/admin/toggle-member-status', 'Auth::toggle_member_status');
 $router->get('/logout', 'Auth::logout');
 
 // Migration trigger route

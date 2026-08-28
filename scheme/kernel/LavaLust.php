@@ -245,6 +245,9 @@ if (php_sapi_name() === 'cli') {
     $base  = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
 	$path  = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 	$url   = $router->sanitize_url(substr($path, strlen($base)) ?: '/');
+    if (strpos($url, '/index.php') === 0) {
+        $url = substr($url, 10) ?: '/';
+    }
     $method = isset($_SERVER['REQUEST_METHOD']) ? strtoupper($_SERVER['REQUEST_METHOD']) : 'GET';
 }
 

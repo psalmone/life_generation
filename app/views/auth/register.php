@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= isset($title) ? htmlspecialchars($title) : 'Membership Registration - Life Generation' ?></title>
     <meta name="description" content="Register for your Life Generation membership. Fill in your name, age, address, and email to get started.">
+    <link rel="icon" type="image/png" href="<?= site_url('assets/images/lifegen-logo.png') ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -101,15 +102,20 @@
         .header { text-align: center; margin-bottom: 32px; }
 
         .logo-badge {
-            width: 60px; height: 60px;
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #f59e0b 100%);
+            width: 76px; height: 76px;
             border-radius: 18px;
             display: inline-flex; align-items: center; justify-content: center;
             margin-bottom: 18px;
             box-shadow: 0 12px 28px var(--primary-glow);
-            color: #ffffff;
+            background: #ffffff;
+            border: 1px solid var(--card-border);
+            overflow: hidden;
         }
-        .logo-badge svg { width: 30px; height: 30px; }
+        .logo-badge img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
 
         .title {
             font-size: 1.8rem; font-weight: 800;
@@ -294,10 +300,7 @@
 
             <div class="header">
                 <div class="logo-badge">
-                    <!-- Cross Symbol -->
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 2v20M7 8h10"/>
-                    </svg>
+                    <img src="<?= site_url('assets/images/lifegen-logo.png') ?>" alt="Life Generation Logo">
                 </div>
                 <h1 class="title">Join Life Generation</h1>
                 <p class="subtitle">Complete your membership registration below</p>

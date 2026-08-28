@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= isset($title) ? htmlspecialchars($title) : 'Membership Dashboard - Life Generation' ?></title>
     <meta name="description" content="Your Life Generation membership dashboard. View your digital member ID card, update your profile, and manage your membership.">
+    <link rel="icon" type="image/png" href="<?= site_url('assets/images/lifegen-logo.png') ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -69,11 +70,17 @@
         }
         .brand-badge {
             width: 40px; height: 40px;
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #f59e0b 100%);
             border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 6px 14px var(--primary-glow);
-            color: #fff;
+            background: #ffffff;
+            border: 1px solid var(--card-border);
+            overflow: hidden;
+        }
+        .brand-badge img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
         .brand-title { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em; color: #0f172a; }
         .brand-title span {
@@ -380,9 +387,7 @@
     <nav class="navbar">
         <a href="<?= site_url('') ?>" class="nav-brand">
             <div class="brand-badge">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <path d="M12 2v20M7 8h10"/>
-                </svg>
+                <img src="<?= site_url('assets/images/lifegen-logo.png') ?>" alt="Life Generation Logo">
             </div>
             <div class="brand-title">Life <span>Generation</span></div>
         </a>

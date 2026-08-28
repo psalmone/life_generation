@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/jpeg" href="<?= site_url('assets/images/lifegen-logo.png') ?>">
     <style>
         :root {
             --bg-body: #f8fafc;
@@ -109,21 +110,23 @@
         }
 
         .logo-badge {
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #f59e0b 100%);
+            width: 72px;
+            height: 72px;
             border-radius: 16px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 20px;
             box-shadow: 0 8px 20px -4px var(--primary-glow);
-            color: #ffffff;
+            background: #ffffff;
+            border: 1px solid var(--card-border);
+            overflow: hidden;
         }
 
-        .logo-badge svg {
-            width: 28px;
-            height: 28px;
+        .logo-badge img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .title {
@@ -340,10 +343,7 @@
         <div class="card">
             <div class="header">
                 <div class="logo-badge">
-                    <!-- Cross Symbol -->
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 2v20M7 8h10"/>
-                    </svg>
+                    <img src="<?= site_url('assets/images/lifegen-logo.png') ?>" alt="Life Generation Logo">
                 </div>
                 <h1 class="title">Member Sign In</h1>
                 <p class="subtitle">Enter your details to access the fellowship portal</p>

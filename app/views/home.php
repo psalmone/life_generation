@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= isset($title) ? htmlspecialchars($title) : 'Life Generation - Christian Community & Fellowship' ?></title>
     <meta name="description" content="Welcome to Life Generation Christian Community. A place of worship, discipleship, genuine fellowship, and spiritual growth.">
+    <link rel="icon" type="image/jpeg" href="<?= site_url('assets/images/lifegen-logo.png') ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
@@ -102,16 +103,22 @@
         }
 
         .brand-logo {
-            width: 44px;
-            height: 44px;
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #f59e0b 100%);
+            width: 48px;
+            height: 48px;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 8px 16px rgba(37, 99, 235, 0.2);
-            color: #ffffff;
-            font-size: 1.4rem;
+            overflow: hidden;
+            background: #ffffff;
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.12);
+            border: 1px solid var(--border-color);
+        }
+
+        .brand-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .brand-text h1 {
@@ -214,6 +221,22 @@
             max-width: 1080px;
             margin: 0 auto;
             z-index: 1;
+        }
+
+        .hero-logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 10px 20px rgba(15, 23, 42, 0.12));
         }
 
         .scripture-pill {
@@ -662,6 +685,24 @@
             line-height: 1.6;
         }
 
+        .footer-logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+        }
+
+        .footer-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
         .footer-links {
             list-style: none;
             display: flex;
@@ -717,10 +758,7 @@
         <div class="nav-container">
             <a href="<?= site_url('') ?>" class="brand">
                 <div class="brand-logo">
-                    <!-- Cross / Dove Symbol -->
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 2v20M7 8h10"/>
-                    </svg>
+                    <img src="<?= site_url('assets/images/lifegen-logo.png') ?>" alt="Life Generation Logo">
                 </div>
                 <div class="brand-text">
                     <h1>Life Generation</h1>
@@ -757,13 +795,17 @@
 
     <!-- ── Hero Section ── -->
     <section class="hero">
+        <div class="hero-logo">
+            <img src="<?= site_url('assets/images/lifegen-logo.png') ?>" alt="Life Generation Logo">
+        </div>
+
         <div class="scripture-pill">
             <svg viewBox="0 0 24 24"><path d="M12 2L1 21h22L12 2zm0 4.5l7.5 13H4.5L12 6.5z"/></svg>
             1 Peter 2:9 &bull; A Chosen Generation &bull; Called Into His Light
         </div>
 
         <h1 class="hero-headline">
-            Walking in Faith, Growing in <span class="highlight">Fellowship & Grace</span>
+            Empowering Generations Through a <span class="highlight">Kindled Passion in Christ</span>
         </h1>
 
         <p class="hero-subtext">
@@ -986,8 +1028,8 @@
         <div class="footer-container">
             <div class="footer-col">
                 <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
-                    <div style="width:32px; height:32px; background:linear-gradient(135deg, #1e40af, #f59e0b); border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff;">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M7 8h10"/></svg>
+                    <div class="footer-logo">
+                        <img src="<?= site_url('assets/images/lifegen-logo.png') ?>" alt="Life Generation Logo">
                     </div>
                     <h3 style="font-size:1.15rem; font-weight:800; color:#0f172a;">Life Generation</h3>
                 </div>

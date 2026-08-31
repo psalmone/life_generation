@@ -1,0 +1,11 @@
+clone the project
+rename the prject
+open the project
+open terminal
+make sure you are in the directory of the project
+composer init
+composer install
+php lava serve
+
+tips
+if your friend clone your made repo he/she should open terminal and run composer install 

@@ -11,6 +11,7 @@ class Auth extends Controller {
         $this->call->model('Dgroup_model');
         $this->call->model('Ministry_model');
         $this->call->model('Event_model');
+        $this->call->model('Prayer_request_model');
     }
 
     // =========================================================================
@@ -24,9 +25,10 @@ class Auth extends Controller {
     {
         $is_logged_in = $this->session->has_userdata('user_id');
         $user_data = null;
+        $user_id = 0;
 
         if ($is_logged_in) {
-            $user_id = $this->session->userdata('user_id');
+            $user_id = (int)$this->session->userdata('user_id');
             $user_data = [
                 'username'  => $this->session->userdata('username'),
                 'full_name' => $this->session->userdata('full_name'),
@@ -35,12 +37,23 @@ class Auth extends Controller {
             ];
         }
 
+        // Fetch live community data for homepage display
+        $upcoming_events = $this->Event_model->get_upcoming_events();
+        $dgroups         = $this->Dgroup_model->get_all_with_counts();
+        $ministries      = $this->Ministry_model->get_active();
+        $prayer_requests = $this->Prayer_request_model->get_wall($user_id, false);
+
         $data = [
-            'title'          => 'Life Generation - Christian Community & Fellowship',
-            'is_logged_in'   => $is_logged_in,
-            'user'           => $user_data,
-            'total_members'  => $this->Member_model->count_members(),
-            'active_members' => $this->Member_model->count_active_members(),
+            'title'           => 'Life Generation - Christian Community & Fellowship',
+            'is_logged_in'    => $is_logged_in,
+            'user'            => $user_data,
+            'total_members'   => $this->Member_model->count_members(),
+            'active_members'  => $this->Member_model->count_active_members(),
+            'upcoming_events' => array_slice($upcoming_events, 0, 3),
+            'notif_events'    => $upcoming_events,
+            'dgroups'         => array_slice($dgroups, 0, 3),
+            'ministries'      => array_slice($ministries, 0, 4),
+            'prayer_requests' => array_slice($prayer_requests, 0, 4),
         ];
 
         $this->call->view('home', $data);
@@ -378,8 +391,10 @@ class Auth extends Controller {
         $ministries        = $this->Ministry_model->get_active_with_status($userId);
         $user_apps         = $this->Ministry_model->get_user_applications($userId);
         $all_ministry_apps = [];
+        $all_ministries_admin = [];
         if (isset($user['role']) && $user['role'] === 'admin') {
-            $all_ministry_apps = $this->Ministry_model->get_all_applications();
+            $all_ministry_apps    = $this->Ministry_model->get_all_applications();
+            $all_ministries_admin = $this->Ministry_model->get_all_admin();
         }
 
         // Load Events & Attendance data
@@ -391,23 +406,24 @@ class Auth extends Controller {
         }
 
         $data = [
-            'title'             => 'Membership Dashboard - Life Generation',
-            'user'              => $user,
-            'member'            => $member,
-            'all_members'       => $all_members,
-            'total_members'     => $total_members,
-            'active_members'    => $active_members,
-            'current_dgroup'    => $current_dgroup,
-            'all_dgroups'       => $all_dgroups,
-            'current_ministry'  => $current_ministry,
-            'ministries'        => $ministries,
-            'user_apps'         => $user_apps,
-            'all_ministry_apps' => $all_ministry_apps,
-            'upcoming_events'   => $upcoming_events,
-            'user_rsvps'        => $user_rsvps,
-            'all_events_admin'  => $all_events_admin,
-            'success'           => $this->session->flashdata('success') ?? null,
-            'error'             => $this->session->flashdata('error') ?? null,
+            'title'                => 'Membership Dashboard - Life Generation',
+            'user'                 => $user,
+            'member'               => $member,
+            'all_members'          => $all_members,
+            'total_members'        => $total_members,
+            'active_members'       => $active_members,
+            'current_dgroup'       => $current_dgroup,
+            'all_dgroups'          => $all_dgroups,
+            'current_ministry'     => $current_ministry,
+            'ministries'           => $ministries,
+            'user_apps'            => $user_apps,
+            'all_ministry_apps'    => $all_ministry_apps,
+            'all_ministries_admin' => $all_ministries_admin,
+            'upcoming_events'      => $upcoming_events,
+            'user_rsvps'           => $user_rsvps,
+            'all_events_admin'     => $all_events_admin,
+            'success'              => $this->session->flashdata('success') ?? null,
+            'error'                => $this->session->flashdata('error') ?? null,
         ];
 
         $this->call->view('auth/dashboard', $data);
@@ -1186,6 +1202,166 @@ class Auth extends Controller {
                 $this->session->set_flashdata('success', $res['message']);
             } else {
                 $this->session->set_flashdata('error', $res['message']);
+            }
+        }
+
+        redirect('dashboard');
+    }
+
+    /**
+     * Admin: Create a new ministry team with optional photo.
+     */
+    public function create_ministry()
+    {
+        if (!$this->session->has_userdata('user_id')) {
+            redirect('login');
+            return;
+        }
+
+        if ($this->session->userdata('role') !== 'admin') {
+            $this->session->set_flashdata('error', 'Unauthorized.');
+            redirect('dashboard');
+            return;
+        }
+
+        if ($this->io->method() === 'post') {
+            $name        = trim($this->io->post('name') ?? '');
+            $icon        = trim($this->io->post('icon') ?? '✦');
+            $description = trim($this->io->post('description') ?? '');
+            $image       = null;
+
+            if (empty($name)) {
+                $this->session->set_flashdata('error', 'Ministry name is required.');
+                redirect('dashboard');
+                return;
+            }
+
+            // Handle optional ministry photo upload
+            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                $file = $_FILES['image'];
+                $ext  = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                $exts = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+
+                if (in_array($ext, $exts) && @getimagesize($file['tmp_name'])) {
+                    $uploadDir = ROOT_DIR . 'public' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'ministries' . DIRECTORY_SEPARATOR;
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0755, true);
+                    }
+                    $fileName = 'ministry_' . time() . '_' . bin2hex(random_bytes(3)) . '.' . $ext;
+                    if (move_uploaded_file($file['tmp_name'], $uploadDir . $fileName)) {
+                        $image = 'uploads/ministries/' . $fileName;
+                    }
+                }
+            }
+
+            $this->Ministry_model->create_ministry([
+                'name'        => $name,
+                'icon'        => !empty($icon) ? $icon : '✦',
+                'description' => $description,
+                'image'       => $image,
+                'is_active'   => 1,
+            ]);
+
+            $this->session->set_flashdata('success', 'Ministry team <strong>' . htmlspecialchars($name) . '</strong> created with team photo!');
+        }
+
+        redirect('dashboard');
+    }
+
+    /**
+     * Admin: Update ministry details and photo.
+     */
+    public function update_ministry()
+    {
+        if (!$this->session->has_userdata('user_id')) {
+            redirect('login');
+            return;
+        }
+
+        if ($this->session->userdata('role') !== 'admin') {
+            $this->session->set_flashdata('error', 'Unauthorized.');
+            redirect('dashboard');
+            return;
+        }
+
+        if ($this->io->method() === 'post') {
+            $ministry_id = (int)($this->io->post('ministry_id') ?? 0);
+            $name        = trim($this->io->post('name') ?? '');
+            $icon        = trim($this->io->post('icon') ?? '✦');
+            $description = trim($this->io->post('description') ?? '');
+
+            $ministry = $this->Ministry_model->get_by_id($ministry_id);
+            if (!$ministry) {
+                $this->session->set_flashdata('error', 'Ministry not found.');
+                redirect('dashboard');
+                return;
+            }
+
+            $update_data = [
+                'name'        => $name,
+                'icon'        => !empty($icon) ? $icon : '✦',
+                'description' => $description,
+            ];
+
+            // Handle optional photo replacement
+            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                $file = $_FILES['image'];
+                $ext  = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                $exts = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+
+                if (in_array($ext, $exts) && @getimagesize($file['tmp_name'])) {
+                    $uploadDir = ROOT_DIR . 'public' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'ministries' . DIRECTORY_SEPARATOR;
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0755, true);
+                    }
+                    $fileName = 'ministry_' . time() . '_' . bin2hex(random_bytes(3)) . '.' . $ext;
+                    if (move_uploaded_file($file['tmp_name'], $uploadDir . $fileName)) {
+                        if (!empty($ministry['image'])) {
+                            $oldPath = ROOT_DIR . 'public' . DIRECTORY_SEPARATOR . ltrim(str_replace('/', DIRECTORY_SEPARATOR, $ministry['image']), DIRECTORY_SEPARATOR);
+                            if (file_exists($oldPath) && is_file($oldPath)) {
+                                @unlink($oldPath);
+                            }
+                        }
+                        $update_data['image'] = 'uploads/ministries/' . $fileName;
+                    }
+                }
+            }
+
+            $this->Ministry_model->update_ministry($ministry_id, $update_data);
+            $this->session->set_flashdata('success', 'Ministry <strong>' . htmlspecialchars($name) . '</strong> updated successfully!');
+        }
+
+        redirect('dashboard');
+    }
+
+    /**
+     * Admin: Delete a ministry.
+     */
+    public function delete_ministry()
+    {
+        if (!$this->session->has_userdata('user_id')) {
+            redirect('login');
+            return;
+        }
+
+        if ($this->session->userdata('role') !== 'admin') {
+            $this->session->set_flashdata('error', 'Unauthorized.');
+            redirect('dashboard');
+            return;
+        }
+
+        if ($this->io->method() === 'post') {
+            $ministry_id = (int)($this->io->post('ministry_id') ?? 0);
+            if ($ministry_id > 0) {
+                $min = $this->Ministry_model->get_by_id($ministry_id);
+                if ($min && !empty($min['image'])) {
+                    $oldPath = ROOT_DIR . 'public' . DIRECTORY_SEPARATOR . ltrim(str_replace('/', DIRECTORY_SEPARATOR, $min['image']), DIRECTORY_SEPARATOR);
+                    if (file_exists($oldPath) && is_file($oldPath)) {
+                        @unlink($oldPath);
+                    }
+                }
+                $this->Ministry_model->delete_ministry($ministry_id);
+                $this->session->set_flashdata('success', 'Ministry team removed successfully.');
             }
         }
 

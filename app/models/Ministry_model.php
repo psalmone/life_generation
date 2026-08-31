@@ -17,10 +17,46 @@ class Ministry_model extends Model {
         return $this->db->table($this->table)->where('is_active', 1)->get_all();
     }
 
+    /** Get all ministries for admin management */
+    public function get_all_admin()
+    {
+        $sql = "
+            SELECT m.*, 
+                   COUNT(DISTINCT mem.id) AS member_count,
+                   COUNT(DISTINCT CASE WHEN ma.status = 'pending' THEN ma.id END) AS pending_apps_count
+            FROM ministries m
+            LEFT JOIN members mem ON mem.ministry_id = m.id
+            LEFT JOIN ministry_applications ma ON ma.ministry_id = m.id
+            GROUP BY m.id
+            ORDER BY m.id ASC
+        ";
+        $stmt = $this->db->raw($sql);
+        return $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
+    }
+
     /** Get single ministry by ID */
     public function get_by_id($id)
     {
         return $this->db->table($this->table)->where('id', $id)->get();
+    }
+
+    /** Create a new ministry (Admin) */
+    public function create_ministry($data)
+    {
+        $data['created_at'] = date('Y-m-d H:i:s');
+        return $this->db->table($this->table)->insert($data);
+    }
+
+    /** Update ministry details (Admin) */
+    public function update_ministry($id, $data)
+    {
+        return $this->db->table($this->table)->where('id', $id)->update($data);
+    }
+
+    /** Delete a ministry (Admin) */
+    public function delete_ministry($id)
+    {
+        return $this->db->table($this->table)->where('id', $id)->delete();
     }
 
     /**

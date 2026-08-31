@@ -14,36 +14,69 @@
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <style>
         :root {
-            --bg-body:        #f8fafc;
-            --card-bg:        #ffffff;
-            --card-border:    #e2e8f0;
-            --primary:        #2563eb;
-            --primary-hover:  #1d4ed8;
-            --primary-light:  #eff6ff;
-            --text-primary:   #0f172a;
-            --text-secondary: #475569;
-            --text-muted:     #64748b;
-            --success:        #16a34a;
-            --success-light:  #f0fdf4;
-            --success-border: #bbf7d0;
-            --danger:         #dc2626;
-            --danger-light:   #fef2f2;
-            --danger-border:  #fecaca;
-            --warning:        #d97706;
-            --warning-light:  #fffbeb;
-            --warning-border: #fde68a;
-            --shadow-sm:      0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md:      0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-            --shadow-lg:      0 10px 15px -3px rgba(0, 0, 0, 0.06), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
-            --radius-sm:      8px;
-            --radius-md:      12px;
-            --radius-lg:      16px;
-            --sidebar-width:  250px;
+            /* ── Minimal Pastel Palette (Orange, Soft Blue, Crisp White) ── */
+            --bg-body:            #fafaf9; /* Warm stone/white minimal backdrop */
+            --card-bg:            #ffffff;
+            --card-border:        #f1f1ef;
+            --card-border-subtle: #f7f7f6;
+            
+            /* Pastel & Primary Blues */
+            --blue-primary:       #3b82f6;
+            --blue-soft:          #eff6ff;
+            --blue-border:        #dbeafe;
+            --blue-hover:         #2563eb;
+            --blue-muted:         #60a5fa;
+
+            /* Warm Pastel Oranges */
+            --orange-primary:     #f97316;
+            --orange-soft:        #fff7ed;
+            --orange-border:      #ffedd5;
+            --orange-hover:       #ea580c;
+            --orange-muted:       #fb923c;
+            --orange-pill:        #fed7aa;
+
+            /* System Tokens */
+            --primary:            var(--orange-primary);
+            --primary-light:      var(--orange-soft);
+            --primary-border:     var(--orange-border);
+            --primary-gradient:   linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+            --blue-gradient:      linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            --hero-gradient:      linear-gradient(135deg, #fff7ed 0%, #ffffff 50%, #eff6ff 100%);
+            
+            /* Text Hierarchy */
+            --text-primary:       #1c1917;
+            --text-secondary:     #44403c;
+            --text-muted:         #78716c;
+            --text-light:         #a8a29e;
+
+            /* State Indicators */
+            --success:            #10b981;
+            --success-light:      #f0fdf4;
+            --success-border:     #dcfce7;
+            --danger:             #f43f5e;
+            --danger-light:       #fff1f2;
+            --danger-border:      #ffe4e6;
+            --warning:            #f59e0b;
+            --warning-light:      #fffbeb;
+            --warning-border:     #fef3c7;
+
+            /* Soft Minimal Shadows */
+            --shadow-xs:          0 1px 2px rgba(28, 25, 23, 0.03);
+            --shadow-sm:          0 2px 5px rgba(28, 25, 23, 0.04);
+            --shadow-md:          0 8px 20px -4px rgba(28, 25, 23, 0.06);
+            --shadow-lg:          0 16px 32px -8px rgba(28, 25, 23, 0.08);
+
+            /* Radius */
+            --radius-sm:          8px;
+            --radius-md:          12px;
+            --radius-lg:          18px;
+            --radius-xl:          24px;
+            --sidebar-width:      260px;
         }
 
         *, *::before, *::after {
             box-sizing: border-box; margin: 0; padding: 0;
-            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
         }
 
         body {
@@ -52,9 +85,13 @@
             color: var(--text-primary);
             display: flex;
             -webkit-font-smoothing: antialiased;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(249, 115, 22, 0.035) 0px, transparent 45%),
+                radial-gradient(at 100% 0%, rgba(59, 130, 246, 0.035) 0px, transparent 45%),
+                radial-gradient(at 50% 100%, rgba(254, 215, 170, 0.04) 0px, transparent 50%);
         }
 
-        /* ── Sidebar ── */
+        /* ── Sidebar (Minimalist White with Pastel Orange Accents) ── */
         .sidebar {
             width: var(--sidebar-width);
             background: #ffffff;
@@ -65,7 +102,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 20px 14px;
+            padding: 24px 16px 20px;
             z-index: 100;
             flex-shrink: 0;
         }
@@ -73,23 +110,30 @@
         .sidebar-brand {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             text-decoration: none;
             color: var(--text-primary);
-            padding: 6px 10px 18px;
-            border-bottom: 1px solid var(--card-border);
-            margin-bottom: 14px;
+            padding: 4px 8px 18px;
+            border-bottom: 1px solid var(--card-border-subtle);
+            margin-bottom: 16px;
         }
         .brand-badge {
-            width: 32px; height: 32px;
-            border-radius: var(--radius-sm);
+            width: 38px; height: 38px;
+            border-radius: var(--radius-md);
             display: flex; align-items: center; justify-content: center;
             background: #ffffff; border: 1px solid var(--card-border);
             overflow: hidden; flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(249, 115, 22, 0.08);
+            transition: transform 0.2s ease;
+        }
+        .sidebar-brand:hover .brand-badge {
+            transform: scale(1.04);
         }
         .brand-badge img { width: 100%; height: 100%; object-fit: contain; }
-        .brand-title { font-size: 0.95rem; font-weight: 700; letter-spacing: -0.01em; }
-        .brand-title span { color: var(--primary); }
+        .brand-title { font-size: 1.02rem; font-weight: 800; letter-spacing: -0.02em; }
+        .brand-title span {
+            color: var(--orange-primary);
+        }
 
         .nav-menu {
             display: flex;
@@ -101,18 +145,18 @@
             font-size: 0.68rem;
             text-transform: uppercase;
             letter-spacing: 0.08em;
-            color: var(--text-muted);
-            font-weight: 700;
-            padding: 12px 10px 4px;
+            color: var(--text-light);
+            font-weight: 800;
+            padding: 14px 12px 6px;
         }
         .nav-btn {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             width: 100%;
-            padding: 9px 12px;
-            border-radius: var(--radius-sm);
-            font-size: 0.84rem;
+            padding: 9px 13px;
+            border-radius: var(--radius-md);
+            font-size: 0.86rem;
             font-weight: 600;
             color: var(--text-secondary);
             text-decoration: none;
@@ -120,62 +164,84 @@
             background: transparent;
             cursor: pointer;
             text-align: left;
-            transition: all 0.15s ease;
+            transition: all 0.18s ease;
+            position: relative;
         }
         .nav-btn:hover {
-            color: var(--primary);
-            background: var(--primary-light);
+            color: var(--orange-primary);
+            background: var(--orange-soft);
         }
         .nav-btn.active {
-            color: var(--primary);
-            background: var(--primary-light);
+            color: var(--orange-primary);
+            background: var(--orange-soft);
             font-weight: 700;
+            box-shadow: inset 3px 0 0 var(--orange-primary);
         }
         .nav-btn svg {
-            width: 17px; height: 17px; flex-shrink: 0;
+            width: 18px; height: 18px; flex-shrink: 0;
+            transition: transform 0.2s ease;
+            stroke-width: 1.8;
+        }
+        .nav-btn:hover svg, .nav-btn.active svg {
+            color: var(--orange-primary);
         }
 
         .sidebar-footer {
-            border-top: 1px solid var(--card-border);
-            padding-top: 14px;
+            border-top: 1px solid var(--card-border-subtle);
+            padding-top: 16px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
         }
-        .sidebar-user-info {
+        .sidebar-user-card {
             display: flex;
             align-items: center;
-            gap: 9px;
-            padding: 6px 8px;
+            gap: 10px;
+            padding: 8px 10px;
+            background: #ffffff;
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+        .sidebar-user-card:hover {
+            background: var(--orange-soft);
+            border-color: var(--orange-border);
         }
         .avatar {
-            width: 32px; height: 32px; border-radius: 50%;
-            background: var(--primary);
+            width: 36px; height: 36px; border-radius: 50%;
+            background: var(--primary-gradient);
             display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 0.75rem; color: #fff;
+            font-weight: 700; font-size: 0.82rem; color: #fff;
             flex-shrink: 0;
             overflow: hidden;
-            object-fit: cover;
+            border: 2px solid #ffffff;
+            box-shadow: 0 2px 6px rgba(249, 115, 22, 0.2);
         }
         .avatar img {
             width: 100%; height: 100%; object-fit: cover;
         }
         .user-name {
-            font-size: 0.8rem; font-weight: 700; color: var(--text-primary);
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px;
+            font-size: 0.84rem; font-weight: 700; color: var(--text-primary);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px;
         }
         .user-role-badge {
-            font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;
+            font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.04em;
         }
 
         .btn-sidebar-logout {
-            display: flex; align-items: center; gap: 8px;
-            padding: 8px 10px; border-radius: var(--radius-sm);
-            background: var(--danger-light); border: 1px solid var(--danger-border);
-            color: var(--danger); font-size: 0.8rem; font-weight: 600;
-            text-decoration: none; transition: all 0.15s ease;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 8px 12px; border-radius: var(--radius-md);
+            background: #fafaf9; border: 1px solid var(--card-border);
+            color: var(--text-muted); font-size: 0.82rem; font-weight: 600;
+            text-decoration: none; transition: all 0.18s ease;
         }
-        .btn-sidebar-logout:hover { background: #fee2e2; }
+        .btn-sidebar-logout:hover {
+            background: var(--danger-light);
+            border-color: var(--danger-border);
+            color: var(--danger);
+        }
 
         /* ── Main Content Area ── */
         .main-wrapper {
@@ -188,9 +254,11 @@
         }
 
         .topbar {
-            background: #ffffff;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--card-border);
-            padding: 14px 28px;
+            padding: 14px 32px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -199,30 +267,55 @@
             z-index: 40;
         }
         .topbar-title {
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-weight: 800;
             color: var(--text-primary);
+            letter-spacing: -0.02em;
         }
         .topbar-right {
-            display: flex; align-items: center; gap: 12px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .topbar-btn {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 7px 13px; border-radius: var(--radius-md);
+            background: #ffffff; border: 1px solid var(--card-border);
+            color: var(--text-secondary); font-size: 0.82rem; font-weight: 600;
+            text-decoration: none; transition: all 0.2s ease;
+            box-shadow: var(--shadow-xs);
+        }
+        .topbar-btn:hover {
+            background: #fafaf9;
+            border-color: #e7e5e4;
+            color: var(--orange-primary);
+            transform: translateY(-1px);
+        }
+        .topbar-btn.topbar-btn-primary {
+            background: var(--orange-soft);
+            border-color: var(--orange-border);
+            color: var(--orange-primary);
+            font-weight: 700;
+        }
+        .topbar-btn.topbar-btn-primary:hover {
+            background: #ffedd5;
         }
 
         .main-container {
-            max-width: 1100px;
+            max-width: 1140px;
             width: 100%;
             margin: 0 auto;
-            padding: 28px 24px 64px;
+            padding: 28px 24px 72px;
         }
 
         /* ── Alerts ── */
         .alert {
             padding: 12px 16px; border-radius: var(--radius-md);
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             display: flex; align-items: center; gap: 10px;
-            font-size: 0.875rem; font-weight: 500;
+            font-size: 0.86rem; font-weight: 600;
+            box-shadow: var(--shadow-xs);
         }
-        .alert-success { background: var(--success-light); border: 1px solid var(--success-border); color: #15803d; }
-        .alert-error   { background: var(--danger-light); border: 1px solid var(--danger-border); color: #b91c1c; }
+        .alert-success { background: var(--success-light); border: 1px solid var(--success-border); color: #047857; }
+        .alert-error   { background: var(--danger-light); border: 1px solid var(--danger-border); color: #be123c; }
 
         /* ── Tab Views ── */
         .tab-content {
@@ -230,52 +323,224 @@
         }
         .tab-content.active {
             display: block;
-            animation: fadeIn 0.2s ease-in-out;
+            animation: fadeIn 0.2s ease;
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(4px); }
             to   { opacity: 1; transform: translateY(0); }
         }
 
+        /* ── Minimalist Pastel Welcome Banner ── */
+        .welcome-hero {
+            background: #ffffff;
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-xl);
+            padding: 26px 30px;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-xs);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            background-image: linear-gradient(135deg, rgba(255, 247, 237, 0.7) 0%, #ffffff 60%, rgba(239, 246, 255, 0.7) 100%);
+        }
+        .welcome-hero::after {
+            content: '';
+            position: absolute;
+            top: -40px; right: -40px;
+            width: 200px; height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(249, 115, 22, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .welcome-hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 680px;
+        }
+        .welcome-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            background: #ffffff;
+            border: 1px solid var(--orange-border);
+            border-radius: 9999px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--orange-primary);
+            margin-bottom: 10px;
+            box-shadow: var(--shadow-xs);
+        }
+        .welcome-headline {
+            font-size: clamp(1.35rem, 2.5vw, 1.7rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.25;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+        .welcome-headline span {
+            color: var(--orange-primary);
+        }
+        .welcome-subtext {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.55;
+            margin-bottom: 16px;
+        }
+        .welcome-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .btn-welcome-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            background: var(--primary-gradient);
+            color: #ffffff;
+            font-size: 0.84rem;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all 0.18s ease;
+            box-shadow: 0 2px 8px rgba(249, 115, 22, 0.25);
+        }
+        .btn-welcome-primary:hover {
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
+        }
+        .btn-welcome-ghost {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 14px;
+            border-radius: var(--radius-md);
+            background: #ffffff;
+            color: var(--text-secondary);
+            font-size: 0.84rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: 1px solid var(--card-border);
+            transition: all 0.18s ease;
+            box-shadow: var(--shadow-xs);
+        }
+        .btn-welcome-ghost:hover {
+            background: var(--blue-soft);
+            border-color: var(--blue-border);
+            color: var(--blue-primary);
+        }
+
+        /* ── Minimal Faith Scripture Card ── */
+        .scripture-card {
+            background: #ffffff;
+            border: 1px solid var(--card-border);
+            border-left: 3px solid var(--orange-primary);
+            border-radius: var(--radius-lg);
+            padding: 14px 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-xs);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        @media (max-width: 768px) {
+            .scripture-card { flex-direction: column; align-items: flex-start; }
+            .welcome-hero { flex-direction: column; align-items: flex-start; padding: 20px; }
+        }
+        .scripture-quote {
+            font-size: 0.88rem;
+            font-style: italic;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        .scripture-ref {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--orange-primary);
+            margin-top: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
         /* ── Member Overview Top Grid ── */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: 1.15fr 1fr;
-            gap: 22px;
-            margin-bottom: 28px;
+            grid-template-columns: 1.12fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+            align-items: stretch;
         }
-        @media (max-width: 900px) { .dashboard-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 960px) { .dashboard-grid { grid-template-columns: 1fr; } }
 
-        /* ── Minimal Digital Membership Card with QR Code ── */
+        /* ── Minimal Digital Membership Pass (Clean Navy & Pastel Orange) ── */
         .membership-card {
-            background: #0f172a;
-            border-radius: var(--radius-lg);
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0f172a 100%);
+            border-radius: var(--radius-xl);
             padding: 24px 26px;
             color: #ffffff;
             display: flex; flex-direction: column;
             justify-content: space-between;
-            min-height: 270px;
-            box-shadow: var(--shadow-lg);
+            min-height: 280px;
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.25);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
+        .membership-card::after {
+            content: '';
+            position: absolute;
+            top: -50px; right: -50px;
+            width: 160px; height: 160px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(249, 115, 22, 0.18) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .membership-card::before {
+            content: '';
+            position: absolute;
+            bottom: -50px; left: -50px;
+            width: 150px; height: 150px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
         .card-top {
             display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 18px;
+            position: relative; z-index: 2;
         }
         .card-brand-title {
-            font-size: 0.7rem; text-transform: uppercase;
-            letter-spacing: 0.1em; color: #94a3b8; font-weight: 700;
+            font-size: 0.68rem; text-transform: uppercase;
+            letter-spacing: 0.12em; color: #94a3b8; font-weight: 800;
         }
         .card-brand-sub {
-            font-size: 1.1rem; font-weight: 700; color: #ffffff; margin-top: 2px;
+            font-size: 1.1rem; font-weight: 800; color: #ffffff; margin-top: 2px;
+            letter-spacing: -0.01em;
         }
         .status-pill {
             display: inline-flex; align-items: center; gap: 5px;
-            padding: 3px 9px; border-radius: 9999px;
-            font-size: 0.7rem; font-weight: 600;
+            padding: 4px 10px; border-radius: 9999px;
+            font-size: 0.7rem; font-weight: 700;
+            backdrop-filter: blur(8px);
         }
-        .status-pill.active { background: rgba(34, 197, 94, 0.15); color: #4ade80; }
-        .status-pill.inactive { background: rgba(239, 68, 68, 0.15); color: #f87171; }
-        .status-dot-sm { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+        .status-pill.active { background: rgba(34, 197, 94, 0.18); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.3); }
+        .status-pill.inactive { background: rgba(239, 68, 68, 0.18); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.3); }
+        .status-dot-sm { width: 6px; height: 6px; border-radius: 50%; background: currentColor; box-shadow: 0 0 6px currentColor; }
 
         /* Card Header with Photo & QR Box */
         .card-profile-header {
@@ -283,6 +548,7 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 16px;
+            position: relative; z-index: 2;
         }
         .card-profile-left {
             display: flex;
@@ -292,11 +558,12 @@
         .card-avatar {
             width: 52px; height: 52px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.05) 100%);
             border: 2px solid rgba(255, 255, 255, 0.25);
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem; font-weight: 700; color: #ffffff;
+            font-size: 1.2rem; font-weight: 800; color: #ffffff;
             overflow: hidden; flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
         }
         .card-avatar img {
             width: 100%; height: 100%; object-fit: cover;
@@ -305,25 +572,25 @@
         /* Card QR Code Frame */
         .card-qr-box {
             background: #ffffff;
-            padding: 4px;
+            padding: 5px;
             border-radius: 8px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            transition: transform 0.15s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: all 0.2s ease;
         }
         .card-qr-box:hover {
-            transform: scale(1.05);
+            transform: translateY(-1px) scale(1.03);
         }
         .card-qr-box canvas {
             display: block;
             border-radius: 4px;
         }
         .card-qr-hint {
-            font-size: 0.58rem;
+            font-size: 0.55rem;
             color: #0f172a;
             font-weight: 800;
             margin-top: 2px;
@@ -332,89 +599,107 @@
         }
 
         .card-id-row {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.06);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: var(--radius-md);
-            padding: 9px 13px;
+            padding: 8px 12px;
             display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
+            backdrop-filter: blur(6px);
+            position: relative; z-index: 2;
         }
-        .card-id-label { font-size: 0.66rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
-        .card-id-value { font-family: monospace; font-size: 0.95rem; font-weight: 700; color: #38bdf8; margin-top: 1px; }
+        .card-id-label { font-size: 0.62rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
+        .card-id-value { font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 0.94rem; font-weight: 800; color: #fb923c; margin-top: 1px; }
         .btn-copy-id {
-            background: rgba(255, 255, 255, 0.1);
-            border: none; color: #f1f5f9;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.15); color: #f1f5f9;
             padding: 4px 9px; border-radius: var(--radius-sm);
-            font-size: 0.72rem; font-weight: 600; cursor: pointer;
+            font-size: 0.72rem; font-weight: 700; cursor: pointer;
             display: inline-flex; align-items: center; gap: 4px;
             transition: all 0.15s ease;
         }
-        .btn-copy-id:hover { background: rgba(255, 255, 255, 0.2); }
+        .btn-copy-id:hover { background: rgba(255, 255, 255, 0.22); color: #ffffff; }
 
         .card-info-grid {
             display: grid; grid-template-columns: repeat(2, 1fr);
             gap: 10px; margin-bottom: 14px;
+            position: relative; z-index: 2;
         }
-        .card-info-label { font-size: 0.66rem; color: #94a3b8; text-transform: uppercase; }
-        .card-info-val { font-size: 0.82rem; font-weight: 600; color: #f8fafc; margin-top: 2px; }
+        .card-info-label { font-size: 0.62rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; letter-spacing: 0.04em; }
+        .card-info-val { font-size: 0.82rem; font-weight: 700; color: #f8fafc; margin-top: 1px; }
 
         .card-badges-row {
-            display: flex; flex-wrap: wrap; gap: 7px;
-            padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex; flex-wrap: wrap; gap: 6px;
+            padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative; z-index: 2;
         }
         .card-tag {
             background: rgba(255, 255, 255, 0.08);
             color: #cbd5e1;
             padding: 3px 8px; border-radius: 6px;
-            font-size: 0.7rem; font-weight: 600;
+            font-size: 0.7rem; font-weight: 700;
             display: inline-flex; align-items: center; gap: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
-        .card-tag.ministry { background: rgba(56, 189, 248, 0.15); color: #7dd3fc; }
-        .card-tag.dgroup { background: rgba(168, 85, 247, 0.15); color: #d8b4fe; }
+        .card-tag.ministry { background: rgba(249, 115, 22, 0.18); color: #fed7aa; border-color: rgba(249, 115, 22, 0.3); }
+        .card-tag.dgroup { background: rgba(59, 130, 246, 0.18); color: #bfdbfe; border-color: rgba(59, 130, 246, 0.3); }
 
-        /* ── Profile Update Form & Avatar Upload ── */
+        /* ── Minimalist Glass Panels ── */
         .glass-panel {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: var(--radius-lg);
-            padding: 22px 24px;
-            box-shadow: var(--shadow-sm);
+            border-radius: var(--radius-xl);
+            padding: 24px 26px;
+            box-shadow: var(--shadow-xs);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
-        .panel-title { font-size: 1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 14px; }
+        .panel-title {
+            font-size: 1.05rem; font-weight: 800; color: var(--text-primary);
+            margin-bottom: 16px; letter-spacing: -0.01em;
+            display: flex; align-items: center; gap: 8px;
+        }
 
+        /* ── Avatar Uploader ── */
         .avatar-upload-box {
-            border: 2px dashed var(--card-border);
-            border-radius: var(--radius-md);
-            padding: 16px;
+            border: 2px dashed #fed7aa;
+            border-radius: var(--radius-lg);
+            padding: 20px;
             text-align: center;
-            background: #f8fafc;
+            background: var(--orange-soft);
             margin-bottom: 12px;
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: all 0.2s ease;
             position: relative;
         }
         .avatar-upload-box:hover, .avatar-upload-box.drag-over {
-            border-color: var(--primary);
-            background: var(--primary-light);
+            border-color: var(--orange-primary);
+            background: #ffedd5;
+            transform: scale(1.008);
         }
         .avatar-upload-preview {
-            width: 68px; height: 68px;
+            width: 72px; height: 72px;
             border-radius: 50%;
             margin: 0 auto 8px;
-            background: #e2e8f0;
+            background: #ffffff;
             display: flex; align-items: center; justify-content: center;
             overflow: hidden;
             border: 3px solid #ffffff;
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 4px 10px rgba(249, 115, 22, 0.15);
+            transition: transform 0.2s ease;
+        }
+        .avatar-upload-box:hover .avatar-upload-preview {
+            transform: scale(1.04);
         }
         .avatar-upload-preview img {
             width: 100%; height: 100%; object-fit: cover;
         }
         .avatar-upload-text {
-            font-size: 0.78rem; font-weight: 600; color: var(--text-primary); margin-bottom: 2px;
+            font-size: 0.82rem; font-weight: 700; color: var(--text-primary); margin-bottom: 2px;
         }
         .avatar-upload-hint {
-            font-size: 0.68rem; color: var(--text-muted);
+            font-size: 0.7rem; color: var(--text-muted);
         }
         .avatar-upload-box input[type="file"] {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -425,202 +710,232 @@
             display: flex; gap: 8px; margin-bottom: 16px; justify-content: center;
         }
         .btn-avatar-action {
-            padding: 5px 12px; border-radius: var(--radius-sm);
-            font-size: 0.75rem; font-weight: 600; cursor: pointer;
+            padding: 6px 12px; border-radius: var(--radius-md);
+            font-size: 0.76rem; font-weight: 700; cursor: pointer;
             display: inline-flex; align-items: center; gap: 5px;
             border: 1px solid transparent; text-decoration: none;
             transition: all 0.15s ease;
         }
-        .btn-avatar-change { background: var(--primary-light); color: var(--primary); border-color: #bfdbfe; }
-        .btn-avatar-change:hover { background: #dbeafe; }
+        .btn-avatar-change { background: var(--orange-soft); color: var(--orange-primary); border-color: var(--orange-border); }
+        .btn-avatar-change:hover { background: #ffedd5; }
         .btn-avatar-remove { background: var(--danger-light); color: var(--danger); border-color: var(--danger-border); }
         .btn-avatar-remove:hover { background: #fee2e2; }
 
+        /* ── Minimal Forms ── */
         .form-group { margin-bottom: 12px; }
         .form-label {
-            display: block; font-size: 0.76rem; font-weight: 600;
+            display: block; font-size: 0.74rem; font-weight: 700;
             color: var(--text-secondary); margin-bottom: 4px;
+            text-transform: uppercase; letter-spacing: 0.04em;
         }
         .form-input, .form-textarea, .form-select {
-            width: 100%; padding: 8px 12px;
+            width: 100%; padding: 9px 13px;
             border: 1px solid var(--card-border);
-            border-radius: var(--radius-sm);
-            font-size: 0.84rem; color: var(--text-primary);
-            background: #ffffff;
-            transition: border-color 0.15s ease;
+            border-radius: var(--radius-md);
+            font-size: 0.86rem; color: var(--text-primary);
+            background: #fafaf9;
+            transition: all 0.18s ease;
         }
         .form-input:focus, .form-textarea:focus, .form-select:focus {
-            outline: none; border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+            outline: none; border-color: var(--orange-primary);
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.12);
         }
-        .form-textarea { min-height: 55px; resize: vertical; }
+        .form-textarea { min-height: 60px; resize: vertical; }
         .form-row { display: grid; grid-template-columns: 1.5fr 1fr; gap: 10px; }
 
         .btn-save {
-            width: 100%; background: var(--primary);
+            width: 100%; background: var(--primary-gradient);
             color: #ffffff; border: none;
-            padding: 8px 14px; border-radius: var(--radius-sm);
-            font-size: 0.84rem; font-weight: 600; cursor: pointer;
-            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-            transition: background 0.15s ease;
+            padding: 10px 16px; border-radius: var(--radius-md);
+            font-size: 0.88rem; font-weight: 700; cursor: pointer;
+            display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+            transition: all 0.18s ease;
+            box-shadow: 0 2px 8px rgba(249, 115, 22, 0.25);
+            margin-top: 4px;
         }
-        .btn-save:hover { background: var(--primary-hover); }
+        .btn-save:hover {
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
+            transform: translateY(-1px);
+        }
 
         /* ── Section Cards ── */
         .section-box {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: var(--radius-lg);
-            padding: 22px 24px;
-            box-shadow: var(--shadow-sm);
-            margin-bottom: 24px;
+            border-radius: var(--radius-xl);
+            padding: 26px 28px;
+            box-shadow: var(--shadow-xs);
+            margin-bottom: 20px;
         }
         .section-header-row {
             display: flex; justify-content: space-between; align-items: flex-start;
-            margin-bottom: 18px;
+            margin-bottom: 20px;
         }
-        .section-title { font-size: 1.05rem; font-weight: 700; color: var(--text-primary); }
-        .section-desc { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+        .section-title { font-size: 1.1rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.01em; }
+        .section-desc { font-size: 0.82rem; color: var(--text-muted); margin-top: 2px; }
 
         /* ── Admin Stats ── */
         .stats-row {
             display: grid; grid-template-columns: repeat(3, 1fr);
-            gap: 14px; margin-bottom: 18px;
+            gap: 14px; margin-bottom: 20px;
         }
         @media (max-width: 650px) { .stats-row { grid-template-columns: 1fr; } }
         .stat-box {
-            background: #f8fafc; border: 1px solid var(--card-border);
-            border-radius: var(--radius-md); padding: 14px 16px;
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        .stat-title { font-size: 0.74rem; font-weight: 600; color: var(--text-secondary); }
-        .stat-val { font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin-top: 2px; }
-        .stat-icon-wrapper {
-            width: 34px; height: 34px; border-radius: var(--radius-sm);
-            display: flex; align-items: center; justify-content: center;
             background: #ffffff; border: 1px solid var(--card-border);
-            color: var(--primary);
+            border-radius: var(--radius-lg); padding: 16px 18px;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: var(--shadow-xs);
+            transition: all 0.2s ease;
+        }
+        .stat-box:hover {
+            transform: translateY(-2px);
+            border-color: var(--orange-border);
+            box-shadow: var(--shadow-sm);
+        }
+        .stat-title { font-size: 0.74rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+        .stat-val { font-size: 1.4rem; font-weight: 800; color: var(--text-primary); margin-top: 3px; letter-spacing: -0.02em; }
+        .stat-icon-wrapper {
+            width: 40px; height: 40px; border-radius: var(--radius-md);
+            display: flex; align-items: center; justify-content: center;
+            background: var(--orange-soft); border: 1px solid var(--orange-border);
+            color: var(--orange-primary);
         }
 
-        /* ── Tables ── */
-        .table-responsive { overflow-x: auto; }
+        /* ── Minimal Tables ── */
+        .table-responsive { overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--card-border); }
         .clean-table {
             width: 100%; border-collapse: collapse; text-align: left;
-            font-size: 0.82rem;
+            font-size: 0.84rem;
         }
         .clean-table th {
-            padding: 10px 12px; background: #f8fafc;
+            padding: 10px 14px; background: #fafaf9;
             border-bottom: 1px solid var(--card-border);
-            color: var(--text-secondary); font-weight: 600;
+            color: var(--text-muted); font-weight: 700; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.05em;
         }
         .clean-table td {
-            padding: 10px 12px; border-bottom: 1px solid #f1f5f9;
+            padding: 12px 14px; border-bottom: 1px solid #f5f5f4;
             color: var(--text-primary); vertical-align: middle;
         }
         .clean-table tr:last-child td { border-bottom: none; }
-        .clean-table tr:hover td { background: #fafafa; }
+        .clean-table tr:hover td { background: #fafaf9; }
 
         .table-avatar {
-            width: 28px; height: 28px; border-radius: 50%;
-            background: #e2e8f0; color: var(--text-secondary);
+            width: 30px; height: 30px; border-radius: 50%;
+            background: var(--blue-soft); color: var(--blue-primary);
             display: flex; align-items: center; justify-content: center;
-            font-size: 0.72rem; font-weight: 700;
+            font-size: 0.74rem; font-weight: 700;
             overflow: hidden; flex-shrink: 0;
         }
         .table-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
         .btn-action-sm {
-            padding: 4px 8px; border-radius: var(--radius-sm);
-            font-size: 0.74rem; font-weight: 600; cursor: pointer;
+            padding: 5px 11px; border-radius: var(--radius-md);
+            font-size: 0.76rem; font-weight: 700; cursor: pointer;
             border: 1px solid transparent; text-decoration: none;
-            display: inline-flex; align-items: center; gap: 4px;
+            display: inline-flex; align-items: center; gap: 5px;
+            transition: all 0.15s ease;
         }
-        .btn-action-approve { background: var(--success-light); color: #15803d; border-color: var(--success-border); }
-        .btn-action-reject  { background: var(--danger-light); color: #b91c1c; border-color: var(--danger-border); }
-        .btn-action-toggle  { background: #f1f5f9; color: var(--text-secondary); border-color: var(--card-border); }
+        .btn-action-approve { background: var(--success-light); color: #047857; border-color: var(--success-border); }
+        .btn-action-approve:hover { background: #d1fae5; }
+        .btn-action-reject  { background: var(--danger-light); color: #be123c; border-color: var(--danger-border); }
+        .btn-action-reject:hover { background: #ffe4e6; }
+        .btn-action-toggle  { background: #fafaf9; color: var(--text-secondary); border-color: var(--card-border); }
+        .btn-action-toggle:hover { background: #f5f5f4; border-color: #e7e5e4; }
 
         /* ── Cards Grid ── */
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
             gap: 16px;
         }
         .item-card {
             background: #ffffff;
             border: 1px solid var(--card-border);
-            border-radius: var(--radius-md);
-            padding: 18px;
+            border-radius: var(--radius-lg);
+            padding: 20px;
             display: flex; flex-direction: column; justify-content: space-between;
-            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-xs);
         }
         .item-card:hover {
-            border-color: #cbd5e1; box-shadow: var(--shadow-sm);
+            border-color: var(--orange-border);
+            box-shadow: var(--shadow-sm);
+            transform: translateY(-2px);
         }
         .item-card.enrolled {
-            border-color: #bfdbfe; background: #fbfdff;
+            border-color: var(--blue-border); background: linear-gradient(180deg, #ffffff 0%, var(--blue-soft) 100%);
+            box-shadow: 0 2px 10px rgba(59, 130, 246, 0.06);
         }
         .item-header {
             display: flex; justify-content: space-between; align-items: flex-start;
             margin-bottom: 8px;
         }
-        .item-title { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); }
+        .item-title { font-size: 0.98rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.01em; }
         .item-meta { display: flex; flex-direction: column; gap: 5px; margin: 6px 0 10px; }
         .item-meta-row {
             display: flex; align-items: center; gap: 6px;
-            font-size: 0.76rem; color: var(--text-secondary);
+            font-size: 0.78rem; color: var(--text-secondary);
         }
-        .item-desc { font-size: 0.76rem; color: var(--text-muted); line-height: 1.45; margin-bottom: 12px; }
+        .item-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 14px; }
 
         .btn-card-primary {
-            width: 100%; background: var(--primary);
+            width: 100%; background: var(--primary-gradient);
             color: #ffffff; border: none;
-            padding: 7px 12px; border-radius: var(--radius-sm);
-            font-size: 0.78rem; font-weight: 600; cursor: pointer;
-            display: inline-flex; align-items: center; justify-content: center; gap: 4px;
-            transition: background 0.15s ease;
+            padding: 8px 12px; border-radius: var(--radius-md);
+            font-size: 0.82rem; font-weight: 700; cursor: pointer;
+            display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+            transition: all 0.18s ease;
+            box-shadow: 0 2px 6px rgba(249, 115, 22, 0.2);
         }
-        .btn-card-primary:hover { background: var(--primary-hover); }
+        .btn-card-primary:hover {
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+            transform: translateY(-1px);
+        }
 
         .btn-card-danger {
             width: 100%; background: var(--danger-light);
             color: var(--danger); border: 1px solid var(--danger-border);
-            padding: 7px 12px; border-radius: var(--radius-sm);
-            font-size: 0.78rem; font-weight: 600; cursor: pointer;
+            padding: 8px 12px; border-radius: var(--radius-md);
+            font-size: 0.82rem; font-weight: 700; cursor: pointer;
             transition: all 0.15s ease;
         }
-        .btn-card-danger:hover { background: #fee2e2; }
+        .btn-card-danger:hover { background: #ffe4e6; }
 
         .tag-status {
-            padding: 2px 7px; border-radius: 4px;
-            font-size: 0.68rem; font-weight: 600;
+            padding: 3px 8px; border-radius: 6px;
+            font-size: 0.7rem; font-weight: 700;
         }
-        .tag-status.pending  { background: var(--warning-light); color: var(--warning); border: 1px solid var(--warning-border); }
-        .tag-status.approved { background: var(--success-light); color: var(--success); border: 1px solid var(--success-border); }
-        .tag-status.rejected { background: var(--danger-light); color: var(--danger); border: 1px solid var(--danger-border); }
+        .tag-status.pending  { background: var(--warning-light); color: #b45309; border: 1px solid var(--warning-border); }
+        .tag-status.approved { background: var(--success-light); color: #047857; border: 1px solid var(--success-border); }
+        .tag-status.rejected { background: var(--danger-light); color: #be123c; border: 1px solid var(--danger-border); }
 
         .user-app-badge {
-            background: #f8fafc; border: 1px solid var(--card-border);
-            border-radius: var(--radius-sm); padding: 10px 14px;
+            background: #ffffff; border: 1px solid var(--card-border);
+            border-radius: var(--radius-md); padding: 10px 14px;
             display: flex; align-items: center; justify-content: space-between;
             margin-bottom: 16px;
         }
 
         .role-tag {
-            background: #e2e8f0; color: var(--text-secondary);
-            padding: 2px 6px; border-radius: 4px;
-            font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+            background: #fafaf9; color: var(--text-secondary);
+            border: 1px solid var(--card-border);
+            padding: 3px 7px; border-radius: 6px;
+            font-size: 0.68rem; font-weight: 800; text-transform: uppercase;
         }
-        .role-tag.admin { background: #dbeafe; color: #1d4ed8; }
+        .role-tag.admin { background: var(--orange-soft); color: var(--orange-primary); border-color: var(--orange-border); }
 
         /* QR Scanner Container */
         .scanner-container {
-            border: 2px dashed var(--card-border);
-            border-radius: var(--radius-md);
+            border: 2px dashed #cbd5e1;
+            border-radius: var(--radius-lg);
             overflow: hidden;
-            background: #000000;
+            background: #0f172a;
             margin-bottom: 16px;
             max-width: 480px;
             margin: 0 auto 16px;
+            box-shadow: var(--shadow-md);
         }
 
         @media (max-width: 768px) {
@@ -630,6 +945,8 @@
                 border-bottom: 1px solid var(--card-border);
             }
             .main-wrapper { height: auto; }
+            .topbar { padding: 12px 18px; }
+            .main-container { padding: 18px 14px 44px; }
         }
     </style>
 </head>
@@ -665,6 +982,12 @@
                     <button type="button" class="nav-btn active" onclick="showTab('overview', this)">
                         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                         <span>Dashboard</span>
+                    </button>
+                </li>
+                <li>
+                    <button type="button" class="nav-btn" onclick="showTab('profile', this)">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                        <span>My Profile</span>
                     </button>
                 </li>
                 <li>
@@ -707,6 +1030,12 @@
                         </button>
                     </li>
                     <li>
+                        <button type="button" class="nav-btn" onclick="showTab('admin-ministries', this)">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                            <span>Manage Ministries</span>
+                        </button>
+                    </li>
+                    <li>
                         <button type="button" class="nav-btn" onclick="showTab('admin-members', this)">
                             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                             <span>Members Directory</span>
@@ -724,7 +1053,7 @@
 
         <!-- Sidebar Footer -->
         <div class="sidebar-footer">
-            <div class="sidebar-user-info">
+            <div class="sidebar-user-card" onclick="showTab('profile', document.querySelector('[onclick*=\'profile\']'))" title="View & edit profile">
                 <div class="avatar">
                     <?php if ($avatar_url): ?>
                         <img src="<?= $avatar_url ?>" alt="Avatar">
@@ -732,10 +1061,11 @@
                         <?= $avatar_initial ?>
                     <?php endif; ?>
                 </div>
-                <div>
+                <div style="flex:1; min-width:0;">
                     <div class="user-name"><?= htmlspecialchars($display_name) ?></div>
-                    <div class="user-role-badge"><?= htmlspecialchars($user_role) ?></div>
+                    <div class="user-role-badge"><?= htmlspecialchars($user_role) ?> · View Profile</div>
                 </div>
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--text-muted); flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
             </div>
             <a href="<?= site_url('logout') ?>" class="btn-sidebar-logout">
                 <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
@@ -751,10 +1081,14 @@
         <header class="topbar">
             <h1 class="topbar-title" id="pageTitle">Dashboard</h1>
             <div class="topbar-right">
-                <a href="<?= site_url('') ?>" class="nav-btn" style="width:auto; padding:6px 12px; background:#f8fafc; border:1px solid var(--card-border);">
-                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                <a href="<?= site_url('') ?>" class="topbar-btn">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                     <span>Website Home</span>
                 </a>
+                <button type="button" class="topbar-btn" onclick="showTab('profile', document.querySelector('[onclick*=\'profile\']'))" style="background:#eff6ff; color:var(--primary); border-color:#bfdbfe; font-weight:700;">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    <span>My Profile</span>
+                </button>
             </div>
         </header>
 
@@ -777,6 +1111,47 @@
 
             <!-- ── TAB 1: OVERVIEW ── -->
             <div id="tab-overview" class="tab-content active">
+                
+                <!-- 1. Life Generation Member Welcome Hero -->
+                <div class="welcome-hero">
+                    <div class="welcome-hero-content">
+                        <div class="welcome-tag">
+                            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            <span>Official Church Member</span>
+                        </div>
+                        <h2 class="welcome-headline">Welcome home, <span><?= htmlspecialchars($display_name) ?>!</span></h2>
+                        <p class="welcome-subtext">
+                            You are an essential part of the <strong>Life Generation Community</strong>. Connect with your Discipleship Group, serve in church ministries, RSVP for Sunday celebrations, and grow in your walk with Christ.
+                        </p>
+                        <div class="welcome-actions">
+                            <button type="button" class="btn-welcome-primary" onclick="showTab('events', document.querySelector('[onclick*=\'events\']'))">
+                                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                <span>Browse Upcoming Events</span>
+                            </button>
+                            <a href="<?= site_url('prayer-wall') ?>" class="btn-welcome-ghost">
+                                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                                <span>Post Prayer Request</span>
+                            </a>
+                            <button type="button" class="btn-welcome-ghost" onclick="showTab('profile', document.querySelector('[onclick*=\'profile\']'))">
+                                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                <span>Edit Profile</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Scripture of the Day -->
+                <div class="scripture-card">
+                    <div>
+                        <div class="scripture-quote">"For where two or three gather in my name, there am I with them."</div>
+                        <div class="scripture-ref">Matthew 18:20 · Life Generation Pillar Verse</div>
+                    </div>
+                    <div style="font-size:0.8rem; color:var(--text-muted); text-align:right; flex-shrink:0;">
+                        <span style="font-weight:700; color:var(--primary);"><?= date('l, F j, Y') ?></span>
+                    </div>
+                </div>
+
+                <!-- 3. Main Dashboard Grid: Digital ID Card + Member Journey Hub -->
                 <div class="dashboard-grid">
                     <!-- Digital Member Card with QR Check-in Code -->
                     <div>
@@ -789,7 +1164,7 @@
                                     </div>
                                     <span class="status-pill <?= $member_active ? 'active' : 'inactive' ?>">
                                         <span class="status-dot-sm"></span>
-                                        <span><?= $member_active ? 'Active' : 'Inactive' ?></span>
+                                        <span><?= $member_active ? 'Active Member' : 'Inactive' ?></span>
                                     </span>
                                 </div>
 
@@ -804,8 +1179,8 @@
                                             <?php endif; ?>
                                         </div>
                                         <div>
-                                            <div style="font-size:1.05rem; font-weight:700; color:#ffffff;"><?= htmlspecialchars($member['full_name'] ?? '—') ?></div>
-                                            <div style="font-size:0.75rem; color:#94a3b8;">@<?= htmlspecialchars($user['username'] ?? '') ?></div>
+                                            <div style="font-size:1.1rem; font-weight:800; color:#ffffff; letter-spacing:-0.01em;"><?= htmlspecialchars($member['full_name'] ?? '—') ?></div>
+                                            <div style="font-size:0.78rem; color:#94a3b8; font-weight:600;">@<?= htmlspecialchars($user['username'] ?? '') ?></div>
                                         </div>
                                     </div>
 
@@ -819,11 +1194,11 @@
                                 <!-- ID Box -->
                                 <div class="card-id-row">
                                     <div>
-                                        <div class="card-id-label">Member ID</div>
+                                        <div class="card-id-label">Member ID Code</div>
                                         <div class="card-id-value" id="memberIdText"><?= htmlspecialchars($member_id_code) ?></div>
                                     </div>
                                     <button type="button" class="btn-copy-id" onclick="copyMemberId()" id="copyBtn">
-                                        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                                         <span>Copy</span>
                                     </button>
                                 </div>
@@ -831,21 +1206,21 @@
                                 <!-- Info Grid -->
                                 <div class="card-info-grid">
                                     <div>
-                                        <div class="card-info-label">Email</div>
+                                        <div class="card-info-label">Email Address</div>
                                         <div class="card-info-val"><?= htmlspecialchars($member['email'] ?? $user['email'] ?? '—') ?></div>
                                     </div>
                                     <div>
                                         <div class="card-info-label">Age</div>
-                                        <div class="card-info-val"><?= !empty($member['age']) ? htmlspecialchars($member['age']) . ' yrs' : '—' ?></div>
+                                        <div class="card-info-val"><?= !empty($member['age']) ? htmlspecialchars($member['age']) . ' yrs old' : '—' ?></div>
                                     </div>
                                     <div>
-                                        <div class="card-info-label">Ministry</div>
+                                        <div class="card-info-label">Ministry Assignment</div>
                                         <div class="card-info-val" style="color: <?= !empty($current_ministry) ? '#38bdf8' : '#94a3b8' ?>;">
                                             <?= !empty($current_ministry) ? htmlspecialchars($current_ministry['name']) : 'None' ?>
                                         </div>
                                     </div>
                                     <div>
-                                        <div class="card-info-label">D-Group</div>
+                                        <div class="card-info-label">Discipleship Group</div>
                                         <div class="card-info-val" style="color: <?= !empty($current_dgroup) ? '#d8b4fe' : '#94a3b8' ?>;">
                                             <?= !empty($current_dgroup) ? htmlspecialchars($current_dgroup['name']) : 'None' ?>
                                         </div>
@@ -871,121 +1246,244 @@
 
                                 <?php if (empty($current_ministry) && empty($current_dgroup)): ?>
                                     <span class="card-tag" style="color:#94a3b8;">
-                                        <span>Not enrolled in any team or group yet</span>
+                                        <span>Not enrolled in any group yet</span>
                                     </span>
                                 <?php endif; ?>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Profile Form with Drag & Drop Avatar -->
-                    <div class="glass-panel">
-                        <div class="panel-title">Update Profile & Avatar</div>
-
-                        <!-- Drag and Drop Avatar Form -->
-                        <form action="<?= site_url('dashboard/upload-avatar') ?>" method="POST" enctype="multipart/form-data" id="avatarForm">
-                            <div class="avatar-upload-box" id="avatarDropZone">
-                                <div class="avatar-upload-preview" id="avatarPreview">
-                                    <?php if ($avatar_url): ?>
-                                        <img src="<?= $avatar_url ?>" alt="Avatar" id="previewImg">
-                                    <?php else: ?>
-                                        <span id="previewInitial" style="font-weight:700; color:var(--text-secondary);"><?= $avatar_initial ?></span>
-                                    <?php endif; ?>
-                                </div>
-                                <div class="avatar-upload-text">
-                                    <strong>Click or drag photo here</strong> to <?= $avatar_url ? 'change' : 'upload' ?>
-                                </div>
-                                <div class="avatar-upload-hint">Supports PNG, JPG, JPEG, WEBP up to 5MB</div>
-                                <input type="file" name="avatar" id="avatarInput" accept="image/png, image/jpeg, image/webp, image/gif" onchange="submitAvatarForm()">
+                    <!-- Right Side: Member Journey & Church Engagement Hub -->
+                    <div class="glass-panel" style="display:flex; flex-direction:column; justify-content:space-between;">
+                        <div>
+                            <div class="panel-title" style="margin-bottom:12px;">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--primary);"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <span>My LifeGen Journey</span>
                             </div>
-                        </form>
+                            <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:18px; line-height:1.5;">
+                                Stay active in spiritual growth, discipleship fellowship, and community service.
+                            </p>
 
-                        <!-- Avatar Actions (Edit / Remove) -->
-                        <?php if ($avatar_url): ?>
-                            <div class="avatar-actions-row">
-                                <label for="avatarInput" class="btn-avatar-action btn-avatar-change" style="cursor:pointer;">
-                                    <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                                    <span>Choose New Photo</span>
-                                </label>
-                                <form action="<?= site_url('dashboard/remove-avatar') ?>" method="POST" onsubmit="return confirm('Remove your profile photo and reset to default?')" style="margin:0;">
-                                    <button type="submit" class="btn-avatar-action btn-avatar-remove">
-                                        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                        <span>Remove Photo</span>
+                            <!-- Status Checklist / Cards -->
+                            <div style="display:flex; flex-direction:column; gap:12px;">
+                                <!-- D-Group Status -->
+                                <div style="background:#ffffff; border:1px solid var(--card-border); border-radius:var(--radius-md); padding:12px 14px; display:flex; align-items:center; justify-content:space-between;">
+                                    <div style="display:flex; align-items:center; gap:12px;">
+                                        <div style="width:34px; height:34px; border-radius:8px; background:var(--blue-soft); border:1px solid var(--blue-border); color:var(--blue-primary); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                                            <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                        </div>
+                                        <div>
+                                            <div style="font-size:0.84rem; font-weight:700; color:var(--text-primary);">Discipleship Group (D-Group)</div>
+                                            <div style="font-size:0.75rem; color:var(--text-muted);">
+                                                <?= !empty($current_dgroup) ? 'Enrolled in <strong>' . htmlspecialchars($current_dgroup['name']) . '</strong>' : 'Not joined yet' ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" onclick="showTab('dgroup', document.querySelector('[onclick*=\'dgroup\']'))" class="btn-action-sm <?= !empty($current_dgroup) ? 'btn-action-toggle' : 'btn-action-approve' ?>">
+                                        <?= !empty($current_dgroup) ? 'View Group' : 'Join a Group →' ?>
                                     </button>
-                                </form>
-                            </div>
-                        <?php endif; ?>
-
-                        <!-- Profile Info Form -->
-                        <form action="<?= site_url('dashboard/update-profile') ?>" method="POST">
-                            <div class="form-group">
-                                <label class="form-label" for="full_name">Full Name</label>
-                                <input type="text" name="full_name" id="full_name" class="form-input"
-                                       value="<?= htmlspecialchars($member['full_name'] ?? '') ?>" required>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label class="form-label" for="email">Email</label>
-                                    <input type="email" name="email" id="email" class="form-input"
-                                           value="<?= htmlspecialchars($member['email'] ?? $user['email'] ?? '') ?>" required>
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-label" for="age">Age</label>
-                                    <input type="number" name="age" id="age" class="form-input"
-                                           min="1" max="125"
-                                           value="<?= htmlspecialchars($member['age'] ?? '') ?>" required>
+
+                                <!-- Ministry Status -->
+                                <div style="background:#ffffff; border:1px solid var(--card-border); border-radius:var(--radius-md); padding:12px 14px; display:flex; align-items:center; justify-content:space-between;">
+                                    <div style="display:flex; align-items:center; gap:12px;">
+                                        <div style="width:34px; height:34px; border-radius:8px; background:var(--orange-soft); border:1px solid var(--orange-border); color:var(--orange-primary); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                                            <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                                        </div>
+                                        <div>
+                                            <div style="font-size:0.84rem; font-weight:700; color:var(--text-primary);">Ministry Volunteering</div>
+                                            <div style="font-size:0.75rem; color:var(--text-muted);">
+                                                <?= !empty($current_ministry) ? 'Serving in <strong>' . htmlspecialchars($current_ministry['name']) . '</strong>' : 'Explore volunteer teams' ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" onclick="showTab('ministry', document.querySelector('[onclick*=\'ministry\']'))" class="btn-action-sm <?= !empty($current_ministry) ? 'btn-action-toggle' : 'btn-action-approve' ?>">
+                                        <?= !empty($current_ministry) ? 'View Ministry' : 'Volunteer →' ?>
+                                    </button>
+                                </div>
+
+                                <!-- Attendance Pass Help -->
+                                <div style="background:var(--blue-soft); border:1px solid var(--blue-border); border-radius:var(--radius-md); padding:12px 14px; display:flex; align-items:center; justify-content:space-between;">
+                                    <div style="display:flex; align-items:center; gap:12px;">
+                                        <div style="width:34px; height:34px; border-radius:8px; background:#ffffff; border:1px solid var(--blue-border); color:var(--blue-primary); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                                            <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+                                        </div>
+                                        <div>
+                                            <div style="font-size:0.84rem; font-weight:700; color:var(--blue-hover);">QR Check-in Pass Ready</div>
+                                            <div style="font-size:0.75rem; color:var(--blue-primary);">Present your card QR at the church entrance</div>
+                                        </div>
+                                    </div>
+                                    <button type="button" onclick="copyMemberId()" class="btn-action-sm btn-action-toggle" style="background:#ffffff; color:var(--blue-hover); border-color:var(--blue-border);">
+                                        Copy ID
+                                    </button>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="form-group">
-                                <label class="form-label" for="address">Address</label>
-                                <textarea name="address" id="address" class="form-textarea" required><?= htmlspecialchars($member['address'] ?? '') ?></textarea>
-                            </div>
-
-                            <button type="submit" class="btn-save">
-                                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                <span>Save Profile Details</span>
+                        <!-- Footer Profile Link -->
+                        <div style="margin-top:18px; padding-top:14px; border-top:1px solid var(--card-border-subtle); display:flex; align-items:center; justify-content:space-between;">
+                            <span style="font-size:0.78rem; color:var(--text-muted);">Need to change email, address, or avatar?</span>
+                            <button type="button" onclick="showTab('profile', document.querySelector('[onclick*=\'profile\']'))" style="background:none; border:none; color:var(--orange-primary); font-weight:700; font-size:0.82rem; cursor:pointer; text-decoration:underline;">
+                                Go to My Profile →
                             </button>
-                        </form>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Quick shortcuts row -->
-                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:14px;">
+                <!-- 4. Quick Community Shortcuts Row -->
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:16px;">
                     <div class="item-card" onclick="document.querySelector('[onclick*=\'events\']').click()" style="cursor:pointer;">
-                        <div style="display:flex; align-items:center; gap:10px;">
-                            <div class="stat-icon-wrapper" style="color:var(--primary); background:#eff6ff; border-color:#dbeafe;">
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div class="stat-icon-wrapper" style="color:var(--blue-primary); background:var(--blue-soft); border-color:var(--blue-border);">
                                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                             </div>
                             <div>
                                 <div class="item-title">Church Events</div>
-                                <div style="font-size:0.75rem; color:var(--text-muted);"><?= count($upcoming_events ?? []) ?> upcoming services & conferences →</div>
+                                <div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;"><?= count($upcoming_events ?? []) ?> upcoming services & events →</div>
                             </div>
                         </div>
                     </div>
 
                     <div class="item-card" onclick="document.querySelector('[onclick*=\'dgroup\']').click()" style="cursor:pointer;">
-                        <div style="display:flex; align-items:center; gap:10px;">
-                            <div class="stat-icon-wrapper" style="color:#7e22ce; background:#faf5ff; border-color:#f3e8ff;">
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div class="stat-icon-wrapper" style="color:var(--blue-hover); background:var(--blue-soft); border-color:var(--blue-border);">
                                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                             </div>
                             <div>
                                 <div class="item-title">Discipleship Groups</div>
-                                <div style="font-size:0.75rem; color:var(--text-muted);"><?= !empty($current_dgroup) ? 'Enrolled in ' . htmlspecialchars($current_dgroup['name']) : 'Browse available groups →' ?></div>
+                                <div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;"><?= !empty($current_dgroup) ? 'Enrolled: ' . htmlspecialchars($current_dgroup['name']) : 'Browse available groups →' ?></div>
                             </div>
                         </div>
                     </div>
 
                     <div class="item-card" onclick="document.querySelector('[onclick*=\'ministry\']').click()" style="cursor:pointer;">
-                        <div style="display:flex; align-items:center; gap:10px;">
-                            <div class="stat-icon-wrapper" style="color:var(--success); background:#f0fdf4; border-color:#bbf7d0;">
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div class="stat-icon-wrapper" style="color:var(--orange-primary); background:var(--orange-soft); border-color:var(--orange-border);">
                                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
                             </div>
                             <div>
                                 <div class="item-title">Ministry Volunteers</div>
-                                <div style="font-size:0.75rem; color:var(--text-muted);"><?= !empty($current_ministry) ? 'Serving in ' . htmlspecialchars($current_ministry['name']) : 'Find a ministry team →' ?></div>
+                                <div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;"><?= !empty($current_ministry) ? 'Serving: ' . htmlspecialchars($current_ministry['name']) : 'Find a ministry team →' ?></div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── TAB: DEDICATED PROFILE VIEW ── -->
+            <div id="tab-profile" class="tab-content">
+                <div class="section-box">
+                    <div class="section-header-row">
+                        <div>
+                            <h2 class="section-title">My Member Profile & Settings</h2>
+                            <p class="section-desc">Manage your personal information, contact details, profile photo, and membership credentials</p>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-grid" style="margin-bottom:0; align-items:start;">
+                        <!-- Left Side: Profile Photo Upload & Membership Card Info -->
+                        <div style="display:flex; flex-direction:column; gap:20px;">
+                            <!-- Profile Photo Card with Drag & Drop Uploader -->
+                            <div class="glass-panel" style="text-align:center;">
+                                <div class="panel-title" style="justify-content:center; margin-bottom:16px;">
+                                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--primary);"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    <span>Profile Photo</span>
+                                </div>
+
+                                <!-- Drag and Drop Avatar Form -->
+                                <form action="<?= site_url('dashboard/upload-avatar') ?>" method="POST" enctype="multipart/form-data" id="avatarForm">
+                                    <div class="avatar-upload-box" id="avatarDropZone" title="Click or drag an image here to update photo">
+                                        <div class="avatar-upload-preview" id="avatarPreview">
+                                            <?php if ($avatar_url): ?>
+                                                <img src="<?= $avatar_url ?>" alt="Avatar" id="previewImg">
+                                            <?php else: ?>
+                                                <span id="previewInitial" style="font-weight:800; color:var(--primary); font-size:1.5rem;"><?= $avatar_initial ?></span>
+                                            <?php endif; ?>
+                                        </div>
+                                        <div class="avatar-upload-text">
+                                            <strong>Click or drag photo here</strong> to <?= $avatar_url ? 'change' : 'upload' ?>
+                                        </div>
+                                        <div class="avatar-upload-hint">Supports PNG, JPG, JPEG, WEBP up to 5MB</div>
+                                        <input type="file" name="avatar" id="avatarInput" accept="image/png, image/jpeg, image/webp, image/gif" onchange="submitAvatarForm()">
+                                    </div>
+                                </form>
+
+                                <!-- Avatar Actions (Choose / Remove) -->
+                                <?php if ($avatar_url): ?>
+                                    <div class="avatar-actions-row" style="margin-bottom:0;">
+                                        <label for="avatarInput" class="btn-avatar-action btn-avatar-change" style="cursor:pointer;">
+                                            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                                            <span>Choose New Photo</span>
+                                        </label>
+                                        <form action="<?= site_url('dashboard/remove-avatar') ?>" method="POST" onsubmit="return confirm('Remove your profile photo and reset to default?')" style="margin:0;">
+                                            <button type="submit" class="btn-avatar-action btn-avatar-remove">
+                                                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                                <span>Remove</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- Account Details Box -->
+                            <div class="glass-panel" style="padding:22px 24px;">
+                                <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:0.86rem;">
+                                    <span style="color:var(--text-muted); font-weight:600;">Member ID:</span>
+                                    <strong style="font-family:monospace; color:var(--primary); font-size:0.95rem;"><?= htmlspecialchars($member_id_code) ?></strong>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:0.86rem;">
+                                    <span style="color:var(--text-muted); font-weight:600;">Username:</span>
+                                    <span style="color:var(--text-primary); font-weight:700;">@<?= htmlspecialchars($user['username'] ?? '') ?></span>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:0.86rem;">
+                                    <span style="color:var(--text-muted); font-weight:600;">Role:</span>
+                                    <span class="role-tag <?= $user_role === 'admin' ? 'admin' : '' ?>"><?= htmlspecialchars($user_role) ?></span>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; font-size:0.86rem;">
+                                    <span style="color:var(--text-muted); font-weight:600;">Status:</span>
+                                    <span style="color:var(--success); font-weight:700;">Active & Verified</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Side: Edit Personal Information Form -->
+                        <div class="glass-panel">
+                            <div class="panel-title">
+                                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--primary);"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                <span>Edit Personal Details</span>
+                            </div>
+
+                            <form action="<?= site_url('dashboard/update-profile') ?>" method="POST">
+                                <div class="form-group">
+                                    <label class="form-label" for="profile_full_name">Full Name</label>
+                                    <input type="text" name="full_name" id="profile_full_name" class="form-input"
+                                           value="<?= htmlspecialchars($member['full_name'] ?? '') ?>" required>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label" for="profile_email">Email Address</label>
+                                        <input type="email" name="email" id="profile_email" class="form-input"
+                                               value="<?= htmlspecialchars($member['email'] ?? $user['email'] ?? '') ?>" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="profile_age">Age</label>
+                                        <input type="number" name="age" id="profile_age" class="form-input"
+                                               min="1" max="125"
+                                               value="<?= htmlspecialchars($member['age'] ?? '') ?>" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="profile_address">Residential Address</label>
+                                    <textarea name="address" id="profile_address" class="form-textarea" style="min-height:90px;" required><?= htmlspecialchars($member['address'] ?? '') ?></textarea>
+                                </div>
+
+                                <button type="submit" class="btn-save" style="margin-top:8px;">
+                                    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    <span>Update Member Profile</span>
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -1193,8 +1691,17 @@
                             <?php foreach ($ministries as $min): ?>
                                 <div class="item-card <?= ((int)($member['ministry_id'] ?? 0) === (int)$min['id']) ? 'enrolled' : '' ?>">
                                     <div>
+                                        <?php if (!empty($min['image'])): ?>
+                                            <div style="margin:-18px -18px 14px -18px; max-height:130px; overflow:hidden; border-top-left-radius:var(--radius-md); border-top-right-radius:var(--radius-md);">
+                                                <img src="<?= site_url($min['image']) ?>" alt="Ministry" style="width:100%; height:130px; object-fit:cover; display:block;">
+                                            </div>
+                                        <?php endif; ?>
+
                                         <div class="item-header">
-                                            <div class="item-title"><?= htmlspecialchars($min['name']) ?></div>
+                                            <div class="item-title">
+                                                <span style="margin-right:4px;"><?= htmlspecialchars($min['icon'] ?? '✦') ?></span>
+                                                <?= htmlspecialchars($min['name']) ?>
+                                            </div>
                                             <?php if ($min['has_applied']): ?>
                                                 <span class="tag-status <?= $min['application_status'] ?>">
                                                     <?= ucfirst($min['application_status']) ?>
@@ -1726,6 +2233,169 @@
                         <?php endif; ?>
                     </section>
                 </div>
+
+                <!-- ── TAB: ADMIN MANAGE MINISTRIES (CREATE / EDIT PHOTO / DELETE) ── -->
+                <div id="tab-admin-ministries" class="tab-content">
+                    <div style="display:grid; grid-template-columns: 1fr 1.6fr; gap:24px;">
+                        <!-- Create Ministry Form with Photo Upload -->
+                        <div class="section-box">
+                            <h2 class="section-title" style="margin-bottom:14px;">Add Ministry Team</h2>
+                            <form action="<?= site_url('admin/ministries/create') ?>" method="POST" enctype="multipart/form-data" id="createMinistryForm">
+                                <div class="form-group">
+                                    <label class="form-label" for="min_name">Ministry Name</label>
+                                    <input type="text" name="name" id="min_name" class="form-input" placeholder="e.g. Worship Team, Media & Tech" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="min_icon">Icon / Emoji</label>
+                                    <input type="text" name="icon" id="min_icon" class="form-input" placeholder="🎵, 📽️, 🤝, 🌍" value="✦">
+                                </div>
+
+                                <!-- Ministry Team Photo Upload (Drag & Drop) -->
+                                <div class="form-group">
+                                    <label class="form-label">Ministry Photo / Banner (Optional)</label>
+                                    <div class="avatar-upload-box" id="minPhotoDropZone" style="border-radius:var(--radius-sm); padding:12px;">
+                                        <div id="minPhotoPreviewContainer" style="display:none; margin-bottom:8px; border-radius:6px; overflow:hidden; max-height:140px; border:1px solid var(--card-border);">
+                                            <img src="" id="minPhotoPreview" style="width:100%; height:auto; object-fit:cover;" alt="Ministry Photo">
+                                        </div>
+                                        <div id="minPlaceholderText">
+                                            <svg width="24" height="24" fill="none" stroke="var(--primary)" stroke-width="1.75" viewBox="0 0 24 24" style="margin:0 auto 4px; display:block;"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                            <div class="avatar-upload-text"><strong>Drag or choose ministry photo</strong></div>
+                                            <div class="avatar-upload-hint">PNG, JPG, WEBP team photo up to 5MB</div>
+                                        </div>
+                                        <input type="file" name="image" id="minPhotoInput" accept="image/png, image/jpeg, image/webp, image/gif" onchange="previewMinistryPhoto()">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="min_desc">Description / Roles</label>
+                                    <textarea name="description" id="min_desc" class="form-textarea" placeholder="Explain the mission, roles, and responsibilities for volunteers..."></textarea>
+                                </div>
+
+                                <button type="submit" class="btn-save">
+                                    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                                    <span>Add Ministry Team</span>
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Existing Ministries List with Visual Photos -->
+                        <div class="section-box">
+                            <h2 class="section-title" style="margin-bottom:14px;">Active Ministry Teams (<?= count($all_ministries_admin ?? []) ?>)</h2>
+                            <?php if (!empty($all_ministries_admin)): ?>
+                                <div class="table-responsive">
+                                    <table class="clean-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Photo</th>
+                                                <th>Ministry Team</th>
+                                                <th>Volunteers</th>
+                                                <th>Pending</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($all_ministries_admin as $am): ?>
+                                                <tr>
+                                                    <td>
+                                                        <?php if (!empty($am['image'])): ?>
+                                                            <img src="<?= site_url($am['image']) ?>" alt="Photo" style="width:50px; height:36px; object-fit:cover; border-radius:6px; border:1px solid var(--card-border);">
+                                                        <?php else: ?>
+                                                            <div style="width:50px; height:36px; border-radius:6px; background:var(--orange-soft); border:1px solid var(--orange-border); display:flex; align-items:center; justify-content:center; font-size:1rem;">
+                                                                <?= htmlspecialchars($am['icon'] ?? '✦') ?>
+                                                            </div>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <td>
+                                                        <div style="font-weight:700; color:var(--text-main);"><?= htmlspecialchars($am['name']) ?></div>
+                                                        <div style="font-size:0.75rem; color:var(--text-muted); max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                                                            <?= htmlspecialchars($am['description'] ?? 'No description') ?>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="tag-status approved"><?= (int)($am['member_count'] ?? 0) ?> active</span>
+                                                    </td>
+                                                    <td>
+                                                        <?php if ((int)($am['pending_apps_count'] ?? 0) > 0): ?>
+                                                            <span class="tag-status pending" onclick="showTab('admin-ministry-apps', document.querySelector('[onclick*=\'admin-ministry-apps\']'))" style="cursor:pointer;" title="View Applications">
+                                                                <?= (int)$am['pending_apps_count'] ?> pending
+                                                            </span>
+                                                        <?php else: ?>
+                                                            <span style="font-size:0.75rem; color:var(--text-muted);">0</span>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <td>
+                                                        <div style="display:flex; gap:6px; align-items:center;">
+                                                            <button type="button" class="btn-action-sm btn-action-approve" onclick="openEditMinistryModal(<?= htmlspecialchars(json_encode($am), ENT_QUOTES, 'UTF-8') ?>)">
+                                                                Edit / Photo
+                                                            </button>
+                                                            <form action="<?= site_url('admin/ministries/delete') ?>" method="POST" style="margin:0;">
+                                                                <input type="hidden" name="ministry_id" value="<?= (int)$am['id'] ?>">
+                                                                <button type="submit" class="btn-action-sm btn-action-reject" onclick="return confirm('Delete ministry <?= htmlspecialchars(addslashes($am['name'])) ?>?')">
+                                                                    Delete
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <?php else: ?>
+                                <div style="text-align:center; padding:32px; color:var(--text-muted);">No ministries created yet.</div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal: Edit Ministry Details & Photo -->
+                <div id="editMinistryModal" class="modal-overlay" style="display:none;" onclick="if(event.target === this) closeEditMinistryModal()">
+                    <div class="modal-card" style="max-width:540px;">
+                        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+                            <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-main);">Edit Ministry & Photo</h3>
+                            <button type="button" onclick="closeEditMinistryModal()" style="background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--text-muted);">&times;</button>
+                        </div>
+                        <form action="<?= site_url('admin/ministries/update') ?>" method="POST" enctype="multipart/form-data" id="editMinistryForm">
+                            <input type="hidden" name="ministry_id" id="edit_min_id">
+
+                            <div class="form-group">
+                                <label class="form-label" for="edit_min_name">Ministry Name</label>
+                                <input type="text" name="name" id="edit_min_name" class="form-input" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="edit_min_icon">Icon / Emoji</label>
+                                <input type="text" name="icon" id="edit_min_icon" class="form-input">
+                            </div>
+
+                            <!-- Photo Replacement Upload -->
+                            <div class="form-group">
+                                <label class="form-label">Replace Ministry Photo / Banner</label>
+                                <div class="avatar-upload-box" id="editMinPhotoDropZone" style="border-radius:var(--radius-sm); padding:12px;">
+                                    <div id="editMinPhotoPreviewContainer" style="margin-bottom:8px; border-radius:6px; overflow:hidden; max-height:140px; border:1px solid var(--card-border);">
+                                        <img src="" id="editMinPhotoPreview" style="width:100%; height:auto; object-fit:cover;" alt="Preview">
+                                    </div>
+                                    <div class="avatar-upload-text"><strong>Click to select new photo</strong></div>
+                                    <input type="file" name="image" id="editMinPhotoInput" accept="image/png, image/jpeg, image/webp, image/gif" onchange="previewEditMinistryPhoto()">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="edit_min_desc">Description</label>
+                                <textarea name="description" id="edit_min_desc" class="form-textarea"></textarea>
+                            </div>
+
+                            <div style="display:flex; gap:10px; margin-top:16px;">
+                                <button type="button" onclick="closeEditMinistryModal()" class="btn-avatar-action" style="flex:1; justify-content:center; background:#f1f5f9; color:var(--text-secondary);">Cancel</button>
+                                <button type="submit" class="btn-save" style="flex:2;">
+                                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    <span>Save Ministry Changes</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             <?php endif; ?>
 
         </main>
@@ -1750,11 +2420,13 @@
 
             const titles = {
                 'overview': 'Dashboard',
+                'profile': 'My Member Profile',
                 'events': 'Church Events & RSVP',
                 'dgroup': 'Discipleship Groups',
                 'ministry': 'Ministries & Volunteering',
                 'admin-attendance': 'QR Event Check-in Station',
                 'admin-events': 'Event Management',
+                'admin-ministries': 'Manage Ministry Teams',
                 'admin-members': 'Members Directory',
                 'admin-ministry-apps': 'Volunteer Requests'
             };
@@ -1764,6 +2436,64 @@
             }
 
             sessionStorage.setItem('activeDashboardTab', tabName);
+        }
+
+        // Ministry Photo Previews & Modals
+        function previewMinistryPhoto() {
+            const input = document.getElementById('minPhotoInput');
+            const preview = document.getElementById('minPhotoPreview');
+            const container = document.getElementById('minPhotoPreviewContainer');
+            const placeholder = document.getElementById('minPlaceholderText');
+            if (input && input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    container.style.display = 'block';
+                    if (placeholder) placeholder.style.display = 'none';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function previewEditMinistryPhoto() {
+            const input = document.getElementById('editMinPhotoInput');
+            const preview = document.getElementById('editMinPhotoPreview');
+            const container = document.getElementById('editMinPhotoPreviewContainer');
+            if (input && input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    container.style.display = 'block';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function openEditMinistryModal(minData) {
+            const modal = document.getElementById('editMinistryModal');
+            if (!modal) return;
+
+            document.getElementById('edit_min_id').value = minData.id;
+            document.getElementById('edit_min_name').value = minData.name || '';
+            document.getElementById('edit_min_icon').value = minData.icon || '✦';
+            document.getElementById('edit_min_desc').value = minData.description || '';
+
+            const previewImg = document.getElementById('editMinPhotoPreview');
+            const container = document.getElementById('editMinPhotoPreviewContainer');
+            if (minData.image) {
+                previewImg.src = "<?= site_url('') ?>" + minData.image.replace(/^\//, '');
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+                previewImg.src = '';
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function closeEditMinistryModal() {
+            const modal = document.getElementById('editMinistryModal');
+            if (modal) modal.style.display = 'none';
         }
 
         // QR Code Scanner State & Logic
@@ -2068,7 +2798,40 @@
                 });
             }
 
-            // 5. Restore active tab
+            // 5. Ministry Photo Drag & Drop zone
+            const minDropZone = document.getElementById('minPhotoDropZone');
+            const minPhotoInput = document.getElementById('minPhotoInput');
+            if (minDropZone && minPhotoInput) {
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    minDropZone.addEventListener(eventName, (e) => {
+                        e.preventDefault(); e.stopPropagation();
+                        minDropZone.classList.add('drag-over');
+                    }, false);
+                });
+
+                ['dragleave', 'drop'].forEach(eventName => {
+                    minDropZone.addEventListener(eventName, (e) => {
+                        e.preventDefault(); e.stopPropagation();
+                        minDropZone.classList.remove('drag-over');
+                    }, false);
+                });
+
+                minDropZone.addEventListener('drop', (e) => {
+                    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                        try {
+                            minPhotoInput.files = e.dataTransfer.files;
+                            previewMinistryPhoto();
+                        } catch (err) {
+                            const dt = new DataTransfer();
+                            dt.items.add(e.dataTransfer.files[0]);
+                            minPhotoInput.files = dt.files;
+                            previewMinistryPhoto();
+                        }
+                    }
+                });
+            }
+
+            // 6. Restore active tab
             const savedTab = sessionStorage.getItem('activeDashboardTab');
             if (savedTab) {
                 const btn = document.querySelector(`[onclick*="'${savedTab}'"]`) || document.querySelector(`[onclick*="${savedTab}"]`);

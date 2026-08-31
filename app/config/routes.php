@@ -70,10 +70,13 @@ $router->post('/prayer-wall/submit', 'Prayer_wall::submit');
 $router->post('/prayer-wall/mark-answered', 'Prayer_wall::mark_answered');
 $router->post('/prayer-wall/delete', 'Prayer_wall::delete');
 
-// Ministry Volunteer routes
+// Ministry Volunteer & Management routes
 $router->post('/ministry/apply', 'Auth::apply_ministry');
 $router->post('/ministry/cancel', 'Auth::cancel_ministry');
 $router->post('/admin/ministry/update-application', 'Auth::update_ministry_application');
+$router->post('/admin/ministries/create', 'Auth::create_ministry');
+$router->post('/admin/ministries/update', 'Auth::update_ministry');
+$router->post('/admin/ministries/delete', 'Auth::delete_ministry');
 
 // Event & Attendance routes
 $router->post('/events/rsvp', 'Auth::rsvp_event');

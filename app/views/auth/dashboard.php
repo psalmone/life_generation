@@ -1030,6 +1030,12 @@
                         </button>
                     </li>
                     <li>
+                        <button type="button" class="nav-btn" onclick="showTab('admin-dgroups', this)">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                            <span>Manage D-Groups</span>
+                        </button>
+                    </li>
+                    <li>
                         <button type="button" class="nav-btn" onclick="showTab('admin-ministries', this)">
                             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
                             <span>Manage Ministries</span>
@@ -1580,6 +1586,12 @@
                         <!-- Enrolled Card -->
                         <div class="item-card enrolled" style="max-width: 600px;">
                             <div>
+                                <?php if (!empty($current_dgroup['image'])): ?>
+                                    <div style="margin:-20px -20px 16px -20px; max-height:170px; overflow:hidden; border-top-left-radius:var(--radius-md); border-top-right-radius:var(--radius-md);">
+                                        <img src="<?= site_url($current_dgroup['image']) ?>" alt="D-Group Photo" style="width:100%; height:170px; object-fit:cover; display:block;">
+                                    </div>
+                                <?php endif; ?>
+
                                 <div class="item-header">
                                     <div>
                                         <span class="tag-status approved" style="margin-bottom:6px; display:inline-block;">Enrolled</span>
@@ -1618,6 +1630,12 @@
                                 <?php foreach ($all_dgroups as $dg): ?>
                                     <div class="item-card">
                                         <div>
+                                            <?php if (!empty($dg['image'])): ?>
+                                                <div style="margin:-20px -20px 14px -20px; max-height:150px; overflow:hidden; border-top-left-radius:var(--radius-md); border-top-right-radius:var(--radius-md);">
+                                                    <img src="<?= site_url($dg['image']) ?>" alt="D-Group Photo" style="width:100%; height:150px; object-fit:cover; display:block;">
+                                                </div>
+                                            <?php endif; ?>
+
                                             <div class="item-header">
                                                 <div class="item-title"><?= htmlspecialchars($dg['name']) ?></div>
                                                 <span class="tag-status" style="background:#f1f5f9; color:var(--text-secondary);">
@@ -2349,6 +2367,184 @@
                     </div>
                 </div>
 
+                <!-- ── TAB: ADMIN MANAGE D-GROUPS (CREATE / EDIT PHOTO / DELETE) ── -->
+                <div id="tab-admin-dgroups" class="tab-content">
+                    <div style="display:grid; grid-template-columns: 1fr 1.6fr; gap:24px;">
+                        <!-- Create D-Group Form with Photo Upload -->
+                        <div class="section-box">
+                            <h2 class="section-title" style="margin-bottom:14px;">Add Discipleship Group</h2>
+                            <form action="<?= site_url('admin/dgroups/create') ?>" method="POST" enctype="multipart/form-data" id="createDgroupForm">
+                                <div class="form-group">
+                                    <label class="form-label" for="dg_name">Group Name</label>
+                                    <input type="text" name="name" id="dg_name" class="form-input" placeholder="e.g. LifeGen Young Adults, Men of Faith" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="dg_leader">Leader Name</label>
+                                    <input type="text" name="leader_name" id="dg_leader" class="form-input" placeholder="e.g. Pastor Marcus Rivera" required>
+                                </div>
+
+                                <div class="form-row" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                                    <div class="form-group">
+                                        <label class="form-label" for="dg_sched">Schedule</label>
+                                        <input type="text" name="schedule" id="dg_sched" class="form-input" placeholder="e.g. Saturdays 4:00 PM" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="dg_loc">Location / Room</label>
+                                        <input type="text" name="location" id="dg_loc" class="form-input" placeholder="e.g. Room 204 or Zoom" required>
+                                    </div>
+                                </div>
+
+                                <!-- D-Group Photo Upload (Drag & Drop) -->
+                                <div class="form-group">
+                                    <label class="form-label">Group Photo / Banner (Optional)</label>
+                                    <div class="avatar-upload-box" id="dgroupPhotoDropZone" style="border-radius:var(--radius-sm); padding:12px;">
+                                        <div id="dgPhotoPreviewContainer" style="display:none; margin-bottom:8px; border-radius:6px; overflow:hidden; max-height:140px; border:1px solid var(--card-border);">
+                                            <img src="" id="dgPhotoPreview" style="width:100%; height:auto; object-fit:cover;" alt="D-Group Photo">
+                                        </div>
+                                        <div id="dgPlaceholderText">
+                                            <svg width="24" height="24" fill="none" stroke="var(--primary)" stroke-width="1.75" viewBox="0 0 24 24" style="margin:0 auto 4px; display:block;"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                            <div class="avatar-upload-text"><strong>Drag or choose D-Group photo</strong></div>
+                                            <div class="avatar-upload-hint">PNG, JPG, WEBP group photo up to 5MB</div>
+                                        </div>
+                                        <input type="file" name="image" id="dgPhotoInput" accept="image/png, image/jpeg, image/webp, image/gif" onchange="previewDgroupPhoto()">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="dg_desc">Description</label>
+                                    <textarea name="description" id="dg_desc" class="form-textarea" placeholder="Explain the focus, demographic, and spiritual goals of this D-Group..."></textarea>
+                                </div>
+
+                                <button type="submit" class="btn-save">
+                                    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                                    <span>Add D-Group</span>
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Existing D-Groups List with Photos -->
+                        <div class="section-box">
+                            <h2 class="section-title" style="margin-bottom:14px;">Active Discipleship Groups (<?= count($all_dgroups_admin ?? []) ?>)</h2>
+                            <?php if (!empty($all_dgroups_admin)): ?>
+                                <div class="table-responsive">
+                                    <table class="clean-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Photo</th>
+                                                <th>Group & Leader</th>
+                                                <th>Schedule / Location</th>
+                                                <th>Members</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($all_dgroups_admin as $adg): ?>
+                                                <tr>
+                                                    <td>
+                                                        <?php if (!empty($adg['image'])): ?>
+                                                            <img src="<?= site_url($adg['image']) ?>" alt="Photo" style="width:52px; height:38px; object-fit:cover; border-radius:6px; border:1px solid var(--card-border);">
+                                                        <?php else: ?>
+                                                            <div style="width:52px; height:38px; border-radius:6px; background:#eff6ff; border:1px solid #bfdbfe; display:flex; align-items:center; justify-content:center; color:#2563eb;">
+                                                                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                                            </div>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <td>
+                                                        <div style="font-weight:700; color:var(--text-main);"><?= htmlspecialchars($adg['name']) ?></div>
+                                                        <div style="font-size:0.75rem; color:var(--text-muted);">Leader: <?= htmlspecialchars($adg['leader_name']) ?></div>
+                                                    </td>
+                                                    <td>
+                                                        <div style="font-size:0.8rem; font-weight:600;"><?= htmlspecialchars($adg['schedule']) ?></div>
+                                                        <div style="font-size:0.75rem; color:var(--text-muted);"><?= htmlspecialchars($adg['location']) ?></div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="tag-status approved"><?= (int)($adg['member_count'] ?? 0) ?> member<?= (int)($adg['member_count'] ?? 0) !== 1 ? 's' : '' ?></span>
+                                                    </td>
+                                                    <td>
+                                                        <div style="display:flex; gap:6px; align-items:center;">
+                                                            <button type="button" class="btn-action-sm btn-action-approve" onclick="openEditDgroupModal(<?= htmlspecialchars(json_encode($adg), ENT_QUOTES, 'UTF-8') ?>)">
+                                                                Edit / Photo
+                                                            </button>
+                                                            <form action="<?= site_url('admin/dgroups/delete') ?>" method="POST" style="margin:0;">
+                                                                <input type="hidden" name="dgroup_id" value="<?= (int)$adg['id'] ?>">
+                                                                <button type="submit" class="btn-action-sm btn-action-reject" onclick="return confirm('Delete D-Group <?= htmlspecialchars(addslashes($adg['name'])) ?>?')">
+                                                                    Delete
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <?php else: ?>
+                                <div style="text-align:center; padding:32px; color:var(--text-muted);">No D-Groups created yet.</div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal: Edit D-Group Details & Photo -->
+                <div id="editDgroupModal" class="modal-overlay" style="display:none;" onclick="if(event.target === this) closeEditDgroupModal()">
+                    <div class="modal-card" style="max-width:540px;">
+                        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+                            <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-main);">Edit D-Group & Photo</h3>
+                            <button type="button" onclick="closeEditDgroupModal()" style="background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--text-muted);">&times;</button>
+                        </div>
+                        <form action="<?= site_url('admin/dgroups/update') ?>" method="POST" enctype="multipart/form-data" id="editDgroupForm">
+                            <input type="hidden" name="dgroup_id" id="edit_dg_id">
+
+                            <div class="form-group">
+                                <label class="form-label" for="edit_dg_name">Group Name</label>
+                                <input type="text" name="name" id="edit_dg_name" class="form-input" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="edit_dg_leader">Leader Name</label>
+                                <input type="text" name="leader_name" id="edit_dg_leader" class="form-input" required>
+                            </div>
+
+                            <div class="form-row" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                                <div class="form-group">
+                                    <label class="form-label" for="edit_dg_sched">Schedule</label>
+                                    <input type="text" name="schedule" id="edit_dg_sched" class="form-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="edit_dg_loc">Location / Room</label>
+                                    <input type="text" name="location" id="edit_dg_loc" class="form-input" required>
+                                </div>
+                            </div>
+
+                            <!-- Photo Replacement Upload -->
+                            <div class="form-group">
+                                <label class="form-label">Replace D-Group Photo</label>
+                                <div class="avatar-upload-box" id="editDgroupPhotoDropZone" style="border-radius:var(--radius-sm); padding:12px;">
+                                    <div id="editDgPhotoPreviewContainer" style="margin-bottom:8px; border-radius:6px; overflow:hidden; max-height:140px; border:1px solid var(--card-border);">
+                                        <img src="" id="editDgPhotoPreview" style="width:100%; height:auto; object-fit:cover;" alt="Preview">
+                                    </div>
+                                    <div class="avatar-upload-text"><strong>Click to select new photo</strong></div>
+                                    <input type="file" name="image" id="editDgPhotoInput" accept="image/png, image/jpeg, image/webp, image/gif" onchange="previewEditDgroupPhoto()">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="edit_dg_desc">Description</label>
+                                <textarea name="description" id="edit_dg_desc" class="form-textarea"></textarea>
+                            </div>
+
+                            <div style="display:flex; gap:10px; margin-top:16px;">
+                                <button type="button" onclick="closeEditDgroupModal()" class="btn-avatar-action" style="flex:1; justify-content:center; background:#f1f5f9; color:var(--text-secondary);">Cancel</button>
+                                <button type="submit" class="btn-save" style="flex:2;">
+                                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    <span>Save D-Group Changes</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
                 <!-- Modal: Edit Ministry Details & Photo -->
                 <div id="editMinistryModal" class="modal-overlay" style="display:none;" onclick="if(event.target === this) closeEditMinistryModal()">
                     <div class="modal-card" style="max-width:540px;">
@@ -2426,6 +2622,7 @@
                 'ministry': 'Ministries & Volunteering',
                 'admin-attendance': 'QR Event Check-in Station',
                 'admin-events': 'Event Management',
+                'admin-dgroups': 'Manage Discipleship Groups',
                 'admin-ministries': 'Manage Ministry Teams',
                 'admin-members': 'Members Directory',
                 'admin-ministry-apps': 'Volunteer Requests'
@@ -2436,6 +2633,66 @@
             }
 
             sessionStorage.setItem('activeDashboardTab', tabName);
+        }
+
+        // D-Group Photo Previews & Modals
+        function previewDgroupPhoto() {
+            const input = document.getElementById('dgPhotoInput');
+            const preview = document.getElementById('dgPhotoPreview');
+            const container = document.getElementById('dgPhotoPreviewContainer');
+            const placeholder = document.getElementById('dgPlaceholderText');
+            if (input && input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    container.style.display = 'block';
+                    if (placeholder) placeholder.style.display = 'none';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function previewEditDgroupPhoto() {
+            const input = document.getElementById('editDgPhotoInput');
+            const preview = document.getElementById('editDgPhotoPreview');
+            const container = document.getElementById('editDgPhotoPreviewContainer');
+            if (input && input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    container.style.display = 'block';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function openEditDgroupModal(dgData) {
+            const modal = document.getElementById('editDgroupModal');
+            if (!modal) return;
+
+            document.getElementById('edit_dg_id').value = dgData.id;
+            document.getElementById('edit_dg_name').value = dgData.name || '';
+            document.getElementById('edit_dg_leader').value = dgData.leader_name || '';
+            document.getElementById('edit_dg_sched').value = dgData.schedule || '';
+            document.getElementById('edit_dg_loc').value = dgData.location || '';
+            document.getElementById('edit_dg_desc').value = dgData.description || '';
+
+            const previewImg = document.getElementById('editDgPhotoPreview');
+            const container = document.getElementById('editDgPhotoPreviewContainer');
+            if (dgData.image) {
+                previewImg.src = "<?= site_url('') ?>" + dgData.image.replace(/^\//, '');
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+                previewImg.src = '';
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function closeEditDgroupModal() {
+            const modal = document.getElementById('editDgroupModal');
+            if (modal) modal.style.display = 'none';
         }
 
         // Ministry Photo Previews & Modals
@@ -2831,7 +3088,73 @@
                 });
             }
 
-            // 6. Restore active tab
+            // 6. D-Group Photo Drag & Drop zone (Create)
+            const dgDropZone = document.getElementById('dgroupPhotoDropZone');
+            const dgPhotoInput = document.getElementById('dgPhotoInput');
+            if (dgDropZone && dgPhotoInput) {
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    dgDropZone.addEventListener(eventName, (e) => {
+                        e.preventDefault(); e.stopPropagation();
+                        dgDropZone.classList.add('drag-over');
+                    }, false);
+                });
+
+                ['dragleave', 'drop'].forEach(eventName => {
+                    dgDropZone.addEventListener(eventName, (e) => {
+                        e.preventDefault(); e.stopPropagation();
+                        dgDropZone.classList.remove('drag-over');
+                    }, false);
+                });
+
+                dgDropZone.addEventListener('drop', (e) => {
+                    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                        try {
+                            dgPhotoInput.files = e.dataTransfer.files;
+                            previewDgroupPhoto();
+                        } catch (err) {
+                            const dt = new DataTransfer();
+                            dt.items.add(e.dataTransfer.files[0]);
+                            dgPhotoInput.files = dt.files;
+                            previewDgroupPhoto();
+                        }
+                    }
+                });
+            }
+
+            // 7. Edit D-Group Photo Drag & Drop zone
+            const editDgDropZone = document.getElementById('editDgroupPhotoDropZone');
+            const editDgPhotoInput = document.getElementById('editDgPhotoInput');
+            if (editDgDropZone && editDgPhotoInput) {
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    editDgDropZone.addEventListener(eventName, (e) => {
+                        e.preventDefault(); e.stopPropagation();
+                        editDgDropZone.classList.add('drag-over');
+                    }, false);
+                });
+
+                ['dragleave', 'drop'].forEach(eventName => {
+                    editDgDropZone.addEventListener(eventName, (e) => {
+                        e.preventDefault(); e.stopPropagation();
+                        editDgDropZone.classList.remove('drag-over');
+                    }, false);
+                });
+
+                editDgDropZone.addEventListener('drop', (e) => {
+                    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                        try {
+                            editDgPhotoInput.files = e.dataTransfer.files;
+                            previewEditDgroupPhoto();
+                        } catch (err) {
+                            const dt = new DataTransfer();
+                            dt.items.add(e.dataTransfer.files[0]);
+                            editDgPhotoInput.files = dt.files;
+                            previewEditDgroupPhoto();
+                        }
+                    }
+                });
+            }
+
+            // 8. Restore active tab
             const savedTab = sessionStorage.getItem('activeDashboardTab');
             if (savedTab) {
                 const btn = document.querySelector(`[onclick*="'${savedTab}'"]`) || document.querySelector(`[onclick*="${savedTab}"]`);

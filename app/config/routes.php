@@ -63,6 +63,10 @@ $router->get('/migrate', 'Migrate::index');
 // D-Group routes
 $router->post('/dgroups/join', 'Auth::join_dgroup');
 $router->post('/dgroups/leave', 'Auth::leave_dgroup');
+$router->post('/admin/dgroups/create', 'Auth::create_dgroup');
+$router->post('/admin/dgroups/update', 'Auth::update_dgroup');
+$router->post('/admin/dgroups/delete', 'Auth::delete_dgroup');
+
 
 // Prayer Wall routes
 $router->get('/prayer-wall', 'Prayer_wall::index');

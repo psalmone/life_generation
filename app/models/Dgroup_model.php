@@ -81,15 +81,55 @@ class Dgroup_model extends Model {
     }
 
     /**
-     * Remove a member from their D-Group
+     * Get all D-Groups for admin management enriched with member counts
      *
-     * @param int $user_id
+     * @return array
+     */
+    public function get_all_admin()
+    {
+        return $this->get_all_with_counts();
+    }
+
+    /**
+     * Create a new D-Group (Admin)
+     *
+     * @param array $data
+     * @return mixed
+     */
+    public function create_dgroup($data)
+    {
+        $data['created_at'] = date('Y-m-d H:i:s');
+        return $this->db->table($this->table)->insert($data);
+    }
+
+    /**
+     * Update D-Group details and image (Admin)
+     *
+     * @param int $id
+     * @param array $data
      * @return bool
      */
-    public function leave($user_id)
+    public function update_dgroup($id, $data)
     {
-        return $this->db->table('members')
-            ->where('user_id', $user_id)
+        $data['updated_at'] = date('Y-m-d H:i:s');
+        return $this->db->table($this->table)->where('id', $id)->update($data);
+    }
+
+    /**
+     * Delete a D-Group (Admin)
+     * Resets dgroup_id to NULL for any members assigned to this group
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function delete_dgroup($id)
+    {
+        // Unassign members from this D-Group
+        $this->db->table('members')
+            ->where('dgroup_id', $id)
             ->update(['dgroup_id' => null, 'updated_at' => date('Y-m-d H:i:s')]);
+
+        return $this->db->table($this->table)->where('id', $id)->delete();
     }
 }
+

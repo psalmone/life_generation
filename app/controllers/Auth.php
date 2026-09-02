@@ -390,20 +390,20 @@ class Auth extends Controller {
         }
         $ministries        = $this->Ministry_model->get_active_with_status($userId);
         $user_apps         = $this->Ministry_model->get_user_applications($userId);
-        $all_ministry_apps = [];
+        $all_ministry_apps    = [];
         $all_ministries_admin = [];
+        $all_events_admin     = [];
+        $all_dgroups_admin    = [];
         if (isset($user['role']) && $user['role'] === 'admin') {
             $all_ministry_apps    = $this->Ministry_model->get_all_applications();
             $all_ministries_admin = $this->Ministry_model->get_all_admin();
+            $all_events_admin     = $this->Event_model->get_all_events_admin();
+            $all_dgroups_admin    = $this->Dgroup_model->get_all_admin();
         }
 
         // Load Events & Attendance data
         $upcoming_events = $this->Event_model->get_upcoming_events();
         $user_rsvps      = $this->Event_model->get_user_rsvps($userId);
-        $all_events_admin= [];
-        if (isset($user['role']) && $user['role'] === 'admin') {
-            $all_events_admin = $this->Event_model->get_all_events_admin();
-        }
 
         $data = [
             'title'                => 'Membership Dashboard - Life Generation',
@@ -414,6 +414,7 @@ class Auth extends Controller {
             'active_members'       => $active_members,
             'current_dgroup'       => $current_dgroup,
             'all_dgroups'          => $all_dgroups,
+            'all_dgroups_admin'    => $all_dgroups_admin,
             'current_ministry'     => $current_ministry,
             'ministries'           => $ministries,
             'user_apps'            => $user_apps,
@@ -942,6 +943,185 @@ class Auth extends Controller {
 
         redirect('dashboard');
     }
+
+    /**
+     * Admin: Create a new D-Group with optional photo/image.
+     */
+    public function create_dgroup()
+    {
+        if (!$this->session->has_userdata('user_id')) {
+            redirect('login');
+            return;
+        }
+
+        if ($this->session->userdata('role') !== 'admin') {
+            $this->session->set_flashdata('error', 'Unauthorized.');
+            redirect('dashboard');
+            return;
+        }
+
+        if ($this->io->method() === 'post') {
+            $name        = trim($this->io->post('name') ?? '');
+            $leader_name = trim($this->io->post('leader_name') ?? '');
+            $schedule    = trim($this->io->post('schedule') ?? '');
+            $location    = trim($this->io->post('location') ?? '');
+            $description = trim($this->io->post('description') ?? '');
+            $image       = null;
+
+            if (empty($name) || empty($leader_name) || empty($schedule) || empty($location)) {
+                $this->session->set_flashdata('error', 'Name, leader, schedule, and location are required.');
+                redirect('dashboard');
+                return;
+            }
+
+            // Handle optional D-Group photo upload
+            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                $file = $_FILES['image'];
+                $ext  = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                $exts = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+
+                if (in_array($ext, $exts) && @getimagesize($file['tmp_name'])) {
+                    $uploadDir = ROOT_DIR . 'public' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'dgroups' . DIRECTORY_SEPARATOR;
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0755, true);
+                    }
+                    $fileName = 'dgroup_' . time() . '_' . bin2hex(random_bytes(3)) . '.' . $ext;
+                    if (move_uploaded_file($file['tmp_name'], $uploadDir . $fileName)) {
+                        $image = 'uploads/dgroups/' . $fileName;
+                    }
+                }
+            }
+
+            $this->Dgroup_model->create_dgroup([
+                'name'        => $name,
+                'leader_name' => $leader_name,
+                'schedule'    => $schedule,
+                'location'    => $location,
+                'description' => $description,
+                'image'       => $image,
+            ]);
+
+            $this->session->set_flashdata('success', 'Discipleship Group <strong>' . htmlspecialchars($name) . '</strong> created successfully!');
+        }
+
+        redirect('dashboard');
+    }
+
+    /**
+     * Admin: Update D-Group details and photo.
+     */
+    public function update_dgroup()
+    {
+        if (!$this->session->has_userdata('user_id')) {
+            redirect('login');
+            return;
+        }
+
+        if ($this->session->userdata('role') !== 'admin') {
+            $this->session->set_flashdata('error', 'Unauthorized.');
+            redirect('dashboard');
+            return;
+        }
+
+        if ($this->io->method() === 'post') {
+            $dgroup_id   = (int)($this->io->post('dgroup_id') ?? 0);
+            $name        = trim($this->io->post('name') ?? '');
+            $leader_name = trim($this->io->post('leader_name') ?? '');
+            $schedule    = trim($this->io->post('schedule') ?? '');
+            $location    = trim($this->io->post('location') ?? '');
+            $description = trim($this->io->post('description') ?? '');
+
+            $group = $this->Dgroup_model->get_by_id($dgroup_id);
+            if (!$group) {
+                $this->session->set_flashdata('error', 'D-Group not found.');
+                redirect('dashboard');
+                return;
+            }
+
+            $update_data = [
+                'name'        => $name,
+                'leader_name' => $leader_name,
+                'schedule'    => $schedule,
+                'location'    => $location,
+                'description' => $description,
+            ];
+
+            // Handle remove photo request
+            if (!empty($this->io->post('remove_image')) && $this->io->post('remove_image') === '1') {
+                if (!empty($group['image'])) {
+                    $oldPath = ROOT_DIR . 'public' . DIRECTORY_SEPARATOR . ltrim(str_replace('/', DIRECTORY_SEPARATOR, $group['image']), DIRECTORY_SEPARATOR);
+                    if (file_exists($oldPath) && is_file($oldPath)) {
+                        @unlink($oldPath);
+                    }
+                }
+                $update_data['image'] = null;
+            }
+
+            // Handle optional new photo replacement upload
+            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                $file = $_FILES['image'];
+                $ext  = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                $exts = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+
+                if (in_array($ext, $exts) && @getimagesize($file['tmp_name'])) {
+                    $uploadDir = ROOT_DIR . 'public' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'dgroups' . DIRECTORY_SEPARATOR;
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0755, true);
+                    }
+                    $fileName = 'dgroup_' . time() . '_' . bin2hex(random_bytes(3)) . '.' . $ext;
+                    if (move_uploaded_file($file['tmp_name'], $uploadDir . $fileName)) {
+                        if (!empty($group['image'])) {
+                            $oldPath = ROOT_DIR . 'public' . DIRECTORY_SEPARATOR . ltrim(str_replace('/', DIRECTORY_SEPARATOR, $group['image']), DIRECTORY_SEPARATOR);
+                            if (file_exists($oldPath) && is_file($oldPath)) {
+                                @unlink($oldPath);
+                            }
+                        }
+                        $update_data['image'] = 'uploads/dgroups/' . $fileName;
+                    }
+                }
+            }
+
+            $this->Dgroup_model->update_dgroup($dgroup_id, $update_data);
+            $this->session->set_flashdata('success', 'D-Group <strong>' . htmlspecialchars($name) . '</strong> updated successfully!');
+        }
+
+        redirect('dashboard');
+    }
+
+    /**
+     * Admin: Delete a D-Group.
+     */
+    public function delete_dgroup()
+    {
+        if (!$this->session->has_userdata('user_id')) {
+            redirect('login');
+            return;
+        }
+
+        if ($this->session->userdata('role') !== 'admin') {
+            $this->session->set_flashdata('error', 'Unauthorized.');
+            redirect('dashboard');
+            return;
+        }
+
+        if ($this->io->method() === 'post') {
+            $dgroup_id = (int)($this->io->post('dgroup_id') ?? 0);
+            if ($dgroup_id > 0) {
+                $group = $this->Dgroup_model->get_by_id($dgroup_id);
+                if ($group && !empty($group['image'])) {
+                    $oldPath = ROOT_DIR . 'public' . DIRECTORY_SEPARATOR . ltrim(str_replace('/', DIRECTORY_SEPARATOR, $group['image']), DIRECTORY_SEPARATOR);
+                    if (file_exists($oldPath) && is_file($oldPath)) {
+                        @unlink($oldPath);
+                    }
+                }
+                $this->Dgroup_model->delete_dgroup($dgroup_id);
+                $this->session->set_flashdata('success', 'Discipleship Group removed successfully.');
+            }
+        }
+
+        redirect('dashboard');
+    }
+
 
     // =========================================================================
     //  EVENT MANAGEMENT & ATTENDANCE TRACKING

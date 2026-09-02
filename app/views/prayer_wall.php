@@ -355,7 +355,7 @@
             </div>
         <?php else: ?>
             <div style="text-align:center; padding:48px 20px; color:var(--text-muted); background:#ffffff; border:1px solid var(--card-border); border-radius:var(--radius-lg);">
-                No prayer requests yet. Be the first to share one.
+                No prayer requests yet. Be the first to share one,vince.
             </div>
         <?php endif; ?>
 

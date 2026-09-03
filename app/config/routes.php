@@ -78,6 +78,8 @@ $router->post('/prayer-wall/delete', 'Prayer_wall::delete');
 $router->post('/ministry/apply', 'Auth::apply_ministry');
 $router->post('/ministry/cancel', 'Auth::cancel_ministry');
 $router->post('/admin/ministry/update-application', 'Auth::update_ministry_application');
+$router->post('/admin/ministry/delete-application', 'Auth::delete_ministry_application');
+$router->get('/admin/export-volunteer-requests', 'Auth::export_ministry_apps_csv');
 $router->post('/admin/ministries/create', 'Auth::create_ministry');
 $router->post('/admin/ministries/update', 'Auth::update_ministry');
 $router->post('/admin/ministries/delete', 'Auth::delete_ministry');

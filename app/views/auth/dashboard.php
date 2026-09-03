@@ -948,6 +948,52 @@
             .topbar { padding: 12px 18px; }
             .main-container { padding: 18px 14px 44px; }
         }
+
+        /* ── Paperwork & PDF Printing Support ── */
+        @media print {
+            body {
+                background: #ffffff !important;
+                background-image: none !important;
+                color: #000000 !important;
+                display: block !important;
+            }
+            .sidebar, .topbar, .hide-on-print, .btn-welcome-primary, .btn-welcome-ghost, .btn-avatar-action, form button, .stats-row, #volunteerSearchInput, #volunteerStatusFilter, select, input, .alert {
+                display: none !important;
+            }
+            .main-wrapper {
+                height: auto !important;
+                overflow: visible !important;
+            }
+            .main-container {
+                max-width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .section-box {
+                border: 1px solid #d1d5db !important;
+                box-shadow: none !important;
+                padding: 16px !important;
+                break-inside: avoid;
+            }
+            .clean-table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+            }
+            .clean-table th, .clean-table td {
+                border: 1px solid #cbd5e1 !important;
+                padding: 8px 10px !important;
+                color: #000000 !important;
+            }
+            .clean-table th {
+                background: #f1f5f9 !important;
+                font-weight: 700 !important;
+            }
+            .tag-status {
+                border: 1px solid #94a3b8 !important;
+                color: #000000 !important;
+                background: #ffffff !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -2204,42 +2250,126 @@
                 <!-- ── TAB 8: ADMIN VOLUNTEER REQUESTS ── -->
                 <div id="tab-admin-ministry-apps" class="tab-content">
                     <section class="section-box">
-                        <div class="section-header-row">
+                        <div class="section-header-row" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:14px;">
                             <div>
                                 <h2 class="section-title">Review Volunteer Applications</h2>
-                                <p class="section-desc">Approve or reject ministry team requests</p>
+                                <p class="section-desc">Approve, reject, or manage ministry team requests</p>
+                            </div>
+                            <!-- Export and Print Document Actions -->
+                            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                                <button type="button" onclick="printVolunteerRequestsDoc()" class="btn-avatar-action" style="padding:8px 14px; background:#ffffff; color:var(--text-secondary); border:1px solid var(--card-border); border-radius:var(--radius-md); font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; box-shadow:var(--shadow-xs); transition:all 0.18s ease;">
+                                    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                                    <span>Print / PDF Document</span>
+                                </button>
+                                <a href="<?= site_url('admin/export-volunteer-requests') ?>" class="btn-avatar-action btn-avatar-change" style="padding:8px 14px; background:#16a34a; color:#ffffff; border:none; text-decoration:none; font-weight:700; border-radius:var(--radius-md); display:inline-flex; align-items:center; gap:6px; box-shadow:0 2px 8px rgba(22, 163, 74, 0.25);">
+                                    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                    <span>Export to Excel / CSV</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Stats Row for Volunteer Requests -->
+                        <?php
+                            $total_v_apps = count($all_ministry_apps ?? []);
+                            $pending_v_apps = count(array_filter($all_ministry_apps ?? [], fn($a) => ($a['status'] ?? '') === 'pending'));
+                            $approved_v_apps = count(array_filter($all_ministry_apps ?? [], fn($a) => ($a['status'] ?? '') === 'approved'));
+                        ?>
+                        <div class="stats-row" style="margin-bottom:20px;">
+                            <div class="stat-box">
+                                <div>
+                                    <div class="stat-title">Total Requests</div>
+                                    <div class="stat-val"><?= $total_v_apps ?></div>
+                                </div>
+                                <div class="stat-icon-wrapper">
+                                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                                </div>
+                            </div>
+                            <div class="stat-box">
+                                <div>
+                                    <div class="stat-title">Pending Review</div>
+                                    <div class="stat-val" style="color:var(--orange-primary);"><?= $pending_v_apps ?></div>
+                                </div>
+                                <div class="stat-icon-wrapper">
+                                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                </div>
+                            </div>
+                            <div class="stat-box">
+                                <div>
+                                    <div class="stat-title">Approved Volunteers</div>
+                                    <div class="stat-val" style="color:var(--success);"><?= $approved_v_apps ?></div>
+                                </div>
+                                <div class="stat-icon-wrapper">
+                                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                </div>
                             </div>
                         </div>
 
                         <?php if (!empty($all_ministry_apps)): ?>
-                            <div class="table-responsive">
-                                <table class="clean-table">
+                            <!-- Live Filter Bar -->
+                            <div style="margin-bottom:16px; display:flex; gap:12px; flex-wrap:wrap;">
+                                <div style="flex:1; min-width:240px; position:relative;">
+                                    <input type="text" id="volunteerSearchInput" class="form-input" placeholder="Search applicant, ministry team, or status..." onkeyup="filterVolunteerTable()" style="padding-left:36px;">
+                                    <svg style="position:absolute; left:11px; top:11px; color:var(--text-muted);" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                                </div>
+                                <select id="volunteerStatusFilter" class="form-select" onchange="filterVolunteerTable()" style="width:auto; min-width:140px;">
+                                    <option value="">All Statuses</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="approved">Approved</option>
+                                    <option value="rejected">Rejected</option>
+                                </select>
+                            </div>
+
+                            <div class="table-responsive" id="volunteerTablePrintArea">
+                                <table class="clean-table" id="volunteerApplicationsTable">
                                     <thead>
                                         <tr>
                                             <th>Ministry</th>
                                             <th>Applicant</th>
                                             <th>Status</th>
                                             <th>Date</th>
-                                            <th>Action</th>
+                                            <th class="hide-on-print">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php foreach ($all_ministry_apps as $app): ?>
-                                            <tr>
-                                                <td><strong><?= htmlspecialchars($app['ministry_name']) ?></strong></td>
-                                                <td><?= htmlspecialchars($app['member_name']) ?></td>
-                                                <td><span class="tag-status <?= $app['status'] ?>"><?= strtoupper($app['status']) ?></span></td>
-                                                <td style="font-size:0.75rem; color:var(--text-muted);"><?= date('M j, Y', strtotime($app['created_at'])) ?></td>
+                                            <tr class="volunteer-row" data-search="<?= strtolower(htmlspecialchars(($app['ministry_name'] ?? '') . ' ' . ($app['member_name'] ?? '') . ' ' . ($app['member_email'] ?? '') . ' ' . ($app['member_id'] ?? '') . ' ' . ($app['status'] ?? ''))) ?>" data-status="<?= strtolower($app['status'] ?? '') ?>">
                                                 <td>
-                                                    <form action="<?= site_url('admin/ministry/update-application') ?>" method="POST" style="display:flex; gap:6px;">
-                                                        <input type="hidden" name="app_id" value="<?= (int)$app['id'] ?>">
-                                                        <?php if ($app['status'] !== 'approved'): ?>
-                                                            <button type="submit" name="status" value="approved" class="btn-action-sm btn-action-approve">Approve</button>
-                                                        <?php endif; ?>
-                                                        <?php if ($app['status'] !== 'rejected'): ?>
-                                                            <button type="submit" name="status" value="rejected" class="btn-action-sm btn-action-reject">Reject</button>
-                                                        <?php endif; ?>
-                                                    </form>
+                                                    <strong><?= htmlspecialchars($app['ministry_name']) ?></strong>
+                                                    <?php if (!empty($app['message'])): ?>
+                                                        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">"<?= htmlspecialchars($app['message']) ?>"</div>
+                                                    <?php endif; ?>
+                                                </td>
+                                                <td>
+                                                    <div style="font-weight:700; color:var(--text-primary);"><?= htmlspecialchars($app['member_name']) ?></div>
+                                                    <?php if (!empty($app['member_id'])): ?>
+                                                        <div style="font-size:0.75rem; font-family:monospace; color:var(--primary);"><?= htmlspecialchars($app['member_id']) ?></div>
+                                                    <?php endif; ?>
+                                                    <?php if (!empty($app['member_email'])): ?>
+                                                        <div style="font-size:0.73rem; color:var(--text-muted);"><?= htmlspecialchars($app['member_email']) ?></div>
+                                                    <?php endif; ?>
+                                                </td>
+                                                <td><span class="tag-status <?= $app['status'] ?>"><?= strtoupper($app['status']) ?></span></td>
+                                                <td style="font-size:0.75rem; color:var(--text-muted); white-space:nowrap;"><?= date('M j, Y', strtotime($app['created_at'])) ?></td>
+                                                <td class="hide-on-print">
+                                                    <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                                                        <form action="<?= site_url('admin/ministry/update-application') ?>" method="POST" style="display:inline-flex; gap:4px; margin:0;">
+                                                            <input type="hidden" name="app_id" value="<?= (int)$app['id'] ?>">
+                                                            <?php if ($app['status'] !== 'approved'): ?>
+                                                                <button type="submit" name="status" value="approved" class="btn-action-sm btn-action-approve" title="Approve volunteer request">Approve</button>
+                                                            <?php endif; ?>
+                                                            <?php if ($app['status'] !== 'rejected'): ?>
+                                                                <button type="submit" name="status" value="rejected" class="btn-action-sm btn-action-reject" title="Reject volunteer request">Reject</button>
+                                                            <?php endif; ?>
+                                                        </form>
+                                                        <!-- Delete Action -->
+                                                        <form action="<?= site_url('admin/ministry/delete-application') ?>" method="POST" style="display:inline-flex; margin:0;" onsubmit="return confirm('Are you sure you want to permanently delete the volunteer request of <?= htmlspecialchars(addslashes($app['member_name'])) ?> for <?= htmlspecialchars(addslashes($app['ministry_name'])) ?>?');">
+                                                            <input type="hidden" name="app_id" value="<?= (int)$app['id'] ?>">
+                                                            <button type="submit" class="btn-action-sm" style="background:#fff1f2; color:#be123c; border:1px solid #fecdd3; display:inline-flex; align-items:center; gap:4px;" title="Delete this application record">
+                                                                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                                                <span>Delete</span>
+                                                            </button>
+                                                        </form>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
@@ -2865,6 +2995,151 @@
                     row.style.display = 'none';
                 }
             });
+        }
+
+        // Filter Volunteer Applications Table
+        function filterVolunteerTable() {
+            const searchInput  = document.getElementById('volunteerSearchInput');
+            const statusSelect = document.getElementById('volunteerStatusFilter');
+
+            const query  = searchInput ? searchInput.value.toLowerCase().trim() : '';
+            const status = statusSelect ? statusSelect.value.toLowerCase().trim() : '';
+
+            const rows = document.querySelectorAll('.volunteer-row');
+            rows.forEach(row => {
+                const rowSearch = row.getAttribute('data-search') || '';
+                const rowStatus = row.getAttribute('data-status') || '';
+
+                const matchesQuery  = !query || rowSearch.includes(query);
+                const matchesStatus = !status || rowStatus === status;
+
+                if (matchesQuery && matchesStatus) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Print & Save as PDF for Volunteer Applications
+        function printVolunteerRequestsDoc() {
+            const originalTitle = document.title;
+            const printDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            document.title = 'Life_Generation_Volunteer_Applications_' + printDate.replace(/\s+/g, '_');
+
+            // Open dedicated printable paperwork window for clean paper export/PDF
+            const tableEl = document.getElementById('volunteerApplicationsTable');
+            if (!tableEl) {
+                window.print();
+                return;
+            }
+
+            const printWindow = window.open('', '_blank', 'width=950,height=750');
+            const tableHtml = tableEl.outerHTML;
+
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Life Generation - Volunteer Applications Report</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            margin: 30px 40px;
+                            color: #1e293b;
+                        }
+                        .doc-header {
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            border-bottom: 2px solid #ea580c;
+                            padding-bottom: 12px;
+                            margin-bottom: 24px;
+                        }
+                        .doc-title {
+                            font-size: 20px;
+                            font-weight: 800;
+                            color: #0f172a;
+                            margin: 0 0 4px;
+                        }
+                        .doc-sub {
+                            font-size: 13px;
+                            color: #64748b;
+                            margin: 0;
+                        }
+                        .meta-info {
+                            font-size: 12px;
+                            color: #475569;
+                            text-align: right;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 10px;
+                            font-size: 12px;
+                        }
+                        th, td {
+                            border: 1px solid #cbd5e1;
+                            padding: 8px 10px;
+                            text-align: left;
+                        }
+                        th {
+                            background-color: #f8fafc;
+                            font-weight: bold;
+                            color: #0f172a;
+                        }
+                        .tag-status {
+                            display: inline-block;
+                            padding: 2px 6px;
+                            border-radius: 4px;
+                            font-size: 10px;
+                            font-weight: bold;
+                            border: 1px solid #94a3b8;
+                        }
+                        .hide-on-print {
+                            display: none !important;
+                        }
+                        .doc-footer {
+                            margin-top: 40px;
+                            padding-top: 12px;
+                            border-top: 1px solid #e2e8f0;
+                            display: flex;
+                            justify-content: space-between;
+                            font-size: 11px;
+                            color: #94a3b8;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="doc-header">
+                        <div>
+                            <div class="doc-title">LIFE GENERATION COMMUNITY</div>
+                            <p class="doc-sub">Volunteer Ministry Applications & Paperwork Roster</p>
+                        </div>
+                        <div class="meta-info">
+                            <div><strong>Date Generated:</strong> ${printDate}</div>
+                            <div><strong>Generated By:</strong> Administrator</div>
+                        </div>
+                    </div>
+
+                    ${tableHtml}
+
+                    <div class="doc-footer">
+                        <div>Life Generation Community Official Document</div>
+                        <div>Confidential &bull; Ministry Operations Record</div>
+                    </div>
+
+                    <script>
+                        window.onload = function() {
+                            window.focus();
+                            window.print();
+                        };
+                    <\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            document.title = originalTitle;
         }
 
         // Copy Member ID to Clipboard

@@ -120,9 +120,16 @@ class Ministry_model extends Model {
     public function get_all_applications()
     {
         $sql = "
-            SELECT ma.*, m.name AS ministry_name, m.icon
+            SELECT ma.*, 
+                   m.name AS ministry_name, 
+                   m.icon,
+                   mem.member_id,
+                   mem.email AS member_email,
+                   mem.age AS member_age,
+                   mem.address AS member_address
             FROM ministry_applications ma
             JOIN ministries m ON m.id = ma.ministry_id
+            LEFT JOIN members mem ON mem.user_id = ma.user_id
             ORDER BY ma.created_at DESC
         ";
         $stmt = $this->db->raw($sql);
@@ -182,5 +189,27 @@ class Ministry_model extends Model {
         unset($m);
 
         return $ministries;
+    }
+
+    /**
+     * Admin: Delete a volunteer application completely.
+     * If member currently has this ministry assigned, resets it.
+     */
+    public function delete_application($app_id)
+    {
+        $app = $this->get_application_by_id($app_id);
+        if ($app) {
+            $member = $this->db->table('members')->where('user_id', $app['user_id'])->get();
+            if ($member && (int)($member['ministry_id'] ?? 0) === (int)$app['ministry_id']) {
+                $this->db->table('members')
+                    ->where('user_id', $app['user_id'])
+                    ->update([
+                        'ministry_id' => null,
+                        'updated_at'  => date('Y-m-d H:i:s')
+                    ]);
+            }
+            return $this->db->table('ministry_applications')->where('id', $app_id)->delete();
+        }
+        return false;
     }
 }

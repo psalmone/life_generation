@@ -887,6 +887,99 @@ class Auth extends Controller {
         redirect('dashboard');
     }
 
+    /**
+     * Admin: delete a ministry volunteer application.
+     */
+    public function delete_ministry_application()
+    {
+        if (!$this->session->has_userdata('user_id')) {
+            redirect('login');
+            return;
+        }
+
+        $role = $this->session->userdata('role');
+        if ($role !== 'admin') {
+            $this->session->set_flashdata('error', 'Unauthorized.');
+            redirect('dashboard');
+            return;
+        }
+
+        if ($this->io->method() === 'post') {
+            $app_id = (int)($this->io->post('app_id') ?? 0);
+            if ($app_id > 0) {
+                $this->Ministry_model->delete_application($app_id);
+                $this->session->set_flashdata('success', 'Volunteer request deleted successfully.');
+            }
+        }
+
+        redirect('dashboard');
+    }
+
+    /**
+     * Admin action: Export Volunteer Requests to CSV / Excel spreadsheet.
+     */
+    public function export_ministry_apps_csv()
+    {
+        if (!$this->session->has_userdata('user_id')) {
+            redirect('login');
+            return;
+        }
+
+        $role = $this->session->userdata('role');
+        if ($role !== 'admin') {
+            $this->session->set_flashdata('error', 'Unauthorized.');
+            redirect('dashboard');
+            return;
+        }
+
+        $all_apps = $this->Ministry_model->get_all_applications();
+
+        $filename = 'lifegen_volunteer_requests_' . date('Y-m-d_His') . '.csv';
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+
+        $output = fopen('php://output', 'w');
+
+        // UTF-8 BOM for Microsoft Excel compatibility
+        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
+
+        // Header Row
+        fputcsv($output, [
+            'Application ID',
+            'Ministry Team',
+            'Applicant Full Name',
+            'Member ID',
+            'Email Address',
+            'Age',
+            'Address',
+            'Status',
+            'Date Applied',
+            'Notes / Message'
+        ]);
+
+        // Data Rows
+        foreach ($all_apps as $app) {
+            fputcsv($output, [
+                $app['id'],
+                $app['ministry_name'] ?? '—',
+                $app['member_name'] ?? '—',
+                $app['member_id'] ?? '—',
+                $app['member_email'] ?? '—',
+                !empty($app['member_age']) ? $app['member_age'] : '—',
+                $app['member_address'] ?? '—',
+                strtoupper($app['status'] ?? 'pending'),
+                !empty($app['created_at']) ? date('Y-m-d H:i', strtotime($app['created_at'])) : '—',
+                $app['message'] ?? ''
+            ]);
+        }
+
+        fclose($output);
+        exit;
+    }
+
     // =========================================================================
     //  D-GROUP ENROLLMENT
     // =========================================================================

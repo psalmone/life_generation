@@ -29,10 +29,12 @@ class Prayer_wall extends Controller {
         $is_admin = ($user['role'] ?? 'user') === 'admin';
 
         $requests = $this->Prayer_request_model->get_wall($userId, $is_admin);
+        $member   = $this->Member_model->get_by_user_id($userId);
 
         $data = [
             'title'    => 'Prayer Wall - Life Generation',
             'user'     => $user,
+            'member'   => $member,
             'requests' => $requests,
             'is_admin' => $is_admin,
             'success'  => $this->session->flashdata('success') ?? null,

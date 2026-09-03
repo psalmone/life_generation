@@ -11,21 +11,45 @@
     <link rel="icon" type="image/jpeg" href="<?= site_url('assets/images/lifegen-logo.png') ?>">
     <style>
         :root {
-            --bg-body: #f8fafc;
+            /* Minimal Clean Palette: Orange, Blue & Crisp White */
+            --bg-body: #fafaf9;
             --card-bg: #ffffff;
-            --card-border: #e2e8f0;
-            --input-bg: #f8fafc;
-            --input-border: #cbd5e1;
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --primary-glow: rgba(37, 99, 235, 0.2);
-            --amber-gold: #d97706;
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --text-muted: #64748b;
+            --card-border: #f1f1ef;
+            --card-border-subtle: #f5f5f4;
+            --input-bg: #fbfbfb;
+            --input-border: #e7e5e4;
+            --input-focus-border: #f97316;
+            
+            /* Orange accents */
+            --orange-primary: #f97316;
+            --orange-hover: #ea580c;
+            --orange-soft: #fff7ed;
+            --orange-border: #fed7aa;
+            --orange-glow: rgba(249, 115, 22, 0.18);
+
+            /* Blue accents */
+            --blue-primary: #2563eb;
+            --blue-hover: #1d4ed8;
+            --blue-soft: #eff6ff;
+            --blue-border: #dbeafe;
+            --blue-glow: rgba(37, 99, 235, 0.16);
+
+            /* System Tokens */
+            --primary: var(--orange-primary);
+            --primary-hover: var(--orange-hover);
+            --accent-blue: var(--blue-primary);
+            --accent-blue-hover: var(--blue-hover);
+            
+            --text-primary: #1c1917;
+            --text-secondary: #57534e;
+            --text-muted: #78716c;
+            --text-light: #a8a29e;
+            
             --success: #16a34a;
             --error: #dc2626;
-            --shadow-card: 0 20px 40px -10px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.04);
+            --shadow-subtle: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
+            --shadow-card: 0 20px 45px -12px rgba(28, 25, 23, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.03);
+            --shadow-hover: 0 12px 28px -4px rgba(249, 115, 22, 0.28);
         }
 
         * {
@@ -33,6 +57,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
         body {
@@ -41,35 +66,35 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 24px;
+            padding: 32px 16px;
             position: relative;
             overflow-x: hidden;
             color: var(--text-primary);
         }
 
-        /* Ambient Glow Backgrounds */
+        /* Minimal soft ambient backdrops */
         .ambient-glow-1 {
             position: fixed;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(37, 99, 235, 0.08) 0%, transparent 70%);
-            top: -100px;
-            left: -100px;
+            width: 550px;
+            height: 550px;
+            background: radial-gradient(circle, rgba(249, 115, 22, 0.06) 0%, rgba(249, 115, 22, 0.01) 50%, transparent 70%);
+            top: -120px;
+            right: -100px;
             z-index: 0;
             pointer-events: none;
-            filter: blur(40px);
+            filter: blur(50px);
         }
 
         .ambient-glow-2 {
             position: fixed;
-            width: 450px;
-            height: 450px;
-            background: radial-gradient(circle, rgba(245, 158, 11, 0.08) 0%, transparent 70%);
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.05) 0%, rgba(37, 99, 235, 0.01) 50%, transparent 70%);
             bottom: -100px;
-            right: -100px;
+            left: -100px;
             z-index: 0;
             pointer-events: none;
-            filter: blur(40px);
+            filter: blur(50px);
         }
 
         .container {
@@ -82,26 +107,34 @@
         .back-home {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             color: var(--text-muted);
             text-decoration: none;
-            font-size: 0.88rem;
+            font-size: 0.86rem;
             font-weight: 600;
             margin-bottom: 20px;
-            transition: color 0.2s ease;
+            padding: 6px 12px;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(8px);
+            transition: all 0.2s ease;
         }
 
         .back-home:hover {
-            color: var(--primary);
+            color: var(--orange-primary);
+            background: #ffffff;
+            border-color: var(--orange-border);
+            transform: translateX(-2px);
         }
 
         .card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 24px;
-            padding: 40px 36px;
+            padding: 42px 38px;
             box-shadow: var(--shadow-card);
-            transition: transform 0.3s ease;
+            transition: box-shadow 0.3s ease;
         }
 
         .header {
@@ -110,17 +143,22 @@
         }
 
         .logo-badge {
-            width: 72px;
-            height: 72px;
-            border-radius: 16px;
+            width: 68px;
+            height: 68px;
+            border-radius: 18px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 20px -4px var(--primary-glow);
+            margin-bottom: 18px;
             background: #ffffff;
-            border: 1px solid var(--card-border);
-            overflow: hidden;
+            border: 1px solid #f1f1ef;
+            box-shadow: 0 8px 24px rgba(249, 115, 22, 0.08), 0 2px 6px rgba(37, 99, 235, 0.05);
+            padding: 8px;
+            transition: transform 0.25s ease;
+        }
+
+        .logo-badge:hover {
+            transform: scale(1.04);
         }
 
         .logo-badge img {
@@ -129,29 +167,53 @@
             object-fit: contain;
         }
 
+        .brand-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            background: var(--orange-soft);
+            color: var(--orange-primary);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            border: 1px solid var(--orange-border);
+        }
+
+        .brand-tag span.dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--orange-primary);
+        }
+
         .title {
-            font-size: 1.75rem;
+            font-size: 1.65rem;
             font-weight: 800;
-            letter-spacing: -0.025em;
-            color: #0f172a;
-            margin-bottom: 8px;
+            letter-spacing: -0.03em;
+            color: var(--text-primary);
+            margin-bottom: 6px;
         }
 
         .subtitle {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.45;
         }
 
         /* Flash Message Alerts */
         .alert {
             padding: 12px 16px;
             border-radius: 12px;
-            font-size: 0.875rem;
+            font-size: 0.85rem;
             margin-bottom: 24px;
             display: flex;
             align-items: center;
             gap: 12px;
-            line-height: 1.4;
+            line-height: 1.45;
             animation: fadeIn 0.3s ease-out;
         }
 
@@ -180,10 +242,10 @@
 
         .form-label {
             display: block;
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             font-weight: 700;
             color: var(--text-secondary);
-            margin-bottom: 8px;
+            margin-bottom: 7px;
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
@@ -197,7 +259,7 @@
         .input-icon-left {
             position: absolute;
             left: 14px;
-            color: var(--text-muted);
+            color: var(--text-light);
             pointer-events: none;
             display: flex;
             align-items: center;
@@ -210,11 +272,11 @@
             background: var(--input-bg);
             border: 1px solid var(--input-border);
             border-radius: 12px;
-            padding: 13px 44px 13px 44px;
-            font-size: 0.95rem;
+            padding: 13px 44px 13px 42px;
+            font-size: 0.925rem;
             color: var(--text-primary);
             outline: none;
-            transition: all 0.25s ease;
+            transition: all 0.2s ease;
         }
 
         .form-input.no-left-icon {
@@ -222,17 +284,18 @@
         }
 
         .form-input::placeholder {
-            color: #94a3b8;
+            color: #a8a29e;
+            font-size: 0.88rem;
         }
 
         .form-input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px var(--primary-glow);
+            border-color: var(--orange-primary);
+            box-shadow: 0 0 0 3px var(--orange-glow);
             background: #ffffff;
         }
 
         .form-group:focus-within .input-icon-left {
-            color: var(--primary);
+            color: var(--orange-primary);
         }
 
         /* Toggle Password Button */
@@ -253,7 +316,7 @@
 
         .toggle-password-btn:hover {
             color: var(--text-primary);
-            background: #e2e8f0;
+            background: #f5f5f4;
         }
 
         .toggle-password-btn:active {
@@ -261,7 +324,7 @@
         }
 
         .password-feedback {
-            font-size: 0.78rem;
+            font-size: 0.76rem;
             margin-top: 6px;
             color: var(--text-muted);
             display: flex;
@@ -269,61 +332,57 @@
             gap: 6px;
         }
 
-        /* Submit Button */
+        /* Minimal Primary Button - Orange with smooth feel */
         .btn-submit {
             width: 100%;
-            padding: 14px;
-            background: var(--primary);
+            padding: 13px 20px;
+            background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
             border: none;
             border-radius: 12px;
             color: #ffffff;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            box-shadow: 0 4px 15px -3px var(--primary-glow);
-            margin-top: 10px;
+            box-shadow: 0 4px 14px rgba(249, 115, 22, 0.24);
+            margin-top: 12px;
         }
 
         .btn-submit:hover {
-            background: var(--primary-hover);
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
             transform: translateY(-1px);
-            box-shadow: 0 8px 25px -4px var(--primary-glow);
+            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.32);
         }
 
         .btn-submit:active {
             transform: translateY(1px);
+            box-shadow: 0 2px 8px rgba(249, 115, 22, 0.2);
         }
 
-        /* Footer */
+        /* Secondary action / Member switch */
         .card-footer {
-            margin-top: 28px;
+            margin-top: 26px;
+            padding-top: 20px;
+            border-top: 1px solid var(--card-border-subtle);
             text-align: center;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             color: var(--text-secondary);
         }
 
-        .link {
-            color: var(--primary);
+        .link-blue {
+            color: var(--blue-primary);
             text-decoration: none;
             font-weight: 700;
-            transition: color 0.2s;
+            transition: color 0.15s ease;
         }
 
-        .link:hover {
-            color: var(--primary-hover);
+        .link-blue:hover {
+            color: var(--blue-hover);
             text-decoration: underline;
-        }
-
-        .migration-hint {
-            margin-top: 24px;
-            text-align: center;
-            font-size: 0.8rem;
-            color: var(--text-muted);
         }
     </style>
 </head>
@@ -344,6 +403,9 @@
             <div class="header">
                 <div class="logo-badge">
                     <img src="<?= site_url('assets/images/lifegen-logo.png') ?>" alt="Life Generation Logo">
+                </div>
+                <div>
+                    <span class="brand-tag"><span class="dot"></span> Life Generation Portal</span>
                 </div>
                 <h1 class="title">Member Sign In</h1>
                 <p class="subtitle">Enter your details to access the fellowship portal</p>
@@ -433,7 +495,7 @@
             </form>
 
             <div class="card-footer">
-                New to the fellowship? <a href="<?= site_url('register') ?>" class="link">Join as a Member</a>
+                New to the fellowship? <a href="<?= site_url('register') ?>" class="link-blue">Join as a Member</a>
             </div>
         </div>
     </div>

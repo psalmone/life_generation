@@ -9,8 +9,20 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Early Theme Initialization to prevent flash -->
+    <script>
+        (function() {
+            try {
+                const savedTheme = localStorage.getItem('theme');
+                const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const theme = savedTheme ? savedTheme : (systemPrefersDark ? 'dark' : 'light');
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch(e) {}
+        })();
+    </script>
     <style>
         :root {
+            --color-scheme:       light;
             /* ── Minimal Pastel Palette (Orange, Soft Blue, Crisp White) ── */
             --bg-body:            #fafaf9;
             --bg-surface:         #ffffff;
@@ -60,6 +72,133 @@
             --radius-md:          12px;
             --radius-lg:          18px;
             --radius-xl:          24px;
+        }
+
+        /* ── Dark Mode Design Tokens ── */
+        [data-theme='dark'] {
+            --color-scheme:       dark;
+            --bg-body:            #0a0d14;
+            --bg-surface:         #131822;
+            --bg-soft:            #1b2230;
+            --card-border:        #263042;
+            --card-border-subtle: #1e2638;
+
+            --blue-primary:       #38bdf8;
+            --blue-soft:          rgba(56, 189, 248, 0.12);
+            --blue-border:        rgba(56, 189, 248, 0.28);
+            --blue-hover:         #0284c7;
+            --blue-muted:         #7dd3fc;
+
+            --orange-primary:     #fb923c;
+            --orange-soft:        rgba(251, 146, 60, 0.12);
+            --orange-border:      rgba(251, 146, 60, 0.26);
+            --orange-hover:       #f97316;
+            --orange-muted:       #fdba74;
+
+            --primary:            var(--orange-primary);
+            --primary-light:      var(--orange-soft);
+            --primary-gradient:   linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            --blue-gradient:      linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+
+            --text-main:          #f0f6fc;
+            --text-muted:         #94a3b8;
+            --text-light:         #64748b;
+
+            --success:            #34d399;
+            --success-light:      rgba(52, 211, 153, 0.12);
+            --success-border:     rgba(52, 211, 153, 0.25);
+            --danger:             #f87171;
+            --danger-light:       rgba(248, 113, 113, 0.12);
+
+            --shadow-xs:          0 1px 2px rgba(0, 0, 0, 0.4);
+            --shadow-sm:          0 2px 6px rgba(0, 0, 0, 0.5);
+            --shadow-md:          0 8px 24px -4px rgba(0, 0, 0, 0.6);
+            --shadow-lg:          0 16px 36px -8px rgba(0, 0, 0, 0.7);
+        }
+
+        /* ── Dark Mode Component Adjustments ── */
+        [data-theme='dark'] body {
+            background-color: var(--bg-body);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(249, 115, 22, 0.08) 0px, transparent 45%),
+                radial-gradient(at 100% 0%, rgba(56, 189, 248, 0.08) 0px, transparent 45%),
+                radial-gradient(at 50% 100%, rgba(249, 115, 22, 0.04) 0px, transparent 50%);
+        }
+
+        [data-theme='dark'] .navbar {
+            background: rgba(19, 24, 34, 0.88);
+            border-bottom-color: var(--card-border);
+        }
+
+        [data-theme='dark'] .btn-outline,
+        [data-theme='dark'] .btn-notif-bell,
+        [data-theme='dark'] .topbar-theme-toggle,
+        [data-theme='dark'] .mobile-nav-toggle,
+        [data-theme='dark'] .card,
+        [data-theme='dark'] .item-card,
+        [data-theme='dark'] .prayer-card,
+        [data-theme='dark'] .notif-dropdown,
+        [data-theme='dark'] .notif-header,
+        [data-theme='dark'] .mobile-nav-drawer {
+            background-color: var(--bg-surface);
+            border-color: var(--card-border);
+            color: var(--text-main);
+        }
+
+        [data-theme='dark'] .notif-footer {
+            background: #10141d;
+            border-color: var(--card-border);
+        }
+
+        [data-theme='dark'] .notif-item:hover {
+            background: #171e2c;
+        }
+
+        [data-theme='dark'] .btn-outline:hover {
+            background: #1b2230;
+            border-color: #334155;
+            color: var(--orange-primary);
+        }
+
+        [data-theme='dark'] .nav-links a {
+            color: var(--text-muted);
+        }
+
+        [data-theme='dark'] .nav-links a:hover {
+            color: var(--orange-primary);
+        }
+
+        /* Light/Dark Toggle Button for Navbar */
+        .navbar-theme-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            background: #ffffff;
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: var(--shadow-xs);
+        }
+
+        .navbar-theme-toggle:hover {
+            background: var(--orange-soft);
+            border-color: var(--orange-border);
+            color: var(--orange-primary);
+            transform: translateY(-1px);
+        }
+
+        .navbar-theme-toggle svg {
+            width: 19px;
+            height: 19px;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .navbar-theme-toggle:hover svg {
+            transform: rotate(20deg) scale(1.1);
         }
 
         *, *::before, *::after {
@@ -1141,6 +1280,16 @@
             .hero-social-bar { width: 100%; }
             .cta-banner { padding: 40px 20px; }
             .stats-container { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+
+            .nav-actions .btn {
+                display: none; /* Keep top nav clean on small phones; items accessible in mobile drawer */
+            }
+            .nav-container {
+                padding: 10px 16px;
+            }
+            .brand-text h1 {
+                font-size: 1.05rem;
+            }
         }
     </style>
 </head>
@@ -1252,6 +1401,14 @@
                     <a href="<?= site_url('login') ?>" class="btn btn-outline">Sign In</a>
                     <a href="<?= site_url('register') ?>" class="btn btn-primary">Join Community</a>
                 <?php endif; ?>
+                <button type="button" class="navbar-theme-toggle" id="homeThemeToggleBtn" onclick="toggleTheme()" aria-label="Toggle Dark/Light Mode" title="Toggle Dark/Light Mode">
+                    <svg class="theme-icon-sun" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                    <svg class="theme-icon-moon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                    </svg>
+                </button>
             </div>
 
             <!-- Mobile Hamburger Toggle Button -->
@@ -1594,8 +1751,14 @@
                         </div>
 
                         <div style="display:flex; align-items:center; justify-content:space-between; padding-top:10px; border-top:1px solid var(--card-border-subtle);">
-                            <span class="prayer-tag-status <?= ($pr['status'] === 'answered') ? 'answered' : 'praying' ?>">
-                                <?= ($pr['status'] === 'answered') ? 'Answered Praise ✓' : 'Praying Together' ?>
+                            <span class="prayer-tag-status <?= ($pr['status'] === 'answered') ? 'answered' : 'praying' ?>" style="display:inline-flex; align-items:center; gap:4px;">
+                                <?php if ($pr['status'] === 'answered'): ?>
+                                    <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    <span>Answered Praise</span>
+                                <?php else: ?>
+                                    <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                                    <span>Praying Together</span>
+                                <?php endif; ?>
                             </span>
                             <a href="<?= site_url('prayer-wall') ?>" style="font-size:0.78rem; color:var(--orange-primary); font-weight:700; text-decoration:none;">
                                 Pray Along &rarr;
@@ -1749,6 +1912,39 @@
             if (e.key === 'Escape') {
                 closeEventNotifs();
             }
+        });
+
+        // ── Light / Dark Mode Toggle Logic ──
+        function updateThemeUI(theme) {
+            const btn = document.getElementById('homeThemeToggleBtn');
+            if (!btn) return;
+            const sunIcon = btn.querySelector('.theme-icon-sun');
+            const moonIcon = btn.querySelector('.theme-icon-moon');
+            if (theme === 'dark') {
+                if (sunIcon) sunIcon.style.display = 'block';
+                if (moonIcon) moonIcon.style.display = 'none';
+                btn.setAttribute('title', 'Switch to Light Mode');
+            } else {
+                if (sunIcon) sunIcon.style.display = 'none';
+                if (moonIcon) moonIcon.style.display = 'block';
+                btn.setAttribute('title', 'Switch to Dark Mode');
+            }
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            try {
+                localStorage.setItem('theme', newTheme);
+            } catch(e) {}
+            updateThemeUI(newTheme);
+        }
+
+        // Initialize UI icon on DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            updateThemeUI(currentTheme);
         });
     </script>
 </body>

@@ -12,8 +12,20 @@
     <!-- QR Code Generator & Scanner Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <!-- Early Theme Initialization to prevent flash -->
+    <script>
+        (function() {
+            try {
+                const savedTheme = localStorage.getItem('theme');
+                const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const theme = savedTheme ? savedTheme : (systemPrefersDark ? 'dark' : 'light');
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch(e) {}
+        })();
+    </script>
     <style>
         :root {
+            --color-scheme:       light;
             /* ── Minimal Pastel Palette (Orange, Soft Blue, Crisp White) ── */
             --bg-body:            #fafaf9; /* Warm stone/white minimal backdrop */
             --card-bg:            #ffffff;
@@ -72,6 +84,205 @@
             --radius-lg:          18px;
             --radius-xl:          24px;
             --sidebar-width:      260px;
+        }
+
+        /* ── Dark Mode Design Tokens ── */
+        [data-theme='dark'] {
+            --color-scheme:       dark;
+            --bg-body:            #0d1117;
+            --card-bg:            #161b22;
+            --card-border:        #30363d;
+            --card-border-subtle: #21262d;
+
+            --blue-primary:       #38bdf8;
+            --blue-soft:          rgba(56, 189, 248, 0.12);
+            --blue-border:        rgba(56, 189, 248, 0.28);
+            --blue-hover:         #0284c7;
+            --blue-muted:         #7dd3fc;
+
+            --orange-primary:     #fb923c;
+            --orange-soft:        rgba(251, 146, 60, 0.12);
+            --orange-border:      rgba(251, 146, 60, 0.26);
+            --orange-hover:       #f97316;
+            --orange-muted:       #fdba74;
+            --orange-pill:        #7c2d12;
+
+            --primary:            var(--orange-primary);
+            --primary-light:      var(--orange-soft);
+            --primary-border:     var(--orange-border);
+            --primary-gradient:   linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            --blue-gradient:      linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+            --hero-gradient:      linear-gradient(135deg, #1c1917 0%, #161b22 50%, #0f172a 100%);
+
+            --text-primary:       #f0f6fc;
+            --text-secondary:     #c9d1d9;
+            --text-muted:         #8b949e;
+            --text-light:         #6e7681;
+
+            --success:            #34d399;
+            --success-light:      rgba(52, 211, 153, 0.12);
+            --success-border:     rgba(52, 211, 153, 0.25);
+            --danger:             #f87171;
+            --danger-light:       rgba(248, 113, 113, 0.12);
+            --danger-border:      rgba(248, 113, 113, 0.25);
+            --warning:            #fbbf24;
+            --warning-light:      rgba(251, 191, 36, 0.12);
+            --warning-border:     rgba(251, 191, 36, 0.25);
+
+            --shadow-xs:          0 1px 2px rgba(0, 0, 0, 0.35);
+            --shadow-sm:          0 2px 6px rgba(0, 0, 0, 0.45);
+            --shadow-md:          0 8px 24px -4px rgba(0, 0, 0, 0.55);
+            --shadow-lg:          0 16px 36px -8px rgba(0, 0, 0, 0.65);
+        }
+
+        /* ── Dark Mode Component Adjustments ── */
+        [data-theme='dark'] body {
+            background-color: var(--bg-body);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(249, 115, 22, 0.07) 0px, transparent 45%),
+                radial-gradient(at 100% 0%, rgba(56, 189, 248, 0.07) 0px, transparent 45%),
+                radial-gradient(at 50% 100%, rgba(249, 115, 22, 0.04) 0px, transparent 50%);
+        }
+
+        [data-theme='dark'] .sidebar,
+        [data-theme='dark'] .topbar,
+        [data-theme='dark'] .brand-badge,
+        [data-theme='dark'] .sidebar-user-card,
+        [data-theme='dark'] .topbar-btn,
+        [data-theme='dark'] .date-bar,
+        [data-theme='dark'] .stat-box,
+        [data-theme='dark'] .item-card,
+        [data-theme='dark'] .user-app-badge,
+        [data-theme='dark'] .modal-card,
+        [data-theme='dark'] .form-input,
+        [data-theme='dark'] .form-textarea,
+        [data-theme='dark'] .form-select,
+        [data-theme='dark'] .clean-table th,
+        [data-theme='dark'] .clean-table td {
+            background-color: var(--card-bg);
+            border-color: var(--card-border);
+        }
+
+        [data-theme='dark'] .topbar {
+            background: rgba(22, 27, 34, 0.88);
+        }
+
+        [data-theme='dark'] .topbar-btn {
+            color: var(--text-secondary);
+        }
+
+        [data-theme='dark'] .topbar-btn:hover {
+            background: #21262d;
+            border-color: #30363d;
+            color: var(--orange-primary);
+        }
+
+        [data-theme='dark'] .topbar-theme-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-md);
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-xs);
+        }
+
+        [data-theme='dark'] .form-input,
+        [data-theme='dark'] .form-textarea,
+        [data-theme='dark'] .form-select {
+            background: #0d1117;
+            color: var(--text-primary);
+            border-color: var(--card-border);
+        }
+
+        [data-theme='dark'] .clean-table th {
+            background: #1c2128;
+            color: var(--text-muted);
+            border-color: var(--card-border);
+        }
+
+        [data-theme='dark'] .clean-table td {
+            border-color: var(--card-border-subtle);
+        }
+
+        [data-theme='dark'] .clean-table tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        [data-theme='dark'] .btn-sidebar-logout,
+        [data-theme='dark'] .btn-action-toggle,
+        [data-theme='dark'] .role-tag {
+            background: #21262d;
+            border-color: var(--card-border);
+            color: var(--text-secondary);
+        }
+
+        [data-theme='dark'] .membership-id-card {
+            border-color: rgba(56, 189, 248, 0.25);
+            box-shadow: 0 14px 34px -6px rgba(0, 0, 0, 0.6);
+        }
+
+        [data-theme='dark'] .card-brand-sub,
+        [data-theme='dark'] .card-info-val {
+            color: #e0f2fe;
+        }
+
+        [data-theme='dark'] .card-brand-title,
+        [data-theme='dark'] .card-id-label,
+        [data-theme='dark'] .card-info-label {
+            color: #94a3b8;
+        }
+
+        [data-theme='dark'] .card-avatar {
+            color: #e0f2fe;
+        }
+
+        [data-theme='dark'] .modal-close-btn {
+            background: #21262d;
+            color: var(--text-muted);
+        }
+
+        [data-theme='dark'] .modal-close-btn:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+        }
+
+        /* Light mode default for topbar theme toggle */
+        .topbar-theme-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-md);
+            background: #ffffff;
+            border: 1px solid var(--card-border);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: var(--shadow-xs);
+        }
+
+        .topbar-theme-toggle:hover {
+            background: var(--orange-soft);
+            border-color: var(--orange-border);
+            color: var(--orange-primary);
+            transform: translateY(-1px);
+        }
+
+        .topbar-theme-toggle svg {
+            width: 17px;
+            height: 17px;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .topbar-theme-toggle:hover svg {
+            transform: rotate(20deg) scale(1.1);
         }
 
         *, *::before, *::after {
@@ -1025,15 +1236,192 @@
             background: var(--card-border);
         }
 
-        @media (max-width: 768px) {
-            body { flex-direction: column; }
+        /* Mobile sidebar button defaults (hidden on desktop) */
+        .mobile-sidebar-toggle {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-md);
+            background: #ffffff;
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-xs);
+            flex-shrink: 0;
+        }
+
+        .mobile-sidebar-toggle:hover {
+            background: var(--orange-soft);
+            color: var(--orange-primary);
+            border-color: var(--orange-border);
+        }
+
+        .mobile-sidebar-close {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--card-border-subtle);
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            flex-shrink: 0;
+            margin-bottom: 16px;
+        }
+
+        .mobile-sidebar-close:hover {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .mobile-sidebar-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 199;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .mobile-sidebar-backdrop.active {
+            display: block;
+            opacity: 1;
+        }
+
+        [data-theme='dark'] .mobile-sidebar-toggle {
+            background: var(--card-bg);
+            border-color: var(--card-border);
+            color: var(--text-primary);
+        }
+
+        [data-theme='dark'] .mobile-sidebar-close {
+            background: #21262d;
+            color: var(--text-muted);
+        }
+
+        /* ── Comprehensive Mobile Responsiveness ── */
+        @media (max-width: 991px) {
+            .mobile-sidebar-toggle { display: inline-flex; }
+            .mobile-sidebar-close { display: inline-flex; }
+
             .sidebar {
-                width: 100%; height: auto; position: relative; border-right: none;
-                border-bottom: 1px solid var(--card-border);
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                height: 100vh;
+                height: 100dvh;
+                z-index: 200;
+                transform: translateX(-100%);
+                transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+                box-shadow: 0 0 35px rgba(0, 0, 0, 0.25);
+                overflow-y: auto;
             }
-            .main-wrapper { height: auto; }
-            .topbar { padding: 12px 18px; }
-            .main-container { padding: 18px 14px 44px; }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .topbar {
+                padding: 12px 18px;
+            }
+
+            .main-container {
+                padding: 18px 16px 56px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .topbar {
+                padding: 10px 14px;
+            }
+
+            .topbar-title {
+                font-size: 1rem;
+            }
+
+            .topbar-btn span {
+                display: none; /* Icon-only on very compact mobile screens */
+            }
+
+            .topbar-btn {
+                padding: 7px 9px;
+            }
+
+            .main-container {
+                padding: 14px 12px 48px;
+            }
+
+            .welcome-hero {
+                padding: 20px 16px;
+                min-height: auto;
+            }
+
+            .welcome-headline {
+                font-size: 1.3rem;
+            }
+
+            .welcome-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .welcome-actions .btn-welcome-primary,
+            .welcome-actions .btn-welcome-ghost {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .date-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+                padding: 10px 14px;
+            }
+
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .membership-card {
+                padding: 18px 16px;
+            }
+
+            .card-info-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .section-box {
+                padding: 18px 16px;
+            }
+
+            .modal-card {
+                padding: 20px 18px;
+                max-width: 95vw;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* ── Paperwork & PDF Printing Support ── */
@@ -1097,16 +1485,26 @@
         $member_id_code = $member['member_id'] ?? 'LG-PENDING';
     ?>
 
+    <!-- Mobile Sidebar Backdrop -->
+    <div class="mobile-sidebar-backdrop" id="mobileSidebarBackdrop" onclick="closeSidebarMenu()"></div>
+
     <!-- ── LEFT SIDEBAR NAVIGATION ── -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="mainSidebar">
         <div>
             <!-- Brand -->
-            <a href="<?= site_url('') ?>" class="sidebar-brand">
-                <div class="brand-badge">
-                    <img src="<?= site_url('assets/images/lifegen-logo.png') ?>" alt="Logo">
-                </div>
-                <div class="brand-title">Life <span>Generation</span></div>
-            </a>
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+                <a href="<?= site_url('') ?>" class="sidebar-brand" style="flex:1;">
+                    <div class="brand-badge">
+                        <img src="<?= site_url('assets/images/lifegen-logo.png') ?>" alt="Logo">
+                    </div>
+                    <div class="brand-title">Life <span>Generation</span></div>
+                </a>
+                <button type="button" class="mobile-sidebar-close" onclick="closeSidebarMenu()" aria-label="Close navigation menu">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
 
             <!-- Navigation Links -->
             <ul class="nav-menu">
@@ -1218,7 +1616,14 @@
 
         <!-- Top Header -->
         <header class="topbar">
-            <h1 class="topbar-title" id="pageTitle">Dashboard</h1>
+            <div class="topbar-left" style="display:flex; align-items:center; gap:12px;">
+                <button type="button" class="mobile-sidebar-toggle" id="mobileSidebarToggle" aria-label="Open navigation menu" onclick="toggleSidebarMenu()">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+                <h1 class="topbar-title" id="pageTitle">Dashboard</h1>
+            </div>
             <div class="topbar-right">
                 <a href="<?= site_url('') ?>" class="topbar-btn">
                     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
@@ -1227,6 +1632,14 @@
                 <button type="button" class="topbar-btn" onclick="showTab('profile', document.querySelector('[onclick*=\'profile\']'))" style="background:#eff6ff; color:var(--primary); border-color:#bfdbfe; font-weight:700;">
                     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                     <span>My Profile</span>
+                </button>
+                <button type="button" class="topbar-theme-toggle" id="themeToggleBtn" onclick="toggleTheme()" aria-label="Toggle Dark/Light Mode" title="Toggle Dark/Light Mode">
+                    <svg class="theme-icon-sun" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                    <svg class="theme-icon-moon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                    </svg>
                 </button>
             </div>
         </header>
@@ -1290,7 +1703,10 @@
                             <div class="date-full"><?= date('F j, Y') ?></div>
                         </div>
                     </div>
-                    <div class="date-greeting">Have a blessed day! 🙏</div>
+                    <div class="date-greeting" style="display:flex; align-items:center; gap:5px;">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--orange-primary);"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                        <span>Have a blessed day!</span>
+                    </div>
                 </div>
 
                 <!-- 3. Main Dashboard Grid: Digital ID Card + Member Journey Hub -->
@@ -1659,7 +2075,10 @@
                                         <div class="item-header">
                                             <div class="item-title"><?= htmlspecialchars($ev['title']) ?></div>
                                             <?php if ($is_checked_in): ?>
-                                                <span class="tag-status approved">Checked In ✓</span>
+                                                <span class="tag-status approved" style="display:inline-flex; align-items:center; gap:4px;">
+                                                    <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                                    <span>Checked In</span>
+                                                </span>
                                             <?php elseif ($has_rsvpd): ?>
                                                 <span class="tag-status approved">RSVP Confirmed</span>
                                             <?php endif; ?>
@@ -2101,7 +2520,9 @@
                     <div style="background:#ffffff; width:100%; max-width:540px; border-radius:var(--radius-lg); padding:24px; box-shadow:var(--shadow-lg); max-height:90vh; overflow-y:auto;">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
                             <h2 style="font-size:1.05rem; font-weight:800;">Edit Church Event</h2>
-                            <button type="button" onclick="closeEditEventModal()" style="background:transparent; border:none; cursor:pointer; font-size:1.2rem; color:var(--text-muted);">✕</button>
+                            <button type="button" onclick="closeEditEventModal()" style="background:transparent; border:none; cursor:pointer; color:var(--text-muted); display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:50%;">
+                                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                            </button>
                         </div>
 
                         <form action="<?= site_url('admin/events/update') ?>" method="POST" enctype="multipart/form-data">
@@ -2489,8 +2910,8 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="form-label" for="min_icon">Icon / Emoji</label>
-                                    <input type="text" name="icon" id="min_icon" class="form-input" placeholder="🎵, 📽️, 🤝, 🌍" value="✦">
+                                    <label class="form-label" for="min_icon">Ministry Icon Symbol</label>
+                                    <input type="text" name="icon" id="min_icon" class="form-input" placeholder="e.g. ✦, ★, ✝, ◈" value="✦">
                                 </div>
 
                                 <!-- Ministry Team Photo Upload (Drag & Drop) -->
@@ -3766,6 +4187,71 @@
         // Close on Escape key
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') closeLogoutConfirm();
+        });
+
+        // ── Light / Dark Mode Toggle Logic ──
+        function updateThemeUI(theme) {
+            const btn = document.getElementById('themeToggleBtn');
+            if (!btn) return;
+            const sunIcon = btn.querySelector('.theme-icon-sun');
+            const moonIcon = btn.querySelector('.theme-icon-moon');
+            if (theme === 'dark') {
+                if (sunIcon) sunIcon.style.display = 'block';
+                if (moonIcon) moonIcon.style.display = 'none';
+                btn.setAttribute('title', 'Switch to Light Mode');
+            } else {
+                if (sunIcon) sunIcon.style.display = 'none';
+                if (moonIcon) moonIcon.style.display = 'block';
+                btn.setAttribute('title', 'Switch to Dark Mode');
+            }
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            try {
+                localStorage.setItem('theme', newTheme);
+            } catch(e) {}
+            updateThemeUI(newTheme);
+        }
+
+        // Initialize UI icon on DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            updateThemeUI(currentTheme);
+        });
+
+        // ── Mobile Sidebar Drawer Logic ──
+        function toggleSidebarMenu() {
+            const sidebar = document.getElementById('mainSidebar');
+            const backdrop = document.getElementById('mobileSidebarBackdrop');
+            if (!sidebar) return;
+            const isOpen = sidebar.classList.contains('mobile-open');
+            if (isOpen) {
+                closeSidebarMenu();
+            } else {
+                sidebar.classList.add('mobile-open');
+                if (backdrop) backdrop.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeSidebarMenu() {
+            const sidebar = document.getElementById('mainSidebar');
+            const backdrop = document.getElementById('mobileSidebarBackdrop');
+            if (sidebar) sidebar.classList.remove('mobile-open');
+            if (backdrop) backdrop.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Close mobile sidebar on navigation button click
+        document.querySelectorAll('.sidebar .nav-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                if (window.innerWidth <= 991) {
+                    closeSidebarMenu();
+                }
+            });
         });
     </script>
 </body>

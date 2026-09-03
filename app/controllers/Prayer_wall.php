@@ -84,7 +84,7 @@ class Prayer_wall extends Controller {
             'status'      => 'active',
         ]);
 
-        $this->session->set_flashdata('success', 'Your prayer request has been submitted. The community is praying with you! 🙏');
+        $this->session->set_flashdata('success', 'Your prayer request has been submitted. The community is praying with you.');
         redirect('prayer-wall');
     }
 
@@ -106,7 +106,7 @@ class Prayer_wall extends Controller {
 
         if ($id > 0) {
             $this->Prayer_request_model->update_status($id, 'answered', $userId, $is_admin);
-            $this->session->set_flashdata('success', 'Praise God! This prayer has been marked as answered. 🙌');
+            $this->session->set_flashdata('success', 'Praise God! This prayer has been marked as answered.');
         }
 
         redirect('prayer-wall');

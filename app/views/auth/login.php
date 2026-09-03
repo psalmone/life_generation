@@ -384,6 +384,26 @@
             color: var(--blue-hover);
             text-decoration: underline;
         }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 18px 12px;
+            }
+            .card {
+                padding: 26px 20px;
+                border-radius: 18px;
+            }
+            .title {
+                font-size: 1.4rem;
+            }
+            .subtitle {
+                font-size: 0.84rem;
+            }
+            .form-input {
+                font-size: 0.92rem;
+                padding: 11px 40px 11px 38px;
+            }
+        }
     </style>
 </head>
 <body>

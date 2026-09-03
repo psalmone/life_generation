@@ -1205,10 +1205,10 @@
                 </div>
                 <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--text-muted); flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
             </div>
-            <a href="<?= site_url('logout') ?>" class="btn-sidebar-logout">
+            <button type="button" onclick="openLogoutConfirm()" class="btn-sidebar-logout">
                 <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                 <span>Sign Out</span>
-            </a>
+            </button>
         </div>
     </aside>
 
@@ -2174,6 +2174,10 @@
                                     <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                     <span>Export to CSV / Excel</span>
                                 </a>
+                                <button type="button" onclick="printMemberDirectoryDoc()" class="btn-avatar-action btn-avatar-change" style="padding:8px 14px; background:var(--orange-primary); color:#ffffff; border:none; font-weight:700; cursor:pointer;">
+                                    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                                    <span>Print / PDF Report</span>
+                                </button>
                             </div>
                         </div>
 
@@ -3099,6 +3103,183 @@
             });
         }
 
+        // Print & Save as PDF for Member Directory
+        function printMemberDirectoryDoc() {
+            const originalTitle = document.title;
+            const printDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            document.title = 'Life_Generation_Member_Directory_' + printDate.replace(/\s+/g, '_');
+
+            const tableEl = document.getElementById('membersRosterTable');
+            if (!tableEl) { window.print(); return; }
+
+            // Build a clean copy of the table — strip action column & photo column
+            const clonedTable = tableEl.cloneNode(true);
+
+            // Remove "Photo" (col 0) and "Action" (last col) from header
+            const headerRow = clonedTable.querySelector('thead tr');
+            if (headerRow) {
+                // Remove last th (Action) and first th (Photo)
+                if (headerRow.lastElementChild) headerRow.removeChild(headerRow.lastElementChild);
+                if (headerRow.firstElementChild) headerRow.removeChild(headerRow.firstElementChild);
+            }
+            // Remove photo cell (first td) and action cell (last td) from every body row
+            clonedTable.querySelectorAll('tbody tr').forEach(row => {
+                // skip hidden rows
+                if (row.style.display === 'none') { row.parentNode.removeChild(row); return; }
+                if (row.lastElementChild) row.removeChild(row.lastElementChild);
+                if (row.firstElementChild) row.removeChild(row.firstElementChild);
+            });
+
+            // Simplify role cells – replace dropdowns with text
+            clonedTable.querySelectorAll('select').forEach(sel => {
+                const span = document.createElement('span');
+                span.textContent = sel.options[sel.selectedIndex]?.text || sel.value;
+                sel.parentNode.replaceChild(span, sel);
+            });
+
+            const tableHtml = clonedTable.outerHTML;
+            const totalRows = clonedTable.querySelectorAll('tbody tr').length;
+
+            const printWindow = window.open('', '_blank', 'width=1050,height=800');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Life Generation – Member Directory Report</title>
+                    <style>
+                        * { box-sizing: border-box; margin: 0; padding: 0; }
+                        body {
+                            font-family: Arial, sans-serif;
+                            margin: 30px 40px;
+                            color: #1e293b;
+                            font-size: 13px;
+                        }
+                        .doc-header {
+                            display: flex;
+                            align-items: flex-start;
+                            justify-content: space-between;
+                            border-bottom: 3px solid #ea580c;
+                            padding-bottom: 14px;
+                            margin-bottom: 20px;
+                        }
+                        .church-name {
+                            font-size: 22px;
+                            font-weight: 900;
+                            color: #0f172a;
+                            letter-spacing: -0.5px;
+                        }
+                        .church-name span { color: #ea580c; }
+                        .doc-subtitle {
+                            font-size: 13px;
+                            color: #64748b;
+                            margin-top: 4px;
+                        }
+                        .meta-box {
+                            text-align: right;
+                            font-size: 12px;
+                            color: #475569;
+                            line-height: 1.7;
+                        }
+                        .meta-box strong { color: #0f172a; }
+                        .summary-row {
+                            display: flex;
+                            gap: 16px;
+                            margin-bottom: 18px;
+                        }
+                        .summary-card {
+                            flex: 1;
+                            border: 1px solid #e2e8f0;
+                            border-radius: 8px;
+                            padding: 10px 14px;
+                            background: #f8fafc;
+                        }
+                        .summary-label { font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; }
+                        .summary-val { font-size: 20px; font-weight: 800; color: #0f172a; margin-top: 2px; }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            font-size: 11.5px;
+                        }
+                        th {
+                            background: #f1f5f9;
+                            border: 1px solid #cbd5e1;
+                            padding: 7px 10px;
+                            font-weight: 700;
+                            color: #0f172a;
+                            text-align: left;
+                        }
+                        td {
+                            border: 1px solid #e2e8f0;
+                            padding: 7px 10px;
+                            vertical-align: middle;
+                        }
+                        tr:nth-child(even) td { background: #f8fafc; }
+                        .tag-status {
+                            display: inline-block;
+                            padding: 2px 7px;
+                            border-radius: 4px;
+                            font-size: 10px;
+                            font-weight: 700;
+                            border: 1px solid #94a3b8;
+                        }
+                        .tag-status.approved { background: #dcfce7; color: #166534; border-color: #86efac; }
+                        .tag-status.rejected { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
+                        .doc-footer {
+                            margin-top: 36px;
+                            padding-top: 12px;
+                            border-top: 1px solid #e2e8f0;
+                            display: flex;
+                            justify-content: space-between;
+                            font-size: 10px;
+                            color: #94a3b8;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="doc-header">
+                        <div>
+                            <div class="church-name">LIFE <span>GENERATION</span> COMMUNITY</div>
+                            <div class="doc-subtitle">Official Church Membership Directory &amp; Roster</div>
+                        </div>
+                        <div class="meta-box">
+                            <div><strong>Date Generated:</strong> ${printDate}</div>
+                            <div><strong>Generated By:</strong> Administrator</div>
+                            <div><strong>Document:</strong> Member Directory</div>
+                        </div>
+                    </div>
+
+                    <div class="summary-row">
+                        <div class="summary-card">
+                            <div class="summary-label">Total Members Listed</div>
+                            <div class="summary-val">${totalRows}</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Report Type</div>
+                            <div class="summary-val" style="font-size:14px; padding-top:4px;">Church Roster</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Classification</div>
+                            <div class="summary-val" style="font-size:14px; padding-top:4px;">Confidential</div>
+                        </div>
+                    </div>
+
+                    ${tableHtml}
+
+                    <div class="doc-footer">
+                        <div>Life Generation Christian Community &bull; Official Administrative Document</div>
+                        <div>Confidential &bull; For Church Use Only &bull; ${printDate}</div>
+                    </div>
+
+                    <script>
+                        window.onload = function() { window.focus(); window.print(); };
+                    <\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            document.title = originalTitle;
+        }
+
         // Filter Volunteer Applications Table
         function filterVolunteerTable() {
             const searchInput  = document.getElementById('volunteerSearchInput');
@@ -3539,6 +3720,48 @@
                     showTab(savedTab, btn);
                 }
             }
+        });
+    </script>
+
+    <!-- ── Logout Confirmation Modal ── -->
+    <div id="logoutConfirmModal" class="modal-overlay" style="display:none;" onclick="if(event.target===this) closeLogoutConfirm()">
+        <div class="modal-card" style="max-width:400px; text-align:center;">
+            <!-- Icon -->
+            <div style="margin: 0 auto 16px; width:60px; height:60px; border-radius:50%; background:#fff1f2; border:2px solid #fecdd3; display:flex; align-items:center; justify-content:center;">
+                <svg width="26" height="26" fill="none" stroke="#e11d48" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                </svg>
+            </div>
+
+            <div style="font-size:1.15rem; font-weight:800; color:var(--text-primary); margin-bottom:8px;">Sign Out?</div>
+            <p style="font-size:0.875rem; color:var(--text-muted); line-height:1.6; margin-bottom:24px;">
+                Are you sure you want to sign out of your<br>Life Generation member account?
+            </p>
+
+            <div style="display:flex; gap:10px; justify-content:center;">
+                <button type="button" onclick="closeLogoutConfirm()" style="flex:1; padding:10px 16px; border-radius:var(--radius-md); border:1px solid var(--card-border); background:transparent; color:var(--text-secondary); font-size:0.88rem; font-weight:600; cursor:pointer; transition:all 0.15s;">
+                    Cancel
+                </button>
+                <a href="<?= site_url('logout') ?>" style="flex:1; padding:10px 16px; border-radius:var(--radius-md); background:linear-gradient(135deg,#e11d48,#be123c); color:#ffffff; font-size:0.88rem; font-weight:700; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:7px; transition:all 0.15s; box-shadow:0 2px 8px rgba(225,29,72,0.3);">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                    Yes, Sign Out
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openLogoutConfirm() {
+            const modal = document.getElementById('logoutConfirmModal');
+            if (modal) modal.style.display = 'flex';
+        }
+        function closeLogoutConfirm() {
+            const modal = document.getElementById('logoutConfirmModal');
+            if (modal) modal.style.display = 'none';
+        }
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeLogoutConfirm();
         });
     </script>
 </body>

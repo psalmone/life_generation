@@ -563,10 +563,10 @@
                 </div>
                 <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--text-muted); flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
             </a>
-            <a href="<?= site_url('logout') ?>" class="btn-sidebar-logout">
+            <button type="button" onclick="openLogoutConfirm()" class="btn-sidebar-logout">
                 <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                 <span>Sign Out</span>
-            </a>
+            </button>
         </div>
     </aside>
 
@@ -704,5 +704,41 @@
         </div> <!-- /.main-container -->
     </div> <!-- /.main-wrapper -->
 
+    <!-- ── Logout Confirmation Modal ── -->
+    <div id="logoutConfirmModal" style="position:fixed; inset:0; z-index:9999; background:rgba(15,23,42,0.65); backdrop-filter:blur(6px); display:none; align-items:center; justify-content:center; padding:20px;" onclick="if(event.target===this) closeLogoutConfirm()">
+        <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:16px; padding:32px 28px; width:100%; max-width:380px; text-align:center; box-shadow:0 24px 64px rgba(0,0,0,0.3); animation:slideUpModal 0.22s cubic-bezier(0.34,1.56,0.64,1);">
+            <div style="margin:0 auto 16px; width:60px; height:60px; border-radius:50%; background:#fff1f2; border:2px solid #fecdd3; display:flex; align-items:center; justify-content:center;">
+                <svg width="26" height="26" fill="none" stroke="#e11d48" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                </svg>
+            </div>
+            <div style="font-size:1.15rem; font-weight:800; color:#0f172a; margin-bottom:8px;">Sign Out?</div>
+            <p style="font-size:0.875rem; color:#64748b; line-height:1.6; margin-bottom:24px;">
+                Are you sure you want to sign out of your<br>Life Generation member account?
+            </p>
+            <div style="display:flex; gap:10px;">
+                <button type="button" onclick="closeLogoutConfirm()" style="flex:1; padding:10px 16px; border-radius:10px; border:1px solid #e2e8f0; background:transparent; color:#475569; font-size:0.88rem; font-weight:600; cursor:pointer;">
+                    Cancel
+                </button>
+                <a href="<?= site_url('logout') ?>" style="flex:1; padding:10px 16px; border-radius:10px; background:linear-gradient(135deg,#e11d48,#be123c); color:#ffffff; font-size:0.88rem; font-weight:700; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:7px; box-shadow:0 2px 8px rgba(225,29,72,0.3);">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                    Yes, Sign Out
+                </a>
+            </div>
+        </div>
+    </div>
+    <script>
+        function openLogoutConfirm() {
+            const m = document.getElementById('logoutConfirmModal');
+            if (m) m.style.display = 'flex';
+        }
+        function closeLogoutConfirm() {
+            const m = document.getElementById('logoutConfirmModal');
+            if (m) m.style.display = 'none';
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeLogoutConfirm();
+        });
+    </script>
 </body>
 </html>

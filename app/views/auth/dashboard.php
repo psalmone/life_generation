@@ -938,6 +938,92 @@
             box-shadow: var(--shadow-md);
         }
 
+        /* ── Floating Modal Overlay & Card ── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeInOverlay 0.2s ease;
+        }
+        @keyframes fadeInOverlay {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+        .modal-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-xl);
+            padding: 28px 30px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(249, 115, 22, 0.08);
+            animation: slideUpModal 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes slideUpModal {
+            from { opacity: 0; transform: translateY(24px) scale(0.97); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--card-border);
+        }
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+        }
+        .modal-close-btn {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: var(--card-border);
+            border: none;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            transition: all 0.15s ease;
+            line-height: 1;
+        }
+        .modal-close-btn:hover {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--card-border);
+        }
+        .modal-footer .btn-cancel {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--card-border);
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .modal-footer .btn-cancel:hover {
+            background: var(--card-border);
+        }
+
         @media (max-width: 768px) {
             body { flex-direction: column; }
             .sidebar {
@@ -2618,10 +2704,18 @@
 
                 <!-- Modal: Edit D-Group Details & Photo -->
                 <div id="editDgroupModal" class="modal-overlay" style="display:none;" onclick="if(event.target === this) closeEditDgroupModal()">
-                    <div class="modal-card" style="max-width:540px;">
-                        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
-                            <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-main);">Edit D-Group & Photo</h3>
-                            <button type="button" onclick="closeEditDgroupModal()" style="background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--text-muted);">&times;</button>
+                    <div class="modal-card" style="max-width:560px;">
+                        <div class="modal-header">
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div style="width:36px; height:36px; border-radius:10px; background:var(--blue-soft); border:1px solid var(--blue-border); display:flex; align-items:center; justify-content:center;">
+                                    <svg width="16" height="16" fill="none" stroke="#2563eb" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                </div>
+                                <div>
+                                    <div class="modal-title">Edit Discipleship Group</div>
+                                    <div style="font-size:0.76rem; color:var(--text-muted); margin-top:1px;">Update group info and photo</div>
+                                </div>
+                            </div>
+                            <button type="button" class="modal-close-btn" onclick="closeEditDgroupModal()">&times;</button>
                         </div>
                         <form action="<?= site_url('admin/dgroups/update') ?>" method="POST" enctype="multipart/form-data" id="editDgroupForm">
                             <input type="hidden" name="dgroup_id" id="edit_dg_id">
@@ -2664,8 +2758,8 @@
                                 <textarea name="description" id="edit_dg_desc" class="form-textarea"></textarea>
                             </div>
 
-                            <div style="display:flex; gap:10px; margin-top:16px;">
-                                <button type="button" onclick="closeEditDgroupModal()" class="btn-avatar-action" style="flex:1; justify-content:center; background:#f1f5f9; color:var(--text-secondary);">Cancel</button>
+                            <div class="modal-footer">
+                                <button type="button" class="btn-cancel" onclick="closeEditDgroupModal()">Cancel</button>
                                 <button type="submit" class="btn-save" style="flex:2;">
                                     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                                     <span>Save D-Group Changes</span>
@@ -2677,10 +2771,18 @@
 
                 <!-- Modal: Edit Ministry Details & Photo -->
                 <div id="editMinistryModal" class="modal-overlay" style="display:none;" onclick="if(event.target === this) closeEditMinistryModal()">
-                    <div class="modal-card" style="max-width:540px;">
-                        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
-                            <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-main);">Edit Ministry & Photo</h3>
-                            <button type="button" onclick="closeEditMinistryModal()" style="background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--text-muted);">&times;</button>
+                    <div class="modal-card" style="max-width:560px;">
+                        <div class="modal-header">
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div style="width:36px; height:36px; border-radius:10px; background:var(--orange-soft); border:1px solid var(--orange-border); display:flex; align-items:center; justify-content:center;">
+                                    <svg width="16" height="16" fill="none" stroke="var(--orange-primary)" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+                                </div>
+                                <div>
+                                    <div class="modal-title">Edit Ministry Team</div>
+                                    <div style="font-size:0.76rem; color:var(--text-muted); margin-top:1px;">Update ministry info and photo</div>
+                                </div>
+                            </div>
+                            <button type="button" class="modal-close-btn" onclick="closeEditMinistryModal()">&times;</button>
                         </div>
                         <form action="<?= site_url('admin/ministries/update') ?>" method="POST" enctype="multipart/form-data" id="editMinistryForm">
                             <input type="hidden" name="ministry_id" id="edit_min_id">
@@ -2712,8 +2814,8 @@
                                 <textarea name="description" id="edit_min_desc" class="form-textarea"></textarea>
                             </div>
 
-                            <div style="display:flex; gap:10px; margin-top:16px;">
-                                <button type="button" onclick="closeEditMinistryModal()" class="btn-avatar-action" style="flex:1; justify-content:center; background:#f1f5f9; color:var(--text-secondary);">Cancel</button>
+                            <div class="modal-footer">
+                                <button type="button" class="btn-cancel" onclick="closeEditMinistryModal()">Cancel</button>
                                 <button type="submit" class="btn-save" style="flex:2;">
                                     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                                     <span>Save Ministry Changes</span>

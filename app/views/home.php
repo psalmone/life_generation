@@ -439,56 +439,80 @@
             text-decoration: underline;
         }
 
-        /* ── Hero Section ── */
+        /* ── Hero Section (Favor Youth Inspired Immersive Style) ── */
         .hero {
             position: relative;
-            padding: 70px 24px 80px;
+            padding: 110px 24px 100px;
             text-align: center;
-            max-width: 1040px;
+            width: 100%;
             margin: 0 auto;
             z-index: 1;
+            background-color: #090d16;
+            background-image: 
+                radial-gradient(circle at 50% 40%, rgba(9, 13, 22, 0.15) 0%, rgba(9, 13, 22, 0.45) 85%),
+                linear-gradient(180deg, rgba(9, 13, 22, 0.25) 0%, rgba(9, 13, 22, 0.35) 60%, rgba(9, 13, 22, 0.6) 100%),
+                url('<?= site_url("assets/images/dashboard_hero_bg.jpg") ?>');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            color: #ffffff;
+            box-shadow: inset 0 -20px 40px rgba(9, 13, 22, 0.5);
+        }
+
+        .hero-inner {
+            max-width: 960px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
         }
 
         .scripture-pill {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 6px 14px;
-            background: #ffffff;
-            border: 1px solid var(--orange-border);
+            padding: 6px 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.16);
             border-radius: 9999px;
             font-size: 0.78rem;
             font-weight: 700;
-            color: var(--orange-primary);
-            margin-bottom: 20px;
-            box-shadow: var(--shadow-xs);
+            color: #fed7aa;
+            margin-bottom: 24px;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .scripture-pill svg {
             width: 14px;
             height: 14px;
-            fill: currentColor;
+            fill: #fb923c;
         }
 
         .hero-headline {
-            font-size: clamp(2.2rem, 4.5vw, 3.4rem);
-            font-weight: 800;
+            font-size: clamp(2.4rem, 5.2vw, 3.8rem);
+            font-weight: 900;
             letter-spacing: -0.035em;
-            line-height: 1.18;
-            color: var(--text-main);
-            margin-bottom: 18px;
+            line-height: 1.15;
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
         }
 
         .hero-headline span.highlight {
-            color: var(--orange-primary);
+            color: #fb923c;
+            background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .hero-subtext {
-            font-size: 1.05rem;
-            color: var(--text-muted);
-            max-width: 660px;
-            margin: 0 auto 32px;
-            line-height: 1.65;
+            font-size: 1.08rem;
+            color: #cbd5e1;
+            max-width: 680px;
+            margin: 0 auto 36px;
+            line-height: 1.7;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
         }
 
         .hero-actions {
@@ -497,36 +521,39 @@
             justify-content: center;
             gap: 14px;
             flex-wrap: wrap;
-            margin-bottom: 40px;
+            margin-bottom: 44px;
         }
 
         .hero-verse-card {
-            background: #ffffff;
-            border: 1px solid var(--card-border);
-            border-left: 4px solid var(--orange-primary);
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-left: 4px solid #f97316;
             border-radius: var(--radius-lg);
             padding: 20px 28px;
             max-width: 720px;
             margin: 0 auto;
             text-align: left;
-            box-shadow: var(--shadow-xs);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
         }
 
         .hero-verse-card blockquote {
             font-size: 0.96rem;
             font-style: italic;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 6px;
+            color: #f1f5f9;
+            line-height: 1.65;
+            margin-bottom: 8px;
         }
 
         .hero-verse-card cite {
             font-size: 0.82rem;
             font-weight: 800;
-            color: var(--orange-primary);
+            color: #fb923c;
             display: block;
             text-align: right;
             font-style: normal;
+            letter-spacing: 0.02em;
         }
 
         /* ── Stats Banner ── */
@@ -895,15 +922,225 @@
             gap: 12px;
         }
 
+        /* ── Social Media Links & Bar ── */
+        .social-links {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+
+        .social-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: #f8fafc;
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            text-decoration: none;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .social-btn svg {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.25s ease;
+        }
+
+        .social-btn.facebook:hover {
+            background: #1877f2;
+            border-color: #1877f2;
+            color: #ffffff;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(24, 119, 242, 0.35);
+        }
+
+        .social-btn.instagram:hover {
+            background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285aeb 90%);
+            border-color: #d6249f;
+            color: #ffffff;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(214, 36, 159, 0.35);
+        }
+
+        .social-btn.tiktok:hover {
+            background: #000000;
+            border-color: #000000;
+            color: #ffffff;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+        }
+
+        .social-btn:hover svg {
+            transform: scale(1.1);
+        }
+
+        /* ── Hero Social Media Pills ── */
+        .hero-social-bar {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 24px;
+            padding: 8px 18px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 9999px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .hero-social-label {
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: #fed7aa;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .hero-social-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .hero-social-link:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+            color: #ffffff;
+        }
+
+        .hero-social-link.fb:hover { background: #1877f2; border-color: #1877f2; }
+        .hero-social-link.ig:hover { background: #e1306c; border-color: #e1306c; }
+        .hero-social-link.tk:hover { background: #000000; border-color: #000000; }
+
+        /* ── Mobile Hamburger & Navigation Drawer ── */
+        .mobile-nav-toggle {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            background: #ffffff;
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-xs);
+        }
+
+        .mobile-nav-toggle:hover {
+            background: var(--bg-soft);
+            color: var(--orange-primary);
+        }
+
+        .mobile-nav-drawer {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 300px;
+            height: 100vh;
+            background: #ffffff;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.15);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .mobile-nav-drawer.open {
+            right: 0;
+        }
+
+        .mobile-nav-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 9998;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-nav-backdrop.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .mobile-drawer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 18px;
+            border-bottom: 1px solid var(--card-border);
+            margin-bottom: 20px;
+        }
+
+        .mobile-nav-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .mobile-nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: var(--radius-md);
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 700;
+            transition: all 0.18s ease;
+        }
+
+        .mobile-nav-links a:hover {
+            background: var(--orange-soft);
+            color: var(--orange-primary);
+            padding-left: 18px;
+        }
+
+        /* ── Modern Dynamic Responsiveness ── */
         @media (max-width: 900px) {
             .footer-container { grid-template-columns: 1fr 1fr; }
             .nav-links { display: none; }
+            .mobile-nav-toggle { display: flex; }
         }
 
         @media (max-width: 600px) {
             .footer-container { grid-template-columns: 1fr; }
-            .hero { padding: 48px 16px 50px; }
-            .cta-banner { padding: 36px 20px; }
+            .hero { padding: 60px 18px 70px; }
+            .hero-headline { font-size: 2.2rem; }
+            .hero-actions { flex-direction: column; width: 100%; }
+            .hero-actions .btn { width: 100%; justify-content: center; }
+            .hero-social-bar { width: 100%; }
+            .cta-banner { padding: 40px 20px; }
+            .stats-container { grid-template-columns: repeat(2, 1fr); gap: 16px; }
         }
     </style>
 </head>
@@ -1016,49 +1253,131 @@
                     <a href="<?= site_url('register') ?>" class="btn btn-primary">Join Community</a>
                 <?php endif; ?>
             </div>
+
+            <!-- Mobile Hamburger Toggle Button -->
+            <button type="button" class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle Navigation" onclick="toggleMobileNav()">
+                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
         </div>
     </header>
 
-    <!-- ── Hero Section ── -->
-    <section class="hero">
-        <div class="scripture-pill">
-            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <span>1 Peter 2:9 &bull; A Chosen Generation &bull; Called Into His Light</span>
+    <!-- ── Mobile Navigation Drawer ── -->
+    <div class="mobile-nav-backdrop" id="mobileNavBackdrop" onclick="closeMobileNav()"></div>
+    <div class="mobile-nav-drawer" id="mobileNavDrawer">
+        <div class="mobile-drawer-header">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <div class="brand-logo" style="width:34px; height:34px;">
+                    <img src="<?= site_url('assets/images/lifegen-logo.png') ?>" alt="Life Generation Logo">
+                </div>
+                <div class="brand-text">
+                    <h1 style="font-size:1rem;">Life Generation</h1>
+                    <span style="font-size:0.65rem;">Fellowship</span>
+                </div>
+            </div>
+            <button type="button" onclick="closeMobileNav()" style="background:none; border:none; font-size:1.5rem; color:var(--text-muted); cursor:pointer; padding:4px 8px;">&times;</button>
         </div>
 
-        <h1 class="hero-headline">
-            Empowering Generations Through a <span class="highlight">Kindled Passion in Christ</span>
-        </h1>
+        <ul class="mobile-nav-links">
+            <li><a href="#events" onclick="closeMobileNav()"><span>Events</span></a></li>
+            <li><a href="#dgroups" onclick="closeMobileNav()"><span>D-Groups</span></a></li>
+            <li><a href="#ministries" onclick="closeMobileNav()"><span>Ministries</span></a></li>
+            <li><a href="#prayers" onclick="closeMobileNav()"><span>Prayer Wall</span></a></li>
+            <li><a href="#about" onclick="closeMobileNav()"><span>About</span></a></li>
+        </ul>
 
-        <p class="hero-subtext">
-            Welcome to Life Generation Christian Community. We are a family rooted in Scripture, passionate in worship, and dedicated to raising generations filled with faith, hope, and love.
-        </p>
-
-        <div class="hero-actions">
+        <div style="display:flex; flex-direction:column; gap:10px; margin-top:auto; padding-top:18px; border-top:1px solid var(--card-border);">
             <?php if (!empty($is_logged_in)): ?>
-                <a href="<?= site_url('dashboard') ?>" class="btn btn-primary" style="padding:12px 24px; font-size:0.95rem;">
-                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"/></svg>
-                    <span>View Your Member Card</span>
+                <a href="<?= site_url('dashboard') ?>" class="btn btn-primary" style="justify-content:center;">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                    <span>Member Dashboard</span>
                 </a>
+                <a href="<?= site_url('logout') ?>" class="btn btn-outline" style="justify-content:center;">Sign Out</a>
             <?php else: ?>
-                <a href="<?= site_url('register') ?>" class="btn btn-primary" style="padding:12px 24px; font-size:0.95rem;">
-                    <span>Register for Membership</span>
-                </a>
-                <a href="<?= site_url('login') ?>" class="btn btn-outline" style="padding:12px 24px; font-size:0.95rem;">
-                    <span>Access Member Portal &rarr;</span>
-                </a>
+                <a href="<?= site_url('login') ?>" class="btn btn-outline" style="justify-content:center;">Sign In</a>
+                <a href="<?= site_url('register') ?>" class="btn btn-primary" style="justify-content:center;">Join Community</a>
             <?php endif; ?>
-            <a href="<?= site_url('prayer-wall') ?>" class="btn btn-blue" style="padding:12px 20px; font-size:0.95rem;">
-                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-                <span>Prayer Wall</span>
-            </a>
-        </div>
 
-        <div class="hero-verse-card">
-            <blockquote>
-                "I came that they may have life, and have it abundantly. A new commandment I give to you, that you love one another: just as I have loved you, you also are to love one another."
-            </blockquote>
-            <cite>— John 10:10, John 13:34</cite>
+            <div style="margin-top:14px; text-align:center;">
+                <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; margin-bottom:8px;">Follow Us</div>
+                <div style="display:flex; justify-content:center; gap:10px;">
+                    <a href="https://www.facebook.com/radicalledcalapan" target="_blank" rel="noopener noreferrer" class="social-btn facebook" title="Facebook">
+                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    </a>
+                    <a href="https://www.instagram.com/lifegencalapan?igsi=MTMzZWJoc3B1YTQ1MA==" target="_blank" rel="noopener noreferrer" class="social-btn instagram" title="Instagram">
+                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    </a>
+                    <a href="https://www.tiktok.com/@life.generation7?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" class="social-btn tiktok" title="TikTok">
+                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64c.298-.002.595.042.88.13V9.4a6.33 6.33 0 00-1-.08A6.34 6.34 0 003 15.66a6.34 6.34 0 0010.82 4.47 6.27 6.27 0 001.89-4.47V8.69a8.18 8.18 0 004.88 1.6V6.84a4.86 4.86 0 01-1-.15z"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Hero Section (Favor Youth Style) ── -->
+    <section class="hero">
+        <div class="hero-inner">
+            <div class="scripture-pill">
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <span>1 Peter 2:9 &bull; A Chosen Generation &bull; Called Into His Light</span>
+            </div>
+
+            <h1 class="hero-headline">
+                Empowering Generations Through a <span class="highlight">Kindled Passion in Christ</span>
+            </h1>
+
+            <p class="hero-subtext">
+                Welcome to Life Generation Christian Community. We are a family rooted in Scripture, passionate in worship, and dedicated to raising generations filled with faith, hope, and love.
+            </p>
+
+            <div class="hero-actions">
+                <?php if (!empty($is_logged_in)): ?>
+                    <a href="<?= site_url('dashboard') ?>" class="btn btn-primary" style="padding:12px 24px; font-size:0.95rem;">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"/></svg>
+                        <span>View Your Member Card</span>
+                    </a>
+                <?php else: ?>
+                    <a href="<?= site_url('register') ?>" class="btn btn-primary" style="padding:12px 24px; font-size:0.95rem;">
+                        <span>Register for Membership</span>
+                    </a>
+                    <a href="<?= site_url('login') ?>" class="btn btn-outline" style="padding:12px 24px; font-size:0.95rem; background:rgba(255,255,255,0.12); color:#ffffff; border-color:rgba(255,255,255,0.25);">
+                        <span>Access Member Portal &rarr;</span>
+                    </a>
+                <?php endif; ?>
+                <a href="<?= site_url('prayer-wall') ?>" class="btn btn-blue" style="padding:12px 20px; font-size:0.95rem;">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                    <span>Prayer Wall</span>
+                </a>
+            </div>
+
+            <div class="hero-verse-card">
+                <blockquote>
+                    "I came that they may have life, and have it abundantly. A new commandment I give to you, that you love one another: just as I have loved you, you also are to love one another."
+                </blockquote>
+                <cite>— John 10:10, John 13:34</cite>
+            </div>
+
+            <!-- Social Media Quick Links in Hero -->
+            <div class="hero-social-bar">
+                <span class="hero-social-label">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                    <span>Connect With Us</span>
+                </span>
+                <a href="https://www.facebook.com/radicalledcalapan" target="_blank" rel="noopener noreferrer" class="hero-social-link fb">
+                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    <span>Facebook</span>
+                </a>
+                <a href="https://www.instagram.com/lifegencalapan?igsi=MTMzZWJoc3B1YTQ1MA==" target="_blank" rel="noopener noreferrer" class="hero-social-link ig">
+                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    <span>Instagram</span>
+                </a>
+                <a href="https://www.tiktok.com/@life.generation7?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" class="hero-social-link tk">
+                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64c.298-.002.595.042.88.13V9.4a6.33 6.33 0 00-1-.08A6.34 6.34 0 003 15.66a6.34 6.34 0 0010.82 4.47 6.27 6.27 0 001.89-4.47V8.69a8.18 8.18 0 004.88 1.6V6.84a4.86 4.86 0 01-1-.15z"/></svg>
+                    <span>TikTok</span>
+                </a>
+            </div>
         </div>
     </section>
 
@@ -1322,6 +1641,17 @@
                 <p>
                     A Christ-centered community devoted to worship, discipleship, and generation-spanning transformation through the Gospel.
                 </p>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/radicalledcalapan" target="_blank" rel="noopener noreferrer" class="social-btn facebook" title="Follow us on Facebook" aria-label="Facebook">
+                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    </a>
+                    <a href="https://www.instagram.com/lifegencalapan?igsi=MTMzZWJoc3B1YTQ1MA==" target="_blank" rel="noopener noreferrer" class="social-btn instagram" title="Follow us on Instagram" aria-label="Instagram">
+                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    </a>
+                    <a href="https://www.tiktok.com/@life.generation7?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" class="social-btn tiktok" title="Follow us on TikTok" aria-label="TikTok">
+                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64c.298-.002.595.042.88.13V9.4a6.33 6.33 0 00-1-.08A6.34 6.34 0 003 15.66a6.34 6.34 0 0010.82 4.47 6.27 6.27 0 001.89-4.47V8.69a8.18 8.18 0 004.88 1.6V6.84a4.86 4.86 0 01-1-.15z"/></svg>
+                    </a>
+                </div>
             </div>
 
             <div class="footer-col">
@@ -1347,7 +1677,8 @@
             <div class="footer-col">
                 <h4>Fellowship Center</h4>
                 <p style="margin-bottom:6px;">Life Generation Sanctuary, Oriental Mindoro</p>
-                <p style="color:var(--orange-primary); font-weight:700;">info@lifegeneration.org</p>
+                <p style="color:var(--orange-primary); font-weight:700; margin-bottom:12px;">info@lifegeneration.org</p>
+                <p style="font-size:0.78rem; color:var(--text-muted);">Stay connected on Facebook, Instagram, and TikTok for weekly service updates and livestreams.</p>
             </div>
         </div>
 
@@ -1379,6 +1710,30 @@
             const btn = document.getElementById('notifBellBtn');
             if (dropdown) dropdown.classList.remove('show');
             if (btn) btn.classList.remove('active');
+        }
+
+        // Mobile Navigation Drawer Toggle
+        function toggleMobileNav() {
+            const drawer = document.getElementById('mobileNavDrawer');
+            const backdrop = document.getElementById('mobileNavBackdrop');
+            if (drawer && backdrop) {
+                const isOpen = drawer.classList.contains('open');
+                if (isOpen) {
+                    closeMobileNav();
+                } else {
+                    drawer.classList.add('open');
+                    backdrop.classList.add('open');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+        }
+
+        function closeMobileNav() {
+            const drawer = document.getElementById('mobileNavDrawer');
+            const backdrop = document.getElementById('mobileNavBackdrop');
+            if (drawer) drawer.classList.remove('open');
+            if (backdrop) backdrop.classList.remove('open');
+            document.body.style.overflow = '';
         }
 
         // Close dropdown when clicking outside

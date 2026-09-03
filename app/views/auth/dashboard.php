@@ -330,69 +330,69 @@
             to   { opacity: 1; transform: translateY(0); }
         }
 
-        /* ── Minimalist Pastel Welcome Banner ── */
+        /* ── Hero Banner with Atmospheric Church Background ── */
         .welcome-hero {
-            background: #ffffff;
-            border: 1px solid var(--card-border);
+            background-color: #0b1120;
+            background-image: linear-gradient(90deg, rgba(11, 17, 32, 0.96) 0%, rgba(11, 17, 32, 0.88) 45%, rgba(11, 17, 32, 0.45) 80%, rgba(11, 17, 32, 0.25) 100%), url('<?= site_url("assets/images/dashboard_hero_bg.jpg") ?>');
+            background-size: cover;
+            background-position: center right;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: var(--radius-xl);
-            padding: 26px 30px;
-            color: var(--text-primary);
+            padding: 32px 34px;
+            color: #ffffff;
             margin-bottom: 20px;
-            box-shadow: var(--shadow-xs);
+            box-shadow: 0 10px 28px -6px rgba(11, 17, 32, 0.35);
             position: relative;
             overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 24px;
-            background-image: linear-gradient(135deg, rgba(255, 247, 237, 0.7) 0%, #ffffff 60%, rgba(239, 246, 255, 0.7) 100%);
+            min-height: 200px;
         }
-        .welcome-hero::after {
-            content: '';
-            position: absolute;
-            top: -40px; right: -40px;
-            width: 200px; height: 200px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(249, 115, 22, 0.08) 0%, transparent 70%);
-            pointer-events: none;
+        @media (max-width: 768px) {
+            .welcome-hero {
+                background-image: linear-gradient(180deg, rgba(11, 17, 32, 0.94) 0%, rgba(11, 17, 32, 0.85) 100%), url('<?= site_url("assets/images/dashboard_hero_bg.jpg") ?>');
+                padding: 22px 20px;
+            }
         }
         .welcome-hero-content {
             position: relative;
             z-index: 2;
-            max-width: 680px;
+            max-width: 620px;
         }
         .welcome-tag {
             display: inline-flex;
             align-items: center;
             gap: 6px;
             padding: 4px 10px;
-            background: #ffffff;
-            border: 1px solid var(--orange-border);
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 9999px;
             font-size: 0.72rem;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.06em;
-            color: var(--orange-primary);
+            color: #fed7aa;
             margin-bottom: 10px;
-            box-shadow: var(--shadow-xs);
+            backdrop-filter: blur(6px);
         }
         .welcome-headline {
-            font-size: clamp(1.35rem, 2.5vw, 1.7rem);
+            font-size: clamp(1.4rem, 2.5vw, 1.85rem);
             font-weight: 800;
             letter-spacing: -0.02em;
             line-height: 1.25;
-            margin-bottom: 6px;
-            color: var(--text-primary);
+            margin-bottom: 8px;
+            color: #ffffff;
         }
         .welcome-headline span {
-            color: var(--orange-primary);
+            color: #fb923c;
         }
         .welcome-subtext {
             font-size: 0.88rem;
-            color: var(--text-muted);
-            line-height: 1.55;
-            margin-bottom: 16px;
+            color: #cbd5e1;
+            line-height: 1.6;
+            margin-bottom: 18px;
         }
         .welcome-actions {
             display: flex;
@@ -404,9 +404,9 @@
             display: inline-flex;
             align-items: center;
             gap: 7px;
-            padding: 8px 16px;
+            padding: 9px 18px;
             border-radius: var(--radius-md);
-            background: var(--primary-gradient);
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
             color: #ffffff;
             font-size: 0.84rem;
             font-weight: 700;
@@ -414,66 +414,68 @@
             cursor: pointer;
             border: none;
             transition: all 0.18s ease;
-            box-shadow: 0 2px 8px rgba(249, 115, 22, 0.25);
+            box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
         }
         .btn-welcome-primary:hover {
-            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
+            box-shadow: 0 6px 18px rgba(234, 88, 12, 0.45);
         }
         .btn-welcome-ghost {
             display: inline-flex;
             align-items: center;
             gap: 7px;
-            padding: 8px 14px;
+            padding: 9px 16px;
             border-radius: var(--radius-md);
-            background: #ffffff;
-            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
             font-size: 0.84rem;
             font-weight: 600;
             text-decoration: none;
             cursor: pointer;
-            border: 1px solid var(--card-border);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             transition: all 0.18s ease;
-            box-shadow: var(--shadow-xs);
+            backdrop-filter: blur(6px);
         }
         .btn-welcome-ghost:hover {
-            background: var(--blue-soft);
-            border-color: var(--blue-border);
-            color: var(--blue-primary);
+            background: rgba(255, 255, 255, 0.22);
+            border-color: rgba(255, 255, 255, 0.4);
+            color: #ffffff;
+            transform: translateY(-1px);
         }
 
-        /* ── Minimal Faith Scripture Card ── */
-        .scripture-card {
+        /* ── Date & Day Bar ── */
+        .date-bar {
             background: #ffffff;
             border: 1px solid var(--card-border);
-            border-left: 3px solid var(--orange-primary);
             border-radius: var(--radius-lg);
-            padding: 14px 20px;
+            padding: 12px 20px;
             margin-bottom: 20px;
-            box-shadow: var(--shadow-xs);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 16px;
+            box-shadow: var(--shadow-xs);
         }
-        @media (max-width: 768px) {
-            .scripture-card { flex-direction: column; align-items: flex-start; }
-            .welcome-hero { flex-direction: column; align-items: flex-start; padding: 20px; }
+        .date-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .scripture-quote {
-            font-size: 0.88rem;
-            font-style: italic;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
-        .scripture-ref {
-            font-size: 0.75rem;
-            font-weight: 800;
+        .date-icon {
+            width: 34px; height: 34px;
+            border-radius: 8px;
+            background: var(--orange-soft);
+            border: 1px solid var(--orange-border);
+            display: flex; align-items: center; justify-content: center;
             color: var(--orange-primary);
-            margin-top: 3px;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
+            flex-shrink: 0;
+        }
+        .date-day { font-size: 0.95rem; font-weight: 800; color: var(--text-primary); }
+        .date-full { font-size: 0.78rem; color: var(--text-muted); margin-top: 1px; }
+        .date-greeting {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 500;
         }
 
         /* ── Member Overview Top Grid ── */
@@ -486,36 +488,36 @@
         }
         @media (max-width: 960px) { .dashboard-grid { grid-template-columns: 1fr; } }
 
-        /* ── Minimal Digital Membership Pass (Clean Navy & Pastel Orange) ── */
+        /* ── Minimal Digital Membership Pass (Light Blue) ── */
         .membership-card {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0f172a 100%);
+            background: linear-gradient(145deg, #eff6ff 0%, #dbeafe 55%, #e0f2fe 100%);
             border-radius: var(--radius-xl);
             padding: 24px 26px;
-            color: #ffffff;
+            color: #1e3a5f;
             display: flex; flex-direction: column;
             justify-content: space-between;
             min-height: 280px;
-            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.25);
+            box-shadow: 0 4px 20px -4px rgba(37, 99, 235, 0.14), 0 0 0 1px rgba(37, 99, 235, 0.08);
             position: relative;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(37, 99, 235, 0.14);
         }
         .membership-card::after {
             content: '';
             position: absolute;
-            top: -50px; right: -50px;
-            width: 160px; height: 160px;
+            top: -40px; right: -40px;
+            width: 150px; height: 150px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(249, 115, 22, 0.18) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(249, 115, 22, 0.1) 0%, transparent 70%);
             pointer-events: none;
         }
         .membership-card::before {
             content: '';
             position: absolute;
-            bottom: -50px; left: -50px;
-            width: 150px; height: 150px;
+            bottom: -40px; left: -40px;
+            width: 130px; height: 130px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, transparent 70%);
             pointer-events: none;
         }
 
@@ -526,10 +528,10 @@
         }
         .card-brand-title {
             font-size: 0.68rem; text-transform: uppercase;
-            letter-spacing: 0.12em; color: #94a3b8; font-weight: 800;
+            letter-spacing: 0.12em; color: #64748b; font-weight: 800;
         }
         .card-brand-sub {
-            font-size: 1.1rem; font-weight: 800; color: #ffffff; margin-top: 2px;
+            font-size: 1.05rem; font-weight: 800; color: #1e3a5f; margin-top: 2px;
             letter-spacing: -0.01em;
         }
         .status-pill {
@@ -538,8 +540,8 @@
             font-size: 0.7rem; font-weight: 700;
             backdrop-filter: blur(8px);
         }
-        .status-pill.active { background: rgba(34, 197, 94, 0.18); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.3); }
-        .status-pill.inactive { background: rgba(239, 68, 68, 0.18); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.3); }
+        .status-pill.active { background: rgba(34, 197, 94, 0.14); color: #15803d; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .status-pill.inactive { background: rgba(239, 68, 68, 0.12); color: #b91c1c; border: 1px solid rgba(239, 68, 68, 0.25); }
         .status-dot-sm { width: 6px; height: 6px; border-radius: 50%; background: currentColor; box-shadow: 0 0 6px currentColor; }
 
         /* Card Header with Photo & QR Box */
@@ -558,12 +560,12 @@
         .card-avatar {
             width: 52px; height: 52px;
             border-radius: 50%;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.05) 100%);
-            border: 2px solid rgba(255, 255, 255, 0.25);
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(37, 99, 235, 0.05) 100%);
+            border: 2px solid rgba(37, 99, 235, 0.2);
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem; font-weight: 800; color: #ffffff;
+            font-size: 1.2rem; font-weight: 800; color: #1e3a5f;
             overflow: hidden; flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.12);
         }
         .card-avatar img {
             width: 100%; height: 100%; object-fit: cover;
@@ -599,50 +601,49 @@
         }
 
         .card-id-row {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(37, 99, 235, 0.06);
+            border: 1px solid rgba(37, 99, 235, 0.15);
             border-radius: var(--radius-md);
             padding: 8px 12px;
             display: flex; align-items: center; justify-content: space-between;
             margin-bottom: 14px;
-            backdrop-filter: blur(6px);
             position: relative; z-index: 2;
         }
-        .card-id-label { font-size: 0.62rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
-        .card-id-value { font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 0.94rem; font-weight: 800; color: #fb923c; margin-top: 1px; }
+        .card-id-label { font-size: 0.62rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
+        .card-id-value { font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 0.94rem; font-weight: 800; color: #ea580c; margin-top: 1px; }
         .btn-copy-id {
-            background: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(255, 255, 255, 0.15); color: #f1f5f9;
+            background: rgba(37, 99, 235, 0.1);
+            border: 1px solid rgba(37, 99, 235, 0.2); color: #1e40af;
             padding: 4px 9px; border-radius: var(--radius-sm);
             font-size: 0.72rem; font-weight: 700; cursor: pointer;
             display: inline-flex; align-items: center; gap: 4px;
             transition: all 0.15s ease;
         }
-        .btn-copy-id:hover { background: rgba(255, 255, 255, 0.22); color: #ffffff; }
+        .btn-copy-id:hover { background: rgba(37, 99, 235, 0.18); color: #1e3a5f; }
 
         .card-info-grid {
             display: grid; grid-template-columns: repeat(2, 1fr);
             gap: 10px; margin-bottom: 14px;
             position: relative; z-index: 2;
         }
-        .card-info-label { font-size: 0.62rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; letter-spacing: 0.04em; }
-        .card-info-val { font-size: 0.82rem; font-weight: 700; color: #f8fafc; margin-top: 1px; }
+        .card-info-label { font-size: 0.62rem; color: #64748b; text-transform: uppercase; font-weight: 700; letter-spacing: 0.04em; }
+        .card-info-val { font-size: 0.82rem; font-weight: 700; color: #1e3a5f; margin-top: 1px; }
 
         .card-badges-row {
             display: flex; flex-wrap: wrap; gap: 6px;
-            padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 12px; border-top: 1px solid rgba(37, 99, 235, 0.12);
             position: relative; z-index: 2;
         }
         .card-tag {
-            background: rgba(255, 255, 255, 0.08);
-            color: #cbd5e1;
+            background: rgba(37, 99, 235, 0.08);
+            color: #1e40af;
             padding: 3px 8px; border-radius: 6px;
             font-size: 0.7rem; font-weight: 700;
             display: inline-flex; align-items: center; gap: 5px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(37, 99, 235, 0.15);
         }
-        .card-tag.ministry { background: rgba(249, 115, 22, 0.18); color: #fed7aa; border-color: rgba(249, 115, 22, 0.3); }
-        .card-tag.dgroup { background: rgba(59, 130, 246, 0.18); color: #bfdbfe; border-color: rgba(59, 130, 246, 0.3); }
+        .card-tag.ministry { background: rgba(249, 115, 22, 0.12); color: #c2410c; border-color: rgba(249, 115, 22, 0.25); }
+        .card-tag.dgroup { background: rgba(37, 99, 235, 0.1); color: #1d4ed8; border-color: rgba(37, 99, 235, 0.2); }
 
         /* ── Minimalist Glass Panels ── */
         .glass-panel {
@@ -1278,15 +1279,18 @@
                     </div>
                 </div>
 
-                <!-- 2. Scripture of the Day -->
-                <div class="scripture-card">
-                    <div>
-                        <div class="scripture-quote">"For where two or three gather in my name, there am I with them."</div>
-                        <div class="scripture-ref">Matthew 18:20 · Life Generation Pillar Verse</div>
+                <!-- 2. Date & Day Bar -->
+                <div class="date-bar">
+                    <div class="date-bar-left">
+                        <div class="date-icon">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        </div>
+                        <div>
+                            <div class="date-day"><?= date('l') ?></div>
+                            <div class="date-full"><?= date('F j, Y') ?></div>
+                        </div>
                     </div>
-                    <div style="font-size:0.8rem; color:var(--text-muted); text-align:right; flex-shrink:0;">
-                        <span style="font-weight:700; color:var(--primary);"><?= date('l, F j, Y') ?></span>
-                    </div>
+                    <div class="date-greeting">Have a blessed day! 🙏</div>
                 </div>
 
                 <!-- 3. Main Dashboard Grid: Digital ID Card + Member Journey Hub -->
@@ -1317,8 +1321,8 @@
                                             <?php endif; ?>
                                         </div>
                                         <div>
-                                            <div style="font-size:1.1rem; font-weight:800; color:#ffffff; letter-spacing:-0.01em;"><?= htmlspecialchars($member['full_name'] ?? '—') ?></div>
-                                            <div style="font-size:0.78rem; color:#94a3b8; font-weight:600;">@<?= htmlspecialchars($user['username'] ?? '') ?></div>
+                                            <div style="font-size:1.1rem; font-weight:800; color:#1e3a5f; letter-spacing:-0.01em;"><?= htmlspecialchars($member['full_name'] ?? '—') ?></div>
+                                            <div style="font-size:0.78rem; color:#64748b; font-weight:600;">@<?= htmlspecialchars($user['username'] ?? '') ?></div>
                                         </div>
                                     </div>
 
@@ -1353,13 +1357,13 @@
                                     </div>
                                     <div>
                                         <div class="card-info-label">Ministry Assignment</div>
-                                        <div class="card-info-val" style="color: <?= !empty($current_ministry) ? '#38bdf8' : '#94a3b8' ?>;">
+                                        <div class="card-info-val" style="color: <?= !empty($current_ministry) ? '#1d4ed8' : '#94a3b8' ?>;">
                                             <?= !empty($current_ministry) ? htmlspecialchars($current_ministry['name']) : 'None' ?>
                                         </div>
                                     </div>
                                     <div>
                                         <div class="card-info-label">Discipleship Group</div>
-                                        <div class="card-info-val" style="color: <?= !empty($current_dgroup) ? '#d8b4fe' : '#94a3b8' ?>;">
+                                        <div class="card-info-val" style="color: <?= !empty($current_dgroup) ? '#7c3aed' : '#94a3b8' ?>;">
                                             <?= !empty($current_dgroup) ? htmlspecialchars($current_dgroup['name']) : 'None' ?>
                                         </div>
                                     </div>

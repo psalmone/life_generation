@@ -1486,7 +1486,7 @@
             </h1>
 
             <p class="hero-subtext">
-                Welcome to Life Generation Christian Community. We are a family rooted in Scripture, passionate in worship, and dedicated to raising generations filled with faith, hope, and love.
+                Welcome to Life Generation Minsu Christian Community. We are a family rooted in Scripture, passionate in worship, and dedicated to raising generations filled with faith, hope, and love.
             </p>
 
             <div class="hero-actions">

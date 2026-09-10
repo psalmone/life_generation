@@ -1779,7 +1779,7 @@
 
     <!-- ── Call to Action Banner ── -->
     <section class="cta-banner" id="about">
-        <h2>You Are Always Welcome Here</h2>
+        <h2>You U Always Welcome Here</h2>
         <p>Take your next step in faith. Register for membership to receive your digital member ID card and get connected with our ministries.</p>
         <div class="cta-buttons">
             <?php if (empty($is_logged_in)): ?>

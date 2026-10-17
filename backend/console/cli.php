@@ -273,9 +273,15 @@ function handle_make_config($name) {
 }
 
 function get_migration_instance() {
-    define('PREVENT_DIRECT_ACCESS', TRUE);
-    define('ROOT_DIR', dirname(__DIR__, 1) . DIRECTORY_SEPARATOR);
-    define('SYSTEM_DIR', ROOT_DIR . 'scheme' . DIRECTORY_SEPARATOR);
+    if (!defined('PREVENT_DIRECT_ACCESS')) {
+        define('PREVENT_DIRECT_ACCESS', TRUE);
+    }
+    if (!defined('ROOT_DIR')) {
+        define('ROOT_DIR', dirname(__DIR__, 1) . DIRECTORY_SEPARATOR);
+    }
+    if (!defined('SYSTEM_DIR')) {
+        define('SYSTEM_DIR', ROOT_DIR . 'scheme' . DIRECTORY_SEPARATOR);
+    }
     require_once SYSTEM_DIR . 'kernel/LavaLust.php';
     $lava = lava_instance();
     $lava->call->library('migration');

@@ -21,7 +21,13 @@ export default function RegisterPage() {
       setSuccess(`Membership created! Your Member ID is ${data.member_id}. Redirecting to sign in…`);
       setTimeout(() => navigate("/login"), 3000);
     } catch (err: any) {
-      setError(err.response?.data?.error || "Registration failed. Please try again.");
+      setError(
+        err.response?.data?.error ||
+        err.response?.data?.message ||
+        (err.code === "ERR_NETWORK" ? "Cannot connect to backend server. Ensure backend is running." : null) ||
+        err.message ||
+        "Registration failed. Please try again."
+      );
     } finally { setLoading(false); }
   };
 

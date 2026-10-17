@@ -11,19 +11,19 @@ export default defineConfig({
     proxy: {
       // All /api/* calls are forwarded to LavaLust PHP backend
       "/api": {
-        target: "http://lifegeneration.test",
+        target: "http://127.0.0.1:3000",
         changeOrigin: true,
         secure: false,
       },
       // Uploads (avatars, event banners, D-group photos, etc.) from backend
       "/uploads": {
-        target: "http://lifegeneration.test",
+        target: "http://127.0.0.1:3000",
         changeOrigin: true,
         secure: false,
       },
       // Fallback: any /assets/* not in frontend/public proxied from backend
       "/assets": {
-        target: "http://lifegeneration.test",
+        target: "http://127.0.0.1:3000",
         changeOrigin: true,
         secure: false,
       },

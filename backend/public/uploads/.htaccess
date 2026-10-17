@@ -1,0 +1,12 @@
+# Disable PHP execution in uploads directory
+<FilesMatch "(?i)\.(php|phtml|php3|php4|php5|php7|phar|sh|pl|cgi)$">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>
+<IfModule mod_authz_core.c>
+    <FilesMatch "(?i)\.(php|phtml|php3|php4|php5|php7|phar|sh|pl|cgi)$">
+        Require all denied
+    </FilesMatch>
+</IfModule>
+Options -ExecCGI
+Options -Indexes

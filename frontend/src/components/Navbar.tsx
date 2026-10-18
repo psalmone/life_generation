@@ -44,11 +44,10 @@ export default function Navbar() {
           <Link to="/" className={active("/")}>Home</Link>
           {isAuthenticated && (
             <>
-              <Link to="/dashboard" className={active("/dashboard")}>Dashboard</Link>
-              <Link to="/prayer-wall" className={active("/prayer-wall")}>Prayer Wall</Link>
               <Link to="/events" className={active("/events")}>Events</Link>
               <Link to="/dgroups" className={active("/dgroups")}>D-Groups</Link>
               <Link to="/ministries" className={active("/ministries")}>Ministries</Link>
+              <Link to="/prayer-wall" className={active("/prayer-wall")}>Prayer Wall</Link>
             </>
           )}
         </div>
@@ -73,11 +72,24 @@ export default function Navbar() {
 
           {isAuthenticated ? (
             <>
-              <span style={{ color: "var(--text-secondary)", fontSize: "0.85rem", fontWeight: 600, padding: "0 0.25rem" }}>
-                {user?.full_name?.split(" ")[0] ?? user?.username}
-              </span>
-              <Link to="/dashboard" className="btn btn-outline btn-sm">Member Portal</Link>
-              <button className="btn btn-primary btn-sm" onClick={handleLogout}>Sign Out</button>
+              <Link
+                to="/dashboard"
+                className={`nav-user-pill ${location.pathname === "/dashboard" ? "active" : ""}`}
+                title="Open Member Portal"
+              >
+                <div className="nav-user-avatar">
+                  {user?.avatar ? (
+                    <img src={`/${user.avatar}`} alt={user.full_name || user.username} />
+                  ) : (
+                    (user?.full_name?.[0] || user?.username?.[0] || "U").toUpperCase()
+                  )}
+                </div>
+                <span className="nav-user-name">
+                  {user?.full_name?.split(" ")[0] ?? user?.username}
+                </span>
+                <span className="nav-user-badge">Portal</span>
+              </Link>
+              <button className="btn btn-outline btn-sm" onClick={handleLogout}>Sign Out</button>
             </>
           ) : (
             <>
